@@ -9,6 +9,10 @@ const studentSchema = new mongoose.Schema({
         type : String ,
         required : true
     },
+    matricule :{
+        type : String ,
+        required :true
+    },
     email : {
         type : String ,
         required : true
@@ -19,6 +23,7 @@ const studentSchema = new mongoose.Schema({
     },
     attendanceMark : {
         type : Number ,
+        default : 5
     },
     attendance : {
         type : Number ,
@@ -27,6 +32,10 @@ const studentSchema = new mongoose.Schema({
     absences : {
         type : Number ,
         default : 0 
+    },
+    class : {
+        type : String ,
+        required : true
     }
 },{timestamps : true});
 

@@ -1,16 +1,27 @@
 import mongoose from "mongoose";
 
-const posibilitySchema = new mongoose.Schema({
-    posibility : {
-        type : Boolean ,
-        default : false 
+const posibilitySchema = new mongoose.Schema(
+  {
+    posibility: {
+      type: Boolean,
+      default: false,
     },
-    
-}, {timestamps : true});
+    class : {
+      type : String ,
+      required : true
+    },
+    updatedDate: {
+      type: String, // Store the date as a string in the format YYYY-MM-DD
+    },
+  },
+  { timestamps: true }
+);
 
-posibilitySchema.pre('save', function (next) {
-    this.updatedAt = new Date(this.updatedAt.setHours(0, 0, 0, 0));
-    next();
+// Middleware to update `updatedDate` when the document is modified
+posibilitySchema.pre("findOneAndUpdate", function (next) {
+  const updatedDate = new Date().toISOString().split("T")[0];
+  this._update.updatedDate = updatedDate;
+  next();
 });
 
-export const Posibility = mongoose.model("Posibility" , posibilitySchema);
+export const Posibility = mongoose.model("Posibility", posibilitySchema);

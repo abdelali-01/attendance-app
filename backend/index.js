@@ -11,12 +11,13 @@ dotenv.config();
 
 // importing routers 
 import adminRouter from "./routers/admin.js";
+import posibilityRouter from "./routers/posibility.js";
+import studentRouter from "./routers/student.js";
+
+
 app.use("/admin" , adminRouter);
-
-
-
-
-
+app.use("/posibility" , posibilityRouter);
+app.use("/student" , studentRouter);
 
 
 
