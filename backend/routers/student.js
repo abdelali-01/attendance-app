@@ -1,6 +1,5 @@
 import express from 'express'
 import { Student } from '../models/Student.js';
-import { Posibility } from '../models/Posibility.js';
 import bcrypt from 'bcrypt'
 
 const studentRouter = express.Router();
@@ -61,8 +60,27 @@ studentRouter.put("/checkattendance/:id" ,async (req,res)=>{
     } catch (error) {
         res.status(400).send(error)
     }
-})
+});
 
+// get student with his id 
+studentRouter.get("/:id" ,async (req ,res)=>{
+    try {
+        const student = await Student.findById(req.params.id);
+        res.status(200).send(student);
+    } catch (error) {
+        res.status(400).send(error);
+    }
+});
+
+// Get the list of students by their class
+studentRouter.get("/studentsList/:class" ,async (req,res)=>{
+    try {
+        const studentsList = await Student.find({class : req.params.class});
+        res.status(200).send(studentsList);
+    } catch (error) {
+        res.status(400).send(error)
+    }
+});
 
 
 export default studentRouter ;

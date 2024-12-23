@@ -1,0 +1,41 @@
+thead tr th{
+    background-color: #F9FAFB;
+    padding: 10px 0;
+}
+
+hr {
+    margin: 3px;
+    width: 100%;
+}
+
+/* style the open class button */
+.open-style{
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+/* style the status of student*/
+.pendingStatus li{
+    color: var(--dark);
+    font-weight: 500;
+    background-color: #F8FAFC;
+    border-radius: 23px;
+    width: fit-content;
+    padding: 6px 10px;
+}
+.absentStatus li{
+    color: #991B1B;
+    font-weight: 500;
+    background-color: #991b1b1e;
+    border-radius: 23px;
+    width: fit-content;
+    padding: 6px 10px;
+}
+.presentStatus li{
+    color: #166534;
+    font-weight: 500;
+    background-color: #1665342f;
+    border-radius: 23px;
+    width: fit-content;
+    padding: 6px 10px;
+}

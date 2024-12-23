@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const posibilitySchema = new mongoose.Schema(
+const classSchema = new mongoose.Schema(
   {
     posibility: {
       type: Boolean,
@@ -18,10 +18,16 @@ const posibilitySchema = new mongoose.Schema(
 );
 
 // Middleware to update `updatedDate` when the document is modified
-posibilitySchema.pre("findOneAndUpdate", function (next) {
+classSchema.pre("save", function (next) {
+  const updatedDate = new Date().toISOString().split("T")[0];
+  this.updatedDate = updatedDate;
+  next();
+});
+
+classSchema.pre("findOneAndUpdate", function (next) {
   const updatedDate = new Date().toISOString().split("T")[0];
   this._update.updatedDate = updatedDate;
   next();
 });
 
-export const Posibility = mongoose.model("Posibility", posibilitySchema);
+export const Class = mongoose.model("Class", classSchema);
