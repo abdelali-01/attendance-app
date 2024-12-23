@@ -1,7 +1,6 @@
 .sidebar {
     background-color: var(--primary);
     width:280px ;
-    /* position: fixed; */
     top: 0;
     height: 100vh;
     overflow-y:scroll ;

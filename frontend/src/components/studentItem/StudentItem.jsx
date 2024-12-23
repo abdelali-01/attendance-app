@@ -76,12 +76,23 @@ export default function StudentItem({ student, posibilityStatus }) {
     localStorage.setItem(`lastAbsent-${student._id}`, now.toISOString());
   };
 
+  // delete student 
+  const deleteStudent= async () => {
+    const confirm = window.confirm("Are you sure to delete "+ student.familyName);
+
+    if(confirm) {
+      await axios.delete(`http://localhost:4620/admin/deleteStudentAccount/${student._id}`);
+      window.location.reload();
+    }
+  }
   return (
     <>
       <tr className="student-items">
         <td className="fw-semibold">{student.matricule}</td>
         <td className="d-flex flex-column">
-          <span className="fw-semibold">
+          <span className="fw-semibold" style={{
+            textTransform : "capitalize"
+          }}>
             {student.familyName + " " + student.name}
           </span>
           <span className="text-black-50">{student.email}</span>
@@ -118,7 +129,7 @@ export default function StudentItem({ student, posibilityStatus }) {
             }}
           />
           <img role="button" src={update_icon} alt="" />
-          <img role="button" src={delete_icon} alt="" />
+          <img onClick={deleteStudent} role="button" src={delete_icon} alt="" />
         </td>
       </tr>
       <hr />
