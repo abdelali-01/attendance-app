@@ -4,6 +4,24 @@
     top: 0;
     height: 100vh;
     overflow-y:scroll ;
+    overflow-x: hidden;
+    transition: .3s;
+}
+.closed-side{
+    transition: .3s;
+    width: 0 ;
+}
+.fa-bars {
+    left: 10px;
+    top: 10px;
+    background-color: var(--primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 .sidebar-actions {
     height: 100vh;
@@ -39,4 +57,11 @@
     height: 100%;
     background-color: #fff;
     left: 0;
+}
+
+@media (max-width : 1000px){
+    .sidebar {
+        position: fixed !important;
+        box-shadow: 6px 10px 10px #00000078;
+    }
 }

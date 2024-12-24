@@ -1,10 +1,5 @@
 .create-student form {
-    display: flex;
-    flex-wrap: wrap;
     max-width: 800px;
-    gap: 10px;
-    align-items: center;
-    justify-content: start;
 }
 
 .create-student form .field {
@@ -20,6 +15,10 @@
     outline: none;
     padding: 6px ;
     border-radius: 5px;
+}
+
+.create-student form .row {
+    width: 100%;
 }
 
 .create-student form .btn-create {
