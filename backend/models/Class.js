@@ -10,6 +10,14 @@ const classSchema = new mongoose.Schema(
       type : String ,
       required : true
     },
+    speciality : {
+      type : String ,
+      required : true 
+    },
+    system : {
+      type: String ,
+      required : true
+    },
     updatedDate: {
       type: String, // Store the date as a string in the format YYYY-MM-DD
     },

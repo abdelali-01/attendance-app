@@ -114,7 +114,7 @@ export default function StudentItem({ student, posibilityStatus }) {
         )}
         <td className="text-center">{absences}</td>
         <td className="text-center">{mark}</td>
-        <td>
+        <td className="text-center">
           <img
             role="button"
             className="me-2"

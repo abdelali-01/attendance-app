@@ -3,6 +3,7 @@ import Sidebar from "./components/sidebar/Sidebar";
 import { Routes , Route} from 'react-router-dom' ;
 import axios from "axios";
 import Class from "./pages/class/Class"
+import CreateStudent from "./pages/createStudent/CreateStudent";
 
 function App() {
   // create state to put the classes in
@@ -23,6 +24,7 @@ function App() {
         {classes.map((c)=>{
           return <Route path={`/${c.class}`} element={<Class classData={c}/>} />
         })}
+        <Route path="/:class/create-student" element={<CreateStudent classes={classes}/>}/>
       </Routes>
     </div>
   );

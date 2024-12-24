@@ -1,0 +1,29 @@
+.create-student form {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 800px;
+    gap: 10px;
+    align-items: center;
+    justify-content: start;
+}
+
+.create-student form .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+.create-student form .field input {
+    border: 1px solid #4B5563;
+    outline: none;
+    padding: 6px ;
+    border-radius: 5px;
+}
+
+.create-student form .btn-create {
+    width: 100%;
+    text-align: center;
+    margin: 20px 0;
+}
