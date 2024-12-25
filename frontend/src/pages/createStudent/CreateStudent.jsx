@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateStudent({ classes }) {
+  const [loading , setLoading] = useState(false);
   // to find the class
   const { class: className } = useParams();
   const [currentClass, setCurrentClass] = useState(null);
@@ -41,7 +42,7 @@ export default function CreateStudent({ classes }) {
   const [passAlert, setPassAlert] = useState("");
   const submitHandle = async (e) => {
     e.preventDefault();
-    console.log("Sending student data:", student); // Log student data before sending
+    setLoading("true")
 
     if (student.password === student.confPassword) {
       try {
@@ -51,15 +52,17 @@ export default function CreateStudent({ classes }) {
         );
         navigate(`/` + className);
       } catch (error) {
-        console.error(
-          "Error details:",
-          error.response ? error.response.data : error.message
-        );
+        if(error.status === 401){
+          alert(error.response.data)
+        }        
         alert("failed to create the account , please try again !");
+      }finally {
+        setLoading(false)
       }
     } else {
       setPassAlert("please Enter same password");
       setStudent({ ...student, password: "", confPassword: "" });
+      setLoading(false)
     }
   };
 
@@ -175,8 +178,8 @@ export default function CreateStudent({ classes }) {
             </div>
           </div>
           <div className="btn-create">
-            <button className="btn open-style w-50 rounded-3 py-2">
-              Create account
+            <button className="btn open-style w-50 rounded-3 py-2" disabled={loading}>
+              {loading ?  "Loading .. " : "Create account"}
             </button>
           </div>
         </form>

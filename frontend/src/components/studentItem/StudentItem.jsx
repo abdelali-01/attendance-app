@@ -3,8 +3,9 @@ import delete_icon from "../icons/trash.svg";
 import update_icon from "../icons/pen.svg";
 import absent_icon from "../icons/absent.svg";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
-export default function StudentItem({ student, posibilityStatus }) {
+export default function StudentItem({ student, posibilityStatus , i}) {
   const [attendance, setAttendance] = useState(student.attendance); // Track attendance
   const [status, setStatus] = useState(() => {
     // Load initial status from session storage or default to "pending"
@@ -14,25 +15,29 @@ export default function StudentItem({ student, posibilityStatus }) {
   const [absences, setAbsences] = useState(student.absences); // Track absences
   const [mark, setMark] = useState(student.attendanceMark);
 
+  
   // Persist the status in session storage whenever it changes
   useEffect(() => {
     sessionStorage.setItem(`status-${student._id}`, status);
   }, [status, student._id]);
-
+  
   // Check for attendance updates
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch the student's data to check the updated attendance
         const res = await axios.get(
-          `http://localhost:4620/student/${student._id}`
+          `http://localhost:4620/student/${student.matricule}`
         );
         const updatedAttendance = res.data.attendance;
         const updatedAbsences = res.data.absences;
         const updatedMark = res.data.attendanceMark;
-
-        // If the attendance has increased, update the status
-        if (updatedAttendance > attendance) {
+        
+         // Only update status to "present" if it's not "absent"
+         if (status !== "absent" && updatedAttendance > attendance) {
+          if(updatedAbsences > absences){
+            return setStatus("absent");
+          }
           setStatus("present");
         }
 
@@ -40,6 +45,7 @@ export default function StudentItem({ student, posibilityStatus }) {
         setAttendance(updatedAttendance);
         setAbsences(updatedAbsences);
         setMark(updatedMark);
+        
       } catch (error) {
         console.error("Error fetching student data:", error);
       }
@@ -50,7 +56,7 @@ export default function StudentItem({ student, posibilityStatus }) {
 
     // Fetch data immediately when the component mounts
     fetchData();
-  }, [attendance, student._id]);
+  }, [attendance, student.matricule]);
 
   // set the absent to the student from teacher
   const setAbsent = async () => {
@@ -58,13 +64,13 @@ export default function StudentItem({ student, posibilityStatus }) {
     const now = new Date();
 
     // Check if the last marked time exists and is within 24 hours
-    if (
-      lastMarkedAbsent &&
-      now - new Date(lastMarkedAbsent) < 24 * 60 * 60 * 1000
-    ) {
-      alert("You can only mark the student as absent once in 24 hours.");
-      return;
-    }
+    // if (
+    //   lastMarkedAbsent &&
+    //   now - new Date(lastMarkedAbsent) <  120 * 60 * 1000
+    // ) {
+    //   alert("You can only mark the student as absent once in 1h30min .");
+    //   return;
+    // }
 
     await axios.put(`http://localhost:4620/admin/absence/${student._id}`);
     setStatus("absent");
@@ -88,6 +94,7 @@ export default function StudentItem({ student, posibilityStatus }) {
   return (
     <>
       <tr className="student-items">
+        <td className="text-black-50">{i}</td>
         <td className="fw-semibold">{student.matricule}</td>
         <td className="d-flex flex-column">
           <span className="fw-semibold" style={{
@@ -112,12 +119,11 @@ export default function StudentItem({ student, posibilityStatus }) {
         ) : (
           <></>
         )}
-        <td className="text-center">{absences}</td>
-        <td className="text-center">{mark}</td>
+        <td className="text-center">{ absences}</td>
+        <td className="text-center">{ mark}</td>
         <td className="text-center">
           <img
             role="button"
-            className="me-2"
             src={absent_icon}
             alt=""
             onClick={() => {
@@ -128,11 +134,11 @@ export default function StudentItem({ student, posibilityStatus }) {
                   );
             }}
           />
-          <img role="button" src={update_icon} alt="" />
+
+          <Link to={`/${student.class}/${student.matricule}`}><img role="button" src={update_icon} alt="" /></Link>
           <img onClick={deleteStudent} role="button" src={delete_icon} alt="" />
         </td>
       </tr>
-      <hr />
     </>
   );
 }

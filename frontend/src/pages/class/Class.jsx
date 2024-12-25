@@ -9,6 +9,9 @@ import { Link } from "react-router-dom";
 import ClassName from "../../components/ClassName";
 
 export default function Class({ classData }) {
+  const [loading , setLoading] = useState(false)
+
+
   const [students, setStudents] = useState([]);
   const [posibilityStatus, setPosibilityStatus] = useState(
     classData.posibility
@@ -25,9 +28,7 @@ export default function Class({ classData }) {
     };
 
     updateTime();
-    const timer = setInterval(updateTime, 1000); // Update every second
-
-    return () => clearInterval(timer); // Cleanup interval
+    setInterval(updateTime, 1000); // Update every second
   }, []);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function Class({ classData }) {
     fetchData();
   }, [classData.class]);
 
-  // Dynamically filter students during rendering
+  // filter student for the search
   const filteredStudents = students.filter(
     (student) =>
       student.familyName.toLowerCase().includes(search.toLowerCase()) ||
@@ -53,15 +54,22 @@ export default function Class({ classData }) {
 
   // the function of change the posibility of check the presence
   async function changePosibility() {
-    await axios.put(
-      `http://localhost:4620/class/changePosibility/${classData.class}`
-    );
-    setPosibilityStatus(!posibilityStatus);
-
-    // Reset statuses for all students in the class
-    students.forEach((student) => {
-      sessionStorage.setItem(`status-${student._id}`, "pending");
-    });
+    setLoading(true)
+    try {
+      await axios.put(
+        `http://localhost:4620/class/changePosibility/${classData.class}`
+      );
+      setPosibilityStatus(!posibilityStatus);
+  
+      // Reset statuses for all students in the class
+      students.forEach((student) => {
+        sessionStorage.setItem(`status-${student._id}`, "pending");
+      });
+    } catch (error) {
+      alert("failed to open the class please try again !")
+    }finally{
+      setLoading(false)
+    }
   }
 
   // Delete the class with confirmation
@@ -81,7 +89,9 @@ export default function Class({ classData }) {
   };
 
   return (
-    <div className="class-page flex-grow-1 px-4 mb-5">
+    <div className="class-page flex-grow-1 px-4 mb-5" style={{
+      maxWidth : "100%"
+    }}>
       <div className="search my-3 text-center m-auto w-50">
         <input
           type="text"
@@ -94,23 +104,26 @@ export default function Class({ classData }) {
         <img src={search_icon} alt="" />
       </div>
       <ClassName classData={classData}/>
-      <div className="list-of-class d-flex flex-column align-items-end px-5">
+      <div className="list-of-class d-flex flex-column align-items-end px-md-5 w-100">
         {filteredStudents.length > 0 ? (
           <>
-            <div className="table-top d-flex align-items-center justify-content-between w-100 my-3">
+            <div className="table-top d-flex flex-wrap gap-3 align-items-center justify-content-between w-100 my-3">
               <span className="text-black-50">{currentTime}</span>
               <button
+                disabled={loading}
                 onClick={changePosibility}
-                className={`btn rounded-3 ${
+                className={`btn rounded-3  ${
                   posibilityStatus ? "btn-danger" : "open-style"
                 }`}
               >
-                {posibilityStatus ? "Close class" : "Open Class"}
+                {loading ? "Loading.." :  posibilityStatus ? "Close class" : "Open Class" }
               </button>
             </div>
+            <div className="table-container w-100">
             <table className="w-100 mt-2">
               <thead>
                 <tr>
+                  <td>N°</td>
                   <td>Matricule</td>
                   <td>Student</td>
                   <td>Status</td>
@@ -119,12 +132,12 @@ export default function Class({ classData }) {
                   <td></td>
                 </tr>
               </thead>
-              <hr />
 
               <tbody>
-                {filteredStudents.map((student) => {
+                {filteredStudents.map((student , index) => {
                   return (
                     <StudentItem
+                      i={index + 1}
                       key={student._id}
                       student={student}
                       posibilityStatus={posibilityStatus}
@@ -133,20 +146,21 @@ export default function Class({ classData }) {
                 })}
               </tbody>
             </table>
+            </div>
           </>
         ) : (
           <>
             <p className="fw-semibold text-center">Class Empty</p>
           </>
         )}
-        <div className="class-actions d-flex gap-2 my-3">
-          <Link to={`/${classData.class}/create-student`}>
-          <button className="btn open-style rounded-3 d-flex align-items-center gap-2">
+        <div className="class-actions d-flex flex-wrap gap-2 my-3">
+          <Link to={`/${classData.class}/create-student`} className="flex-grow-1">
+          <button className="btn open-style rounded-3 d-flex align-items-center justify-content-center gap-2 w-100">
             <span>Add new student</span>
-            <img src={new_icon} alt="" width={"18"} />
+            <img src={new_icon} alt="" />
           </button>
           </Link>
-          <button onClick={deleteClass} className="btn btn-danger rounded-3">
+          <button onClick={deleteClass} className="btn btn-danger rounded-3 flex-grow-1">
             Delete class
           </button>
         </div>

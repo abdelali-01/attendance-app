@@ -138,7 +138,7 @@ export default function Sidebar({ classes }) {
                       <li>{c.class}</li>
                     </Link>
                   ))}
-                  <Link to={"/add-class"}><li>Add new class</li></Link>
+                  <Link to={"/add-class"} onClick={hendleLink}><li>Add new class</li></Link>
                 </ul>
               </div>
             </div>

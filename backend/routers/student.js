@@ -62,10 +62,10 @@ studentRouter.put("/checkattendance/:id" ,async (req,res)=>{
     }
 });
 
-// get student with his id 
-studentRouter.get("/:id" ,async (req ,res)=>{
+// get student with his matricule 
+studentRouter.get("/:matricule" ,async (req ,res)=>{
     try {
-        const student = await Student.findById(req.params.id);
+        const student = await Student.findOne({matricule : req.params.matricule});
         res.status(200).send(student);
     } catch (error) {
         res.status(400).send(error);

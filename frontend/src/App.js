@@ -7,6 +7,7 @@ import CreateStudent from "./pages/createStudent/CreateStudent";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import AddClass from "./pages/addClass/AddClass";
+import ViewStudent from "./pages/viewStudent/ViewStudent";
 
 function App() {
   // create state to put the classes in
@@ -40,6 +41,7 @@ function App() {
         })}
         <Route path="/:class/create-student" element={<CreateStudent classes={classes}/>}/>
         <Route path="/add-class" element={<AddClass/>}/>
+        <Route path="/:class/:matricule" element={<ViewStudent/>}/>
       </Routes>
     </div>
   );

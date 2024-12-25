@@ -5,12 +5,13 @@
 }
 ::-webkit-scrollbar {
     width: 3px;
+    height: 3px;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: var(--gray);
+    background-color: var(--primary);
 }
 ::-webkit-scrollbar-track {
-    background-color: var(--primary);
+    background-color: var(--gray);
 }
 
 

@@ -69,6 +69,11 @@ adminRouter.post("/createStudentAccount", async (req, res) => {
   try {
     let data = req.body;
 
+    // check if the email or matricule is already in use or not
+    const existEmail = await Student.findOne({email : data.email});
+    const existMatricule = await Student.findOne({matricule : data.matricule});
+    if(!existEmail && !existMatricule){
+      
     // create crypted password
     let salt = await bcrypt.genSalt(10);
     data.password = await bcrypt.hash(data.password, salt);
@@ -79,6 +84,12 @@ adminRouter.post("/createStudentAccount", async (req, res) => {
     // save the student account in database
     const newStudent = await student.save();
     res.status(200).send(newStudent);
+
+    }else if(existEmail){
+      res.status(401).send("Email already in use , please choose another one")
+    }else{
+      res.status(401).send("Matricule already in use , please choose another one")
+    }
   } catch (error) {
     res.status(400).send(error);
   }

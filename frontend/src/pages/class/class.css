@@ -1,6 +1,5 @@
 .search{
     border: 1px solid;
-    width: fit-content;
     padding: 5px 0;
     border-radius: 10px;
     background-color: #fff;
@@ -10,7 +9,12 @@
     outline: none;
     width: 90%;
 }
-
+.table-container {
+    overflow-x: auto;
+}
+.table-container table {
+    min-width: 800px;
+}
 thead {
     box-shadow: 0px -4px 10px #5a57ff60;
 }
@@ -19,11 +23,12 @@ thead tr td{
     padding: 10px;
 }
 
-hr {
-    margin: 3px !important;
-    width: 100%;
+tr{
+    border-bottom:  1px solid #64646488 !important;
 }
-
+tbody tr td {
+    padding: 10px;
+}
 /* style the open class button */
 .open-style{
     background-color: var(--primary) !important;
@@ -54,4 +59,18 @@ hr {
     border-radius: 23px;
     width: fit-content;
     padding: 6px 10px;
+}
+@media (max-width : 1200px) {
+    table{
+        font-size: 14px;
+    }
+}
+
+@media (max-width : 884px) {
+    table , .view-student{
+        font-size: 14px;
+    }
+    .class-page .search{
+        width: 80% !important;
+    }
 }
