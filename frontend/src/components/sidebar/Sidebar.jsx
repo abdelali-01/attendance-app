@@ -8,7 +8,7 @@ import activity_icon from "../icons/Activity.svg";
 import report_icon from "../icons/Reports.svg";
 import settings_icon from "../icons/Settings.svg";
 import logout_icon from "../icons/Logout.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function Sidebar({ classes }) {
   // create state -useState- to manage the arrow_icon
@@ -20,6 +20,9 @@ export default function Sidebar({ classes }) {
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location]);
+
+  // call useNavigate hook to manage the admin position when he logout 
+  const navigate = useNavigate();
 
   //create hooks for the responsive
   const [sidebarStatus, setSidebarStatus] = useState(window.innerWidth > 1000);
@@ -131,11 +134,11 @@ export default function Sidebar({ classes }) {
               <div className="collapse me-5" id="studentsDropdown">
                 <ul className="list-unstyled">
                   {classes.map((c) => (
-                    <Link onClick={hendleLink} to={`/${c.class}`} key={c.class}>
+                    <Link onClick={hendleLink} to={`/${c.class}`} key={c._id}>
                       <li>{c.class}</li>
                     </Link>
                   ))}
-                  <li>Add new class</li>
+                  <Link to={"/add-class"}><li>Add new class</li></Link>
                 </ul>
               </div>
             </div>
@@ -175,7 +178,10 @@ export default function Sidebar({ classes }) {
               <span>Settings</span>
             </Link>
 
-            <div className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3">
+            <div onClick={()=>{
+              localStorage.removeItem('admin');
+              navigate("/")
+            }} className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3">
               <img src={logout_icon} alt="" />
               <span>Logout</span>
             </div>

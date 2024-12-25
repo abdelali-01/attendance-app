@@ -2,7 +2,7 @@
     max-width: 800px;
 }
 
-.create-student form .field {
+ form .field {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -10,7 +10,7 @@
     min-width: 200px;
 }
 
-.create-student form .field input {
+form .field input , form .field select{
     border: 1px solid #4B5563;
     outline: none;
     padding: 6px ;

@@ -7,10 +7,17 @@ const classRouter = express.Router();
 // create new class 
 classRouter.post("/newclass" ,async (req, res)=>{
   try {
-    const newclass = new Class(req.body) ;
-    await newclass.save();
+    const data = req.body ;
+    const exist = await Class.findOne({class : req.body.class});
 
-    res.status(200).send("class created successfully")
+    if(!exist){
+      const newclass = new Class(data) ;
+      const savedClass = await newclass.save();
+      res.status(200).send(savedClass)
+    }else{
+      res.status(401).send("The class name is already used , please choose another name ");
+    }
+
   } catch (error) {
     res.status(400).send(error);
   }

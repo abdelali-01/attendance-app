@@ -8,11 +8,11 @@ const classSchema = new mongoose.Schema(
     },
     class : {
       type : String ,
-      required : true
+      required : true ,
+      unique : true
     },
     speciality : {
       type : String ,
-      required : true 
     },
     system : {
       type: String ,
