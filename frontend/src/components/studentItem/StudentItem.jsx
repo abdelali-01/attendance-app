@@ -64,13 +64,13 @@ export default function StudentItem({ student, posibilityStatus , i}) {
     const now = new Date();
 
     // Check if the last marked time exists and is within 24 hours
-    // if (
-    //   lastMarkedAbsent &&
-    //   now - new Date(lastMarkedAbsent) <  120 * 60 * 1000
-    // ) {
-    //   alert("You can only mark the student as absent once in 1h30min .");
-    //   return;
-    // }
+    if (
+      lastMarkedAbsent &&
+      now - new Date(lastMarkedAbsent) <  120 * 60 * 1000
+    ) {
+      alert("You can only mark the student as absent once in 1h30min .");
+      return;
+    }
 
     await axios.put(`http://localhost:4620/admin/absence/${student._id}`);
     setStatus("absent");

@@ -35,7 +35,7 @@ function App() {
     <div className="App d-flex gap-4">
       {admin === null ? <></> : <Sidebar classes={classes}/>}
       <Routes>
-        <Route path="/" element={admin === null ? <Login/> : <Home/>} />
+        <Route path="/" element={admin === null ? <Login/> : <Home classes={classes}/>} />
         {classes.map((c)=>{
           return <Route path={`/${c.class}`} element={<Class classData={c}/>} />
         })}

@@ -80,7 +80,7 @@ export default function Sidebar({ classes }) {
           sidebarStatus ? "" : "closed-side"
         }`}
       >
-        {sidebarStatus ? (
+        {sidebarStatus && window.innerWidth < 1000 ? (
           <i
             role="button"
             class="fa-regular fa-circle-xmark position-absolute fs-4"

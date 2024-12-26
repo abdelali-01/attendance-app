@@ -47,17 +47,32 @@ classRouter.get("/getclass/:class", async (req, res) => {
 // create the system of open and close posibility of checking
 classRouter.put("/changePosibility/:class", async (req, res) => {
   try {
+    const {date , attendanceCount , absenceCount} = req.body ;
     const classDoc = await Class.findOne({ class: req.params.class });
     if (!classDoc) {
       return res.status(404).send({ error: "Class not found" });
     }
+    if( date === new Date().toISOString().split('T')[0] ||!date || attendanceCount === undefined || absenceCount === undefined){
+        const updatedPosibility = await Class.findOneAndUpdate(
+        { class: req.params.class },
+        { posibility: !classDoc.posibility ,},
+        { new: true }
+      );
+    
+      return   res.status(200).send(updatedPosibility);
+    }
     const updatedPosibility = await Class.findOneAndUpdate(
       { class: req.params.class },
-      { posibility: !classDoc.posibility },
+      { posibility: !classDoc.posibility ,
+        $push :{
+          absences : {date , count : absenceCount} ,
+          attendances : {date , count : attendanceCount}
+        }
+      },
       { new: true }
     );
   
-      res.status(200).send(updatedPosibility.posibility);
+      res.status(200).send(updatedPosibility);
   } catch (error) {
     res.status(400).send(error);
   }
