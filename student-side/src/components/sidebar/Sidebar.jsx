@@ -11,18 +11,29 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Sidebar() {
-  const student = JSON.parse(localStorage.getItem('Student'))
-  const [isDisabled , setIsDisabled] = useState(true) ;
+  const student = JSON.parse(localStorage.getItem("Student"));
+  const [isDisabled, setIsDisabled] = useState(true);
+  const navigate = useNavigate();
 
-  // check if the class it's open 
-  useEffect(()=>{
+  // check if the class it's open
+  useEffect(() => {
     const fetchClass = async () => {
-      const res = await axios.get(`http://localhost:4620/class/getclass/${student.class}`);
-      const posibilityStatus = res.data.posibility ;
+      const res = await axios.get(
+        `http://localhost:4620/class/getclass/${student.class}`
+      );
+      const posibilityStatus = res.data.posibility;
       setIsDisabled(!posibilityStatus);
-    }
+
+      // Navigate to home page if class is close
+      if (!posibilityStatus && window.location.pathname === "/class") {
+        navigate("/");
+      }
+    };
+
+    setInterval(fetchClass , 1000)
     fetchClass();
-  },[student.class]);
+
+  }, [student.class, navigate]);
 
   // create state to manage the active link
   const [activeLink, setActiveLink] = useState(window.location.pathname);
@@ -32,8 +43,6 @@ export default function Sidebar() {
     setActiveLink(location.pathname);
   }, [location]);
 
-  // call useNavigate hook to manage the admin position when he logout
-  const navigate = useNavigate();
 
   //create hooks for the responsive
   const [sidebarStatus, setSidebarStatus] = useState(window.innerWidth > 1200);
@@ -116,10 +125,11 @@ export default function Sidebar() {
               <span>Home</span>
             </Link>
             <Link
-              to={"/class"} // Prevent navigation if disabled
+              onClick={hendleLink}
+              to={"/class"}
               style={{
-                pointerEvents: isDisabled ? "none" : "auto", 
-                cursor: isDisabled ? "not-allowed !important" : "pointer", 
+                pointerEvents: isDisabled ? "none" : "auto",
+                cursor: isDisabled ? "not-allowed !important" : "pointer",
                 userSelect: "none",
               }}
             >
@@ -128,7 +138,6 @@ export default function Sidebar() {
                 className={`btn btn-default text-white border-0 sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3 ${
                   activeLink === "/class" ? "active" : ""
                 }`}
-                
               >
                 <img src={students_icon} alt="" />
                 <span>Class</span>
