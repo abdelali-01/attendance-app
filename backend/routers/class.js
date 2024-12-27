@@ -1,5 +1,6 @@
 import express from "express";
 import { Class } from "../models/Class.js";
+import {Student} from "../models/Student.js"
 
 const classRouter = express.Router();
 
@@ -52,7 +53,7 @@ classRouter.put("/changePosibility/:class", async (req, res) => {
     if (!classDoc) {
       return res.status(404).send({ error: "Class not found" });
     }
-    if( date === new Date().toISOString().split('T')[0] ||!date || attendanceCount === undefined || absenceCount === undefined){
+    if(!date || attendanceCount === undefined || absenceCount === undefined){
         const updatedPosibility = await Class.findOneAndUpdate(
         { class: req.params.class },
         { posibility: !classDoc.posibility ,},
@@ -82,6 +83,11 @@ classRouter.put("/changePosibility/:class", async (req, res) => {
 classRouter.delete('/:class' ,async (req ,res)=>{
   try {
     await Class.findOneAndDelete({class : req.params.class});
+
+    // delete all the student in this class
+    await Student.deleteMany({class : req.params.class});
+
+    res.status(200).send("Success");
   } catch (error) {
     res.status(400).send(error);
   }

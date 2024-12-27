@@ -14,122 +14,19 @@ import {
   XAxis,
 } from "recharts";
 
-export default function Home({ classes }) {
-  const [selectedClass, setSelecedClass] = useState(
-    classes.length > 0 ? classes[0].class : ""
-  );
-  const [absences, setAbsences] = useState([]);
-  const [attendances, setAttendances] = useState([]);
+export default function Home() {
+  const student = JSON.parse(localStorage.getItem('Student'))
 
-  const [loading, setLoading] = useState(false);
-
-  // Find the selected class based on selectedClass state
-  useEffect(() => {
-    setLoading(true);
-    if (classes.length > 0 && selectedClass === "") {
-      // Set the absences of the first class by default
-      setSelecedClass(classes[0].class);
-    } else if (selectedClass) {
-      // Find the class with the selectedClass identifier (e.g., class name or ID)
-      const foundClass = classes.find((cls) => cls.class === selectedClass); // Adjust property to match your data
-
-      if (foundClass) {
-        setAbsences(foundClass.absences); // Set absences for the selected class
-        setAttendances(foundClass.attendances);
-      }
-    }
-    setLoading(false);
-  }, [selectedClass, classes]); // Effect depends on selectedClass and classes
-
-  // calculate the average percentage
-  const calculateAveragePercentage = (data) => {
-    if (!data || data.length === 0) return 0;
-
-    // Filter out entries without a valid `count` and default missing `count` to 0
-    const validData = data.map((item) => ({
-      ...item,
-      count: item.count || 0,
-    }));
-
-    const total = validData.reduce((sum, item) => sum + item.count, 0);
-    return ((total / (data.length * 100)) * 100).toFixed(0);
-  };
-
-  const averageAbsence = calculateAveragePercentage(absences);
-  const averageAttendance = calculateAveragePercentage(attendances);
-
-  // Format data for charts
-  const formatData = (data) => {
-    const formattedData = data.map((item) => ({
-      day: item.date,
-      value: item.count === undefined ? 0 : item.count,
-    }));
-
-    // Create an array of 5 default bars
-    const defaultBars = Array.from({ length: 8 }, (index) => ({
-      day: ``,
-      value: 0,
-    }));
-
-    if (formattedData.length === 0) {
-      return defaultBars;
-    } else if (formattedData.length < 8) {
-      return [
-        ...formattedData,
-        ...defaultBars.slice(0, 8 - formattedData.length),
-      ];
-    } else {
-      return formattedData.slice(-8);
-    }
-  };
-
-  const formattedAbsences = formatData(absences);
-  const formattedAttendances = formatData(attendances);
-
-  // calculate the average trend
-  const AverageTrend = (data) => {
-    const validData = data.filter((item) => item.value !== undefined);
-    if (validData.length === 0) return 0;
-
-    const total = validData.reduce((sum, item) => sum + item.value, 0);
-    return total / validData.length;
-  };
-
-  // determin the trend for the statistic
-  const determineAverageTrend = (data) => {
-    const validData = data.filter((item) => item.value !== 0 || item.day !== "");
-
-    if (validData.length < 2) {
-      return null; // Not enough data to determine a trend
-    }
-
-    // Split the data into two halves
-    const midpoint = Math.floor(validData.length / 2);
-    const firstHalf = validData.slice(0, midpoint);
-    const secondHalf = validData.slice(midpoint);
-
-    // Calculate averages for both halves
-    const firstAverage = AverageTrend(firstHalf);
-    const secondAverage = AverageTrend(secondHalf);
-
-    if (secondAverage > firstAverage) {
-      return "up";
-    } else if (secondAverage < firstAverage) {
-      return "down";
-    } else {
-      return "neutral"; // No significant change
-    }
-  };
-
-  const absencesTrend = determineAverageTrend(formattedAbsences);
-  const attendancesTrend = determineAverageTrend(formattedAttendances);
+  
   return (
     <div className="home-page px-md-5 px-3 my-5 flex-grow-1">
       <div className="home-title mt-4">
-        <h2 className="fw-bold">Dashboard</h2>
-        <p className="text-black-50">Welcome back , teacher</p>
+        <h2 className="fw-bold">Home</h2>
+        <p className="text-black-50">Welcome back , <span style={{
+          textTransform : "capitalize"
+        }}> {student.familyName} {student.name}</span></p>
       </div>
-      {loading ? (
+      {/* {loading ? (
         <p>Loading ...</p>
       ) : (
         <div className="charts-part w-100 d-flex flex-column align-items-end">
@@ -214,7 +111,7 @@ export default function Home({ classes }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

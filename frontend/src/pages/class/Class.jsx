@@ -85,7 +85,7 @@ export default function Class({ classData }) {
           await axios.put(`http://localhost:4620/admin/absence/${student._id}`);
         });
 
-        // Reset statuses for all students in the class
+        // Reset statuses for all students in the class with pending status
         absentStudents.forEach((student) => {
           sessionStorage.setItem(`status-${student._id}`, "absent");
         });

@@ -11,12 +11,10 @@
 }
 .table-container {
     overflow-x: auto;
+    box-shadow: -1px -2px 20px #5a57ff60;
 }
 .table-container table {
     min-width: 800px;
-}
-thead {
-    box-shadow: 0px -4px 10px #5a57ff60;
 }
 thead tr td{
     background-color: #F9FAFB;

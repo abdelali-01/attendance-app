@@ -3,16 +3,27 @@ import "./sidebar.css";
 import logo from "../icons/logo.svg";
 import home_icon from "../icons/Overview.svg";
 import students_icon from "../icons/Customers.svg";
-import arrow_icon from "../icons/Downarrow.svg";
 import activity_icon from "../icons/Activity.svg";
 import report_icon from "../icons/Reports.svg";
 import settings_icon from "../icons/Settings.svg";
 import logout_icon from "../icons/Logout.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-export default function Sidebar({ classes }) {
-  // create state -useState- to manage the arrow_icon
-  const [arrow, setArrow] = useState(false);
+export default function Sidebar() {
+  const student = JSON.parse(localStorage.getItem('Student'))
+  const [isDisabled , setIsDisabled] = useState(true) ;
+
+  // check if the class it's open 
+  useEffect(()=>{
+    const fetchClass = async () => {
+      const res = await axios.get(`http://localhost:4620/class/getclass/${student.class}`);
+      const posibilityStatus = res.data.posibility ;
+      setIsDisabled(!posibilityStatus);
+    }
+    fetchClass();
+  },[student.class]);
+
   // create state to manage the active link
   const [activeLink, setActiveLink] = useState(window.location.pathname);
   // Using useLocation hook to update active link based on URL
@@ -21,7 +32,7 @@ export default function Sidebar({ classes }) {
     setActiveLink(location.pathname);
   }, [location]);
 
-  // call useNavigate hook to manage the admin position when he logout 
+  // call useNavigate hook to manage the admin position when he logout
   const navigate = useNavigate();
 
   //create hooks for the responsive
@@ -55,18 +66,13 @@ export default function Sidebar({ classes }) {
     window.addEventListener("mousedown", handleInteraction);
     window.addEventListener("scroll", handleScroll);
   }, []);
-  
+
   // close sidebar when we click any link in
   const hendleLink = () => {
     if (window.innerWidth < 1200) {
       setSidebarStatus(false);
     }
   };
-
-  // Check if the current path matches any class
-  const isActiveDropdown = classes.some((c) =>
-    location.pathname.includes(c.class)
-  );
 
   return (
     <>
@@ -107,42 +113,27 @@ export default function Sidebar({ classes }) {
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
             >
               <img src={home_icon} alt="" />
-              <span>Dashboard</span>
+              <span>Home</span>
             </Link>
-
-            <div className="dropdown w-100 d-flex flex-column align-items-center">
-              <div
-                className={`sidebar-link ${
-                  isActiveDropdown ? "active" : ""
-                } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
-                onClick={() => setArrow(!arrow)}
-                id="dropdownMenuButton"
-                data-bs-toggle="collapse"
-                data-bs-target="#studentsDropdown"
-                aria-expanded="false"
-                aria-controls="studentsDropdown"
-                role="button"
+            <Link
+              to={"/class"} // Prevent navigation if disabled
+              style={{
+                pointerEvents: isDisabled ? "none" : "auto", 
+                cursor: isDisabled ? "not-allowed !important" : "pointer", 
+                userSelect: "none",
+              }}
+            >
+              <button
+                disabled={isDisabled}
+                className={`btn btn-default text-white border-0 sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3 ${
+                  activeLink === "/class" ? "active" : ""
+                }`}
+                
               >
                 <img src={students_icon} alt="" />
-                <span>Students</span>
-                <img
-                  className={`arrow-icon ${arrow ? "rotate" : ""}`}
-                  src={arrow_icon}
-                  alt=""
-                />
-              </div>
-              <div className="collapse ms-3" id="studentsDropdown">
-                <ul className="list-unstyled">
-                  {classes.map((c) => (
-                    <Link onClick={hendleLink} to={`/${c.class}`} key={c._id}>
-                      <li>{c.class}</li>
-                    </Link>
-                  ))}
-                  <Link to={"/add-class"} onClick={hendleLink}><li>Add new class</li></Link>
-                </ul>
-              </div>
-            </div>
-
+                <span>Class</span>
+              </button>
+            </Link>
             <Link
               onClick={hendleLink}
               to="/activity"
@@ -178,10 +169,13 @@ export default function Sidebar({ classes }) {
               <span>Settings</span>
             </Link>
 
-            <div onClick={()=>{
-              localStorage.removeItem('admin');
-              navigate("/")
-            }} className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3">
+            <div
+              onClick={() => {
+                localStorage.removeItem("Student");
+                navigate("/");
+              }}
+              className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3"
+            >
               <img src={logout_icon} alt="" />
               <span>Logout</span>
             </div>

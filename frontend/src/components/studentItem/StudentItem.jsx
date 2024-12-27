@@ -5,6 +5,16 @@ import absent_icon from "../icons/absent.svg";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+  // delete student 
+export const deleteStudent= async (familyName , id) => {
+    const confirm = window.confirm("Are you sure to delete "+ familyName);
+
+    if(confirm) {
+      await axios.delete(`http://localhost:4620/admin/deleteStudentAccount/${id}`);
+      window.location.reload();
+    }
+  }
+
 export default function StudentItem({ student, posibilityStatus , i}) {
   const [attendance, setAttendance] = useState(student.attendance); // Track attendance
   const [status, setStatus] = useState(() => {
@@ -82,21 +92,15 @@ export default function StudentItem({ student, posibilityStatus , i}) {
     localStorage.setItem(`lastAbsent-${student._id}`, now.toISOString());
   };
 
-  // delete student 
-  const deleteStudent= async () => {
-    const confirm = window.confirm("Are you sure to delete "+ student.familyName);
 
-    if(confirm) {
-      await axios.delete(`http://localhost:4620/admin/deleteStudentAccount/${student._id}`);
-      window.location.reload();
-    }
-  }
   return (
     <>
       <tr className="student-items">
         <td className="text-black-50">{i}</td>
         <td className="fw-semibold">{student.matricule}</td>
-        <td className="d-flex flex-column">
+        <td className="d-flex flex-column" style={{
+          maxWidth : "200px"
+        }}>
           <span className="fw-semibold" style={{
             textTransform : "capitalize"
           }}>
@@ -136,7 +140,9 @@ export default function StudentItem({ student, posibilityStatus , i}) {
           />
 
           <Link to={`/${student.class}/${student.matricule}`}><img role="button" src={update_icon} alt="" /></Link>
-          <img onClick={deleteStudent} role="button" src={delete_icon} alt="" />
+          <img onClick={()=>{
+            deleteStudent(student.familyName , student._id);
+          }} role="button" src={delete_icon} alt="" />
         </td>
       </tr>
     </>
