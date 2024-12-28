@@ -3,7 +3,6 @@ import Sidebar from "./components/sidebar/Sidebar";
 import Home from './pages/home/Home'
 import Login from './pages/login/Login'
 import { useEffect, useState } from "react";
-import Class from "./pages/class/Class";
 
 function App() {
   const navigate = useNavigate();
@@ -22,7 +21,6 @@ function App() {
       {student ? <Sidebar/> : <></>}
       <Routes>
         <Route path="/" element={student ? <Home/> : <Login/>} />
-        <Route path="/class" element={<Class/>} />
       </Routes>
     </div>
   );

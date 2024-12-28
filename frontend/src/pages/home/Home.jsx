@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Charts from "../../components/Charts";
 import "./home.css";
+import axios from "axios";
 
 import trend_up from "../../components/icons/trend-up.svg";
 import trend_down from "../../components/icons/trend-down.svg";
@@ -13,8 +14,11 @@ import {
   Tooltip,
   XAxis,
 } from "recharts";
+import StudentAttendance from "../../components/StudentAttendance";
 
 export default function Home({ classes }) {
+  const [students, setStudents] = useState(null);
+
   const [selectedClass, setSelecedClass] = useState(
     classes.length > 0 ? classes[0].class : ""
   );
@@ -33,30 +37,49 @@ export default function Home({ classes }) {
       // Find the class with the selectedClass identifier (e.g., class name or ID)
       const foundClass = classes.find((cls) => cls.class === selectedClass); // Adjust property to match your data
 
+      // fetch the student of the selected class
+      const fetchStudents = async () => {
+        const res = await axios.get(
+          `http://127.0.0.1:4620/student/studentsList/${selectedClass}`
+        );
+        setStudents(res.data);
+      };
+
       if (foundClass) {
         setAbsences(foundClass.absences); // Set absences for the selected class
         setAttendances(foundClass.attendances);
+        fetchStudents();
       }
     }
     setLoading(false);
   }, [selectedClass, classes]); // Effect depends on selectedClass and classes
 
   // calculate the average percentage
-  const calculateAveragePercentage = (data) => {
-    if (!data || data.length === 0) return 0;
+  const calculateAveragePercentage = (dataAbsence , dataAttendance) => {
+    if (!dataAbsence || dataAbsence.length === 0) return 0;
 
     // Filter out entries without a valid `count` and default missing `count` to 0
-    const validData = data.map((item) => ({
+    const validAbsenceData = dataAbsence.map((item) => ({
       ...item,
       count: item.count || 0,
     }));
 
-    const total = validData.reduce((sum, item) => sum + item.count, 0);
-    return ((total / (data.length * 100)) * 100).toFixed(0);
+    const validAttendanceData = dataAttendance.map((item) => ({
+      ...item,
+      count: item.count || 0,
+    }));
+
+    // Get the last item in the array
+    const lastAbdsenceCount = validAbsenceData[validAbsenceData.length - 1].count;
+    const lastAttendanceCount = validAttendanceData[validAbsenceData.length - 1].count ;
+
+
+    // Function to calculate the percentage for a given count
+      return ((lastAbdsenceCount / (lastAbdsenceCount + lastAttendanceCount)) * 100).toFixed(0); // This will give you the percentage directly
   };
 
-  const averageAbsence = calculateAveragePercentage(absences);
-  const averageAttendance = calculateAveragePercentage(attendances);
+  const averageAbsence = calculateAveragePercentage(absences , attendances);
+  const averageAttendance = (100 - averageAbsence).toFixed(0);
 
   // Format data for charts
   const formatData = (data) => {
@@ -97,7 +120,9 @@ export default function Home({ classes }) {
 
   // determin the trend for the statistic
   const determineAverageTrend = (data) => {
-    const validData = data.filter((item) => item.value !== 0 || item.day !== "");
+    const validData = data.filter(
+      (item) => item.value !== 0 || item.day !== ""
+    );
 
     if (validData.length < 2) {
       return null; // Not enough data to determine a trend
@@ -123,6 +148,7 @@ export default function Home({ classes }) {
 
   const absencesTrend = determineAverageTrend(formattedAbsences);
   const attendancesTrend = determineAverageTrend(formattedAttendances);
+
   return (
     <div className="home-page px-md-5 px-3 my-5 flex-grow-1">
       <div className="home-title mt-4">
@@ -132,88 +158,124 @@ export default function Home({ classes }) {
       {loading ? (
         <p>Loading ...</p>
       ) : (
-        <div className="charts-part w-100 d-flex flex-column align-items-end">
-          <div className="row">
-            <form>
-              <div className="field col-2">
-                <label htmlFor="class">Select Class</label>
-                <select
-                  value={selectedClass}
-                  onChange={(e) => setSelecedClass(e.target.value)}
-                >
-                  {classes.length > 0 ? classes.map((c, i) => {
-                    return (
-                      <option
-                        style={{ textTransform: "capitalize" }}
-                        key={c._id}
-                        value={c.class}
-                      >
-                        {c.class}
-                      </option>
-                    );
-                  }) : <option>No class available</option>}
-                </select>
-              </div>
-            </form>
-          </div>
-          <div className="row w-100 m-auto justify-content-center my-4 gap-5">
-            <div className="col">
-              <Charts
-                data={formattedAbsences}
-                absence
-                percentage={averageAbsence}
-                trend={absencesTrend}
-              />
-            </div>
-            <div className="col">
-              <Charts
-                data={formattedAttendances}
-                percentage={averageAttendance}
-                trend={attendancesTrend}
-              />
-            </div>
-            <div className="col">
-              <div className="card rounded-5">
-                <div className="card-info d-flex justify-content-between">
-                  <div className="left-part">
-                    <span className="text-black-50 fw-semibold">
-                      Participation
-                    </span>
-                    <div className="fw-bold fs-3">{averageAttendance}%</div>
-                  </div>
-                  <span>
-                    {attendancesTrend === "up" && <img src={trend_up} alt="" />}
-                    {attendancesTrend === "down" && <img src={trend_down} alt="" />}
-                    {attendancesTrend === "neutral" && "--"}
-                  </span>
+        <>
+          <div className="charts-part w-100 d-flex flex-column align-items-end">
+            <div className="row">
+              <form>
+                <div className="field col-2">
+                  <label htmlFor="class">Select Class</label>
+                  <select
+                    value={selectedClass}
+                    onChange={(e) => setSelecedClass(e.target.value)}
+                  >
+                    {classes.length > 0 ? (
+                      classes.map((c, i) => {
+                        return (
+                          <option
+                            style={{ textTransform: "capitalize" }}
+                            key={c._id}
+                            value={c.class}
+                          >
+                            {c.class}
+                          </option>
+                        );
+                      })
+                    ) : (
+                      <option>No class available</option>
+                    )}
+                  </select>
                 </div>
-                <ResponsiveContainer width="100%" height={"60%"}>
-                  <LineChart data={formattedAttendances}>
-                    <XAxis hide />
-                    <YAxis hide />
-                    <Tooltip cursor={false} />
-                    <Line
-                      type="monotone"
-                      dataKey="value"
-                      strokeWidth={6}
-                      stroke="url(#gradient)"
-                      dot={false}
-                      isAnimationActive
-                      animationDuration={500}
-                    />
-                    <defs>
-                      <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="red" />
-                        <stop offset="50%" stopColor="orange" />
-                        <stop offset="100%" stopColor="green" />
-                      </linearGradient>
-                    </defs>
-                  </LineChart>
-                </ResponsiveContainer>
+              </form>
+            </div>
+            <div className="row w-100 m-auto my-4">
+              <div className="col">
+                <Charts
+                  data={formattedAbsences}
+                  absence
+                  percentage={averageAbsence}
+                  trend={absencesTrend}
+                />
+              </div>
+              <div className="col">
+                <Charts
+                  data={formattedAttendances}
+                  percentage={averageAttendance}
+                  trend={attendancesTrend}
+                />
+              </div>
+              <div className="col">
+                <div className="card rounded-5">
+                  <div className="card-info d-flex justify-content-between">
+                    <div className="left-part">
+                      <span className="text-black-50 fw-semibold">
+                        Participation
+                      </span>
+                      <div className="fw-bold fs-3">{averageAttendance}%</div>
+                    </div>
+                    <span>
+                      {attendancesTrend === "up" && (
+                        <img src={trend_up} alt="" />
+                      )}
+                      {attendancesTrend === "down" && (
+                        <img src={trend_down} alt="" />
+                      )}
+                      {attendancesTrend === "neutral" && "--"}
+                    </span>
+                  </div>
+                  <ResponsiveContainer width="100%" height={"60%"}>
+                    <LineChart data={formattedAttendances}>
+                      <XAxis hide />
+                      <YAxis hide />
+                      <Tooltip cursor={false} />
+                      <Line
+                        type="monotone"
+                        dataKey="value"
+                        strokeWidth={6}
+                        stroke="url(#gradient)"
+                        dot={false}
+                        isAnimationActive
+                        animationDuration={500}
+                      />
+                      <defs>
+                        <linearGradient
+                          id="gradient"
+                          x1="0"
+                          y1="0"
+                          x2="1"
+                          y2="0"
+                        >
+                          <stop offset="0%" stopColor="red" />
+                          <stop offset="50%" stopColor="orange" />
+                          <stop offset="100%" stopColor="green" />
+                        </linearGradient>
+                      </defs>
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+          <div className="row gap-4">
+            <div className="col mb-5">
+              <p className="fw-semibold">Recent messages</p>
+              <div className="border h-100 rounded-4"></div>
+            </div>
+            <div className="students-attendace col-lg-5">
+              <p className="fw-semibold">Students' Attendance</p>
+              <div className="control-group">
+                {students === null ? (
+                  <p>loading students data ...</p>
+                ) : (
+                  students.map((student) => {
+                    return (
+                      <StudentAttendance key={student._id} student={student} />
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

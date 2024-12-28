@@ -86,7 +86,7 @@ export default function Sidebar() {
   return (
     <>
       <i
-        class="fa-solid fa-bars text-white position-fixed fs-3"
+        class="fa-solid fa-bars text-white position-absolute fs-3"
         onClick={() => setSidebarStatus(true)}
       ></i>
       <div
@@ -123,25 +123,6 @@ export default function Sidebar() {
             >
               <img src={home_icon} alt="" />
               <span>Home</span>
-            </Link>
-            <Link
-              onClick={hendleLink}
-              to={"/class"}
-              style={{
-                pointerEvents: isDisabled ? "none" : "auto",
-                cursor: isDisabled ? "not-allowed !important" : "pointer",
-                userSelect: "none",
-              }}
-            >
-              <button
-                disabled={isDisabled}
-                className={`btn btn-default text-white border-0 sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3 ${
-                  activeLink === "/class" ? "active" : ""
-                }`}
-              >
-                <img src={students_icon} alt="" />
-                <span>Class</span>
-              </button>
             </Link>
             <Link
               onClick={hendleLink}

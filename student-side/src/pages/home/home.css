@@ -1,8 +1,3 @@
-.charts-part .card{
-    width: 100%;
-    height: 220px;
-    min-width: 200px;
-    max-width: 280px;
-    padding: 20px;
-    margin: auto;
+.student-table tr{
+    border-bottom: 1px solid #6060609e;
 }

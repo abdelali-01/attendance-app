@@ -71,7 +71,7 @@ export default function Sidebar({ classes }) {
   return (
     <>
       <i
-        class="fa-solid fa-bars text-white position-fixed fs-3"
+        class="fa-solid fa-bars text-white position-absolute fs-3"
         onClick={() => setSidebarStatus(true)}
       ></i>
       <div

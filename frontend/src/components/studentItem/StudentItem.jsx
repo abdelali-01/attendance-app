@@ -76,7 +76,7 @@ export default function StudentItem({ student, posibilityStatus , i}) {
     // Check if the last marked time exists and is within 24 hours
     if (
       lastMarkedAbsent &&
-      now - new Date(lastMarkedAbsent) <  120 * 60 * 1000
+      now - new Date(lastMarkedAbsent) <  90 * 60 * 1000
     ) {
       alert("You can only mark the student as absent once in 1h30min .");
       return;

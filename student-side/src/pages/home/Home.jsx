@@ -1,117 +1,115 @@
 import React, { useEffect, useState } from "react";
-import Charts from "../../components/Charts";
 import "./home.css";
-
-import trend_up from "../../components/icons/trend-up.svg";
-import trend_down from "../../components/icons/trend-down.svg";
-
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  YAxis,
-  Tooltip,
-  XAxis,
-} from "recharts";
+import axios from "axios";
+import moment from "moment";
 
 export default function Home() {
-  const student = JSON.parse(localStorage.getItem('Student'))
+  const [loading, setLoading] = useState(false);
+  const [studentClass, setStudentClass] = useState(null);
+  const student = JSON.parse(localStorage.getItem("Student"));
 
-  
+
+  useEffect(() => {
+    const fetchClass = async () => {
+      const res = await axios.get(
+        `http://localhost:4620/class/getclass/${student.class}`
+      );
+      setStudentClass(res.data);
+    };
+
+    setInterval(fetchClass, 1000);
+    fetchClass();
+  }, [student?.class]);
+
+  const checkPresent = async () => {
+    const now = new Date().getTime(); // Current timestamp in milliseconds
+    const lastChecked = localStorage.getItem("lastCheckAttendance");
+
+    // Check if 90 minutes (1h30min) have passed
+    if (lastChecked && now - lastChecked < 90 * 60 * 1000) {
+      alert("You can only check attendance once every 1 hour and 30 minutes.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await axios.put(
+        `http://localhost:4620/student/checkattendance/${student._id}`
+      );
+      localStorage.setItem("lastCheckAttendance", now); // Store the current timestamp
+    } catch (error) {
+      console.log(error);
+      alert("Faild to check your attendance , please try again !");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="home-page px-md-5 px-3 my-5 flex-grow-1">
       <div className="home-title mt-4">
         <h2 className="fw-bold">Home</h2>
-        <p className="text-black-50">Welcome back , <span style={{
-          textTransform : "capitalize"
-        }}> {student.familyName} {student.name}</span></p>
+        <p className="text-black-50">
+          Welcome back ,{" "}
+          <span
+            style={{
+              textTransform: "capitalize",
+            }}
+          >
+            {" "}
+            {student.familyName} {student.name}
+          </span>
+        </p>
       </div>
-      {/* {loading ? (
-        <p>Loading ...</p>
-      ) : (
-        <div className="charts-part w-100 d-flex flex-column align-items-end">
-          <div className="row">
-            <form>
-              <div className="field col-2">
-                <label htmlFor="class">Select Class</label>
-                <select
-                  value={selectedClass}
-                  onChange={(e) => setSelecedClass(e.target.value)}
+      <div className="class-info">
+        {studentClass ? (
+          <div className="class w-100 my-5">
+            <div className="class-name w-100">
+              <h5 className="fw-bold ">
+                {studentClass.system} - {studentClass.class}
+              </h5>
+              <h5>{studentClass.speciality} </h5>
+            </div>
+            <div className="open-time mt-5">
+              <p className="fw-semibold text-black-50">
+                Class {studentClass.posibility ? "opened" : "closed"}{" "}
+                <span className="text-primary">
+                  {moment(studentClass.updatedAt).fromNow()}
+                </span>
+              </p>
+            </div>
+            <div className="student-interaction w-100 d-flex flex-column align-items-end">
+              <div className="btns d-flex align-items-center gap-3">
+                <button
+                  onClick={checkPresent}
+                  className={`btn btn-${
+                    studentClass.posibility ? "success" : "secondary"
+                  }`}
+                  disabled={!studentClass.posibility}
                 >
-                  {classes.length > 0 ? classes.map((c, i) => {
-                    return (
-                      <option
-                        style={{ textTransform: "capitalize" }}
-                        key={c._id}
-                        value={c.class}
-                      >
-                        {c.class}
-                      </option>
-                    );
-                  }) : <option>No class available</option>}
-                </select>
-              </div>
-            </form>
-          </div>
-          <div className="row w-100 m-auto justify-content-center my-4 gap-5">
-            <div className="col">
-              <Charts
-                data={formattedAbsences}
-                absence
-                percentage={averageAbsence}
-                trend={absencesTrend}
-              />
-            </div>
-            <div className="col">
-              <Charts
-                data={formattedAttendances}
-                percentage={averageAttendance}
-                trend={attendancesTrend}
-              />
-            </div>
-            <div className="col">
-              <div className="card rounded-5">
-                <div className="card-info d-flex justify-content-between">
-                  <div className="left-part">
-                    <span className="text-black-50 fw-semibold">
-                      Participation
-                    </span>
-                    <div className="fw-bold fs-3">{averageAttendance}%</div>
-                  </div>
-                  <span>
-                    {attendancesTrend === "up" && <img src={trend_up} alt="" />}
-                    {attendancesTrend === "down" && <img src={trend_down} alt="" />}
-                    {attendancesTrend === "neutral" && "--"}
-                  </span>
-                </div>
-                <ResponsiveContainer width="100%" height={"60%"}>
-                  <LineChart data={formattedAttendances}>
-                    <XAxis hide />
-                    <YAxis hide />
-                    <Tooltip cursor={false} />
-                    <Line
-                      type="monotone"
-                      dataKey="value"
-                      strokeWidth={6}
-                      stroke="url(#gradient)"
-                      dot={false}
-                      isAnimationActive
-                      animationDuration={500}
-                    />
-                    <defs>
-                      <linearGradient id="gradient" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="red" />
-                        <stop offset="50%" stopColor="orange" />
-                        <stop offset="100%" stopColor="green" />
-                      </linearGradient>
-                    </defs>
-                  </LineChart>
-                </ResponsiveContainer>
+                  {loading ? "loading" : "I'm present"}
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      )} */}
+        ) : (
+          <p className="fw-semibold px-md-5 px-sm-3 my-5">
+            Loading class data...
+          </p>
+        )}
+      </div>
+      <hr />
+      <table className="student-table w-100">
+        <tr className="student-info-keys">
+          <td className="pb-3">Your matricule</td>
+          <td className="text-center pb-3">Your absences</td>
+          <td className="text-center pb-3">Your A-mark</td>
+        </tr>
+        <tr className="student-info ">
+          <td className="fw-semibold py-3">{student.matricule}</td>
+          <td className="text-center py-3">{student.absences}</td>
+          <td className="text-center py-3 fw-semibold">{student.attendanceMark < 3 ? <apan className="text-danger">{student.attendanceMark}</apan> :<apan className="text-success">{student.attendanceMark}</apan>}</td>
+        </tr>
+      </table>
     </div>
   );
 }
