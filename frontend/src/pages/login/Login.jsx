@@ -18,7 +18,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const res = await axios.post('http://localhost:4620/admin/login' , admin);
+            const res = await axios.post('https://attendance-app-backend-dhre.onrender.com/admin/login' , admin);
             const adminData = res.data ;
             localStorage.setItem('admin' , adminData);
         } catch (error) {
