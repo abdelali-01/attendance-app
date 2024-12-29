@@ -258,11 +258,17 @@ export default function Home({ classes }) {
           <div className="row gap-4">
             <div className="col mb-5">
               <p className="fw-semibold">Recent messages</p>
-              <div className="border h-100 rounded-4"></div>
+              <div className="border h-100 rounded-4" style={{
+                maxHeight : "500px", 
+                overflowY : "auto" 
+              }}></div>
             </div>
             <div className="students-attendace col-lg-5">
               <p className="fw-semibold">Students' Attendance</p>
-              <div className="control-group">
+              <div className="rounded-4 border" style={{
+                overflowY : "auto",
+                maxHeight : "500px"
+              }}>
                 {students === null ? (
                   <p>loading students data ...</p>
                 ) : (

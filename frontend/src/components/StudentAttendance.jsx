@@ -16,10 +16,10 @@ export default function StudentAttendance({student}) {
         const percentage = (attendances / (attendances + absences))*100
         
         setPercentage(percentage.toFixed(0))
-    },[percentage , student.attendances , student.absences])
+    },[percentage , student.attendance , student.absences])
 
   return (
-    <div className="d-flex align-items-center gap-3 rounded-4 border p-2 mb-3">
+    <div className="d-flex align-items-center gap-3 border p-2">
       <div class="progress-circle">
         <div
           class="circle"
