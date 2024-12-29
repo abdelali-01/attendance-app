@@ -22,7 +22,7 @@ export default function AddClass() {
     try {
       try {
         const res = await axios.post(
-          "http://localhost:4620/class/newclass",
+          "https://attendance-app-backend-dhre.onrender.com/class/newclass",
           classe
         );
         navigate(`/${res.data.class}`);
