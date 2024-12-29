@@ -123,6 +123,15 @@ export default function Class({ classData }) {
     }
   };
 
+  // reset all absences 
+  const reset = async () => {
+    try {
+      await axios.put(`http://localhost:4620/student/reset/${classData.class}`);
+    } catch (error) {
+      alert("faild to reset , please try again !");
+    }
+  }
+
   return (
     <div
       className="class-page flex-grow-1 px-4 mb-5"
@@ -195,7 +204,11 @@ export default function Class({ classData }) {
             <p className="fw-semibold text-center">Class Empty</p>
           </>
         )}
-        <div className="class-actions d-flex flex-wrap gap-2 my-3">
+        <div className="class-actions  d-flex justify-content-between w-100 flex-wrap">
+          <div className="clt-left my-3">
+            <button onClick={reset} className="btn btn-secondary">Reset All absences</button>
+          </div>
+          <div className="cta-right d-flex flex-wrap gap-2 my-3">
           <Link
             to={`/${classData.class}/create-student`}
             className="flex-grow-1"
@@ -211,6 +224,7 @@ export default function Class({ classData }) {
           >
             Delete class
           </button>
+          </div>
         </div>
       </div>
     </div>

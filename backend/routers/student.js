@@ -94,4 +94,18 @@ studentRouter.get("/studentsList/:class", async (req, res) => {
   }
 });
 
+// reset all absences from the admin
+studentRouter.put("/reset/:class", async (req, res) => {
+  try {
+    await Student.updateMany(
+      { class: req.params.class },
+      { absences: 0, attendanceMark: 5 }
+    );
+
+    res.status(200).send("success");
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
 export default studentRouter;

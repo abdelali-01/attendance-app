@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import "./home.css";
 import axios from "axios";
 import moment from "moment";
+import StudentAttendance from "../../components/StudentAttendance";
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
   const [studentClass, setStudentClass] = useState(null);
   const student = JSON.parse(localStorage.getItem("Student"));
-
 
   useEffect(() => {
     const fetchClass = async () => {
@@ -97,19 +97,26 @@ export default function Home() {
           </p>
         )}
       </div>
-      <hr />
-      <table className="student-table w-100">
-        <tr className="student-info-keys">
-          <td className="pb-3">Your matricule</td>
-          <td className="text-center pb-3">Your absences</td>
-          <td className="text-center pb-3">Your A-mark</td>
-        </tr>
-        <tr className="student-info ">
-          <td className="fw-semibold py-3">{student.matricule}</td>
-          <td className="text-center py-3">{student.absences}</td>
-          <td className="text-center py-3 fw-semibold">{student.attendanceMark < 3 ? <apan className="text-danger">{student.attendanceMark}</apan> :<apan className="text-success">{student.attendanceMark}</apan>}</td>
-        </tr>
-      </table>
+      <div className="student-table row w-100 gap-3 m-auto">
+        <div className="student-info col-lg-6 mt-3">
+          <p className="fw-semibold">Your Attendance </p>
+          <StudentAttendance student={student} />
+        </div>
+        <div className="student-info col mt-3">
+          <p className="fw-semibold">Absences </p>
+          <span className="fs-2 py-2 border d-flex align-items-center justify-content-center rounded-4">{student.absences}</span>
+        </div>
+        <div className="col mt-3">
+          <p className="fw-semibold">A-mark</p>
+          <span className="fw-semibold py-2 fs-2 border d-flex align-items-center justify-content-center rounded-4">
+            {student.attendanceMark < 3 ? (
+              <apan className="text-danger">{student.attendanceMark}</apan>
+            ) : (
+              <apan className="text-success">{student.attendanceMark}</apan>
+            )}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

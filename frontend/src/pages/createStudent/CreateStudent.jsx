@@ -24,6 +24,8 @@ export default function CreateStudent({ classes, updateStudent }) {
     confPassword: "",
     phone: "",
     birth: "",
+    absences : 0,
+    attendanceMark : 0 ,
     class: className,
   });
   const [isDataFetched, setIsDataFetched] = useState(false);
@@ -180,11 +182,11 @@ export default function CreateStudent({ classes, updateStudent }) {
               <div className="row m-auto my-3 gap-3">
                 <div className="field col">
                   <label htmlFor="absences">Absences</label>
-                  <input type="number" value={student.absences} />
+                  <input type="number" name="absences" id="absences" value={student.absences} onChange={setHandler}/>
                 </div>
                 <div className="field col">
-                  <label htmlFor="absences">Absences</label>
-                  <input type="number" value={student.absences} />
+                  <label htmlFor="attendance">Attendance mark</label>
+                  <input type="text" name="attendanceMark" id="attendance" value={student.attendanceMark} onChange={setHandler}/>
                 </div>
               </div>  : <></>}
             <div className="row m-auto my-3 gap-3 ">
