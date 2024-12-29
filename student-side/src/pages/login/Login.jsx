@@ -20,7 +20,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const res = await axios.post('http://localhost:4620/student/login' , student);
+            const res = await axios.post('https://attendance-app-backend-dhre.onrender.com/student/login' , student);
             const studentData = res.data ;
             localStorage.setItem('Student' , JSON.stringify(studentData));
             navigate("/")
