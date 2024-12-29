@@ -15,7 +15,7 @@ function App() {
   // get the classes
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get("http://localhost:4620/class/all");
+      const res = await axios.get("https://attendance-app-backend-dhre.onrender.com/class/all");
       setClasses(res.data);
     };
     fetchData();
