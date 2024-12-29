@@ -66,7 +66,7 @@ export default function StudentItem({ student, posibilityStatus , i}) {
 
     // Fetch data immediately when the component mounts
     fetchData();
-  }, [attendance, student.matricule]);
+  }, [attendance, student.matricule , absences , status]);
 
   // set the absent to the student from teacher
   const setAbsent = async () => {
@@ -140,9 +140,6 @@ export default function StudentItem({ student, posibilityStatus , i}) {
           />
 
           <Link to={`/${student.class}/${student.matricule}`}><img role="button" src={update_icon} alt="" /></Link>
-          <img onClick={()=>{
-            deleteStudent(student.familyName , student._id);
-          }} role="button" src={delete_icon} alt="" />
         </td>
       </tr>
     </>

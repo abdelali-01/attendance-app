@@ -176,15 +176,18 @@ export default function CreateStudent({ classes, updateStudent }) {
                 />
               </div>
             </div>
-            <div className="row m-auto my-3 gap-3 ">
-              {updateStudent ? 
-              <div className="col">
-                <div className="filed">
+            {updateStudent ? 
+              <div className="row m-auto my-3 gap-3">
+                <div className="field col">
                   <label htmlFor="absences">Absences</label>
                   <input type="number" value={student.absences} />
                 </div>
-
+                <div className="field col">
+                  <label htmlFor="absences">Absences</label>
+                  <input type="number" value={student.absences} />
+                </div>
               </div>  : <></>}
+            <div className="row m-auto my-3 gap-3 ">
               <div className="field col">
                 <label htmlFor="password">
                   {updateStudent ? "Change password" : "Password"}
