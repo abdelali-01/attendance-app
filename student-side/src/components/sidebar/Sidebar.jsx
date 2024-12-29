@@ -19,7 +19,7 @@ export default function Sidebar() {
   useEffect(() => {
     const fetchClass = async () => {
       const res = await axios.get(
-        `http://localhost:4620/class/getclass/${student.class}`
+        `https://attendance-app-backend-dhre.onrender.com/class/getclass/${student.class}`
       );
       const posibilityStatus = res.data.posibility;
       setIsDisabled(!posibilityStatus);
