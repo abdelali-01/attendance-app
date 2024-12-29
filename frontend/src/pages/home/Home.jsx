@@ -40,7 +40,7 @@ export default function Home({ classes }) {
       // fetch the student of the selected class
       const fetchStudents = async () => {
         const res = await axios.get(
-          `http://127.0.0.1:4620/student/studentsList/${selectedClass}`
+          `https://attendance-app-backend-dhre.onrender.com/student/studentsList/${selectedClass}`
         );
         setStudents(res.data);
       };
