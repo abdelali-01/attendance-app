@@ -12,7 +12,7 @@ export default function Home() {
   useEffect(() => {
     const fetchClass = async () => {
       const res = await axios.get(
-        `http://localhost:4620/class/getclass/${student.class}`
+        `https://attendance-app-backend-dhre.onrender.com/class/getclass/${student.class}`
       );
       setStudentClass(res.data);
     };
@@ -33,7 +33,7 @@ export default function Home() {
     setLoading(true);
     try {
       await axios.put(
-        `http://localhost:4620/student/checkattendance/${student._id}`
+        `https://attendance-app-backend-dhre.onrender.com/student/checkattendance/${student._id}`
       );
       localStorage.setItem("lastCheckAttendance", now); // Store the current timestamp
     } catch (error) {
