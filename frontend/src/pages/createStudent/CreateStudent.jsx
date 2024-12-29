@@ -38,7 +38,7 @@ export default function CreateStudent({ classes, updateStudent }) {
       const fetchStudent = async () => {
         try {
           const res = await axios.get(
-            `http://localhost:4620/student/${studentMatricule}`
+            `https://attendance-app-backend-dhre.onrender.com/student/${studentMatricule}`
           );
           const studentData = res.data;
           delete studentData.password; // Remove the password from the response
@@ -69,7 +69,7 @@ export default function CreateStudent({ classes, updateStudent }) {
     if (student.password === student.confPassword) {
       try {
         if(updateStudent){
-          await axios.put(`http://localhost:4620/admin/updateStudentAccount/${student._id}` , student);
+          await axios.put(`https://attendance-app-backend-dhre.onrender.com/admin/updateStudentAccount/${student._id}` , student);
         }else{
           await axios.post(
             `http://localhost:4620/admin/createStudentAccount`,
