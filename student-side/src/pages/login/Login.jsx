@@ -55,7 +55,6 @@ export default function Login() {
                 <label htmlFor="password">Password</label>
                 <input value={student.password} onChange={handleChange} id='password' name='password'  type="password" placeholder='Enter your password' required/>
             </div>
-            <p className='text-primary d-flex justify-content-end' role='button'>I forgot my password !</p>
             <button className='btn open-style w-100 my-3' disabled={loading}>{loading ? "Loading ..." : "Login"}</button>
         </form>
     </div>
