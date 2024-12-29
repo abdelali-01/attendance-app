@@ -10,7 +10,7 @@ export const deleteStudent= async (familyName , id) => {
     const confirm = window.confirm("Are you sure to delete "+ familyName);
 
     if(confirm) {
-      await axios.delete(`http://localhost:4620/admin/deleteStudentAccount/${id}`);
+      await axios.delete(`https://attendance-app-backend-dhre.onrender.com/admin/deleteStudentAccount/${id}`);
       window.location.reload();
     }
   }
@@ -37,7 +37,7 @@ export default function StudentItem({ student, posibilityStatus , i}) {
       try {
         // Fetch the student's data to check the updated attendance
         const res = await axios.get(
-          `http://localhost:4620/student/${student.matricule}`
+          `https://attendance-app-backend-dhre.onrender.com/student/${student.matricule}`
         );
         const updatedAttendance = res.data.attendance;
         const updatedAbsences = res.data.absences;
@@ -82,7 +82,7 @@ export default function StudentItem({ student, posibilityStatus , i}) {
       return;
     }
 
-    await axios.put(`http://localhost:4620/admin/absence/${student._id}`);
+    await axios.put(`https://attendance-app-backend-dhre.onrender.com/admin/absence/${student._id}`);
     setStatus("absent");
 
     // Update absences count after marking absent
