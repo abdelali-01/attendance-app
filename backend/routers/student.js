@@ -1,6 +1,6 @@
 import express from "express";
 import { Student } from "../models/Student.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Class } from "../models/Class.js";
 
 const studentRouter = express.Router();

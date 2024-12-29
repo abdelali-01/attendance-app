@@ -1,5 +1,5 @@
 import express, { Router } from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { Class } from "../models/Class.js";
 import { Student } from "../models/Student.js";
 import { Admin } from "../models/Admin.js";
