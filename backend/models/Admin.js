@@ -17,6 +17,13 @@ const adminSchema = new mongoose.Schema({
         type : String ,
         required : true
     },
+    isVerified : {
+        type : Boolean ,
+        default : false ,
+    },
+    verificationToken : String,
+    resetPasswordToken: String,  
+    resetPasswordExpires: Date, 
 });
 
 export const Admin = mongoose.model('Admin' , adminSchema);

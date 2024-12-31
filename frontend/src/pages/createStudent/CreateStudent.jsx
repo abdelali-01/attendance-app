@@ -72,7 +72,7 @@ export default function CreateStudent({ classes, updateStudent }) {
           await axios.put(`https://attendance-app-backend-dhre.onrender.com/admin/updateStudentAccount/${student._id}` , student);
         }else{
           await axios.post(
-            `http://localhost:4620/admin/createStudentAccount`,
+            `https://attendance-app-backend-dhre.onrender.com/admin/createStudentAccount`,
             student
           );
         }

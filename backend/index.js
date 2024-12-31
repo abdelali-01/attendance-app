@@ -6,8 +6,8 @@ import cors from "cors" ;
 
 const app = express();
 app.use(cors());
-app.use(express.json());
 dotenv.config();
+app.use(express.json());
 
 // importing routers 
 import adminRouter from "./routers/admin.js";
