@@ -26,7 +26,7 @@ function App() {
   // check if there is admin in the page or not 
   const admin = localStorage.getItem('admin');
   useEffect(()=>{
-    if(!admin && location.pathname !== "/reset-pass"){
+    if (!admin && !location.pathname.startsWith("/reset-pass")) {
       navigate("/");
     }
   },[admin , navigate , location]);

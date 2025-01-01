@@ -42,7 +42,7 @@ export default function Login() {
             backgroundColor : "#F9FAFB",
             boxShadow : "1px 1px 20px #9a99f9"
         }}>
-            <h4 className='text-center'>Login - admin -</h4>
+            <h4 className='text-center'>Login - teacher -</h4>
             <div className="field my-3" >
                 <label htmlFor="email">Email</label>
                 <input value={admin.email} onChange={handleChange} name='email' id='email' type="email" placeholder='admin@gmail.com' required/>
