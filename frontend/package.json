@@ -16,6 +16,7 @@
     "react-router-dom": "^7.1.0",
     "react-scripts": "5.0.1",
     "recharts": "^2.15.0",
+    "serve": "^14.2.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -42,5 +43,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://attendance-app-backend-dhre.onrender.com" 
+  "proxy": "https://attendance-app-backend-dhre.onrender.com"
 }
