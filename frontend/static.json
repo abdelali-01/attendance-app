@@ -1,0 +1,13 @@
+{
+    "rewrites": [
+      {
+        "source": "/reset-pass/*",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/*",
+        "destination": "/index.html"
+      }
+    ]
+  }
+  
