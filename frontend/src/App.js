@@ -29,7 +29,7 @@ function App() {
     if (!admin && !location.pathname.startsWith("/reset-pass")) {
       navigate("/");
     }
-  },[admin , navigate , location]);
+  },[admin , navigate , location.pathname]);
 
   
   return (
