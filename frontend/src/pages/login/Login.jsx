@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 export default function Login() {
     // set some hooks to manage the form 
@@ -50,7 +51,9 @@ export default function Login() {
                 <label htmlFor="password">Password</label>
                 <input value={admin.password} onChange={handleChange} id='password' name='password'  type="password" placeholder='Enter your password' required/>
             </div>
+            <Link to="/reset-pass">
             <p className='text-primary d-flex justify-content-end' role='button'>I forgot my password !</p>
+            </Link>
             <button className='btn open-style w-100 my-3' disabled={loading}>{loading ? "Loading ..." : "Login"}</button>
         </form>
     </div>

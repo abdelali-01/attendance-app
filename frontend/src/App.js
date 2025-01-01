@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import Sidebar from "./components/sidebar/Sidebar";
-import { Routes , Route, useNavigate} from 'react-router-dom' ;
+import { Routes , Route, useNavigate, useLocation} from 'react-router-dom' ;
 import axios from "axios";
 import Class from "./pages/class/Class"
 import CreateStudent from "./pages/createStudent/CreateStudent";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import AddClass from "./pages/addClass/AddClass";
+import ResetPass from "./pages/ResetPass";
 
 function App() {
   // create state to put the classes in
   const [classes, setClasses] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
   // get the classes
   useEffect(() => {
     const fetchData = async () => {
@@ -24,10 +26,10 @@ function App() {
   // check if there is admin in the page or not 
   const admin = localStorage.getItem('admin');
   useEffect(()=>{
-    if(!admin){
+    if(!admin && location.pathname !== "/reset-pass"){
       navigate("/");
     }
-  },[admin , navigate]);
+  },[admin , navigate , location]);
 
   
   return (
@@ -41,6 +43,7 @@ function App() {
         <Route path="/:class/create-student" element={<CreateStudent classes={classes} updateStudent={false}/>}/>
         <Route path="/add-class" element={<AddClass/>}/>
         <Route path="/:class/:studentMatricule" element={<CreateStudent classes={classes} updateStudent={true}/> }/>
+        <Route path="/reset-pass" element={<ResetPass/>} />
       </Routes>
     </div>
   );

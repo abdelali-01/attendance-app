@@ -151,7 +151,7 @@ adminRouter.post('/reset-pass' ,async (req , res)=>{
   try {
     const {email} = req.body ;
 
-    const admin = await Admin.findOne({email});
+    const admin = await Admin.findOne({email : email});
     if(!admin){
       return res.status(404).send("No account found with that email address.")
     }
