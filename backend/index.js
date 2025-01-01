@@ -9,14 +9,6 @@ app.use(cors());
 dotenv.config();
 app.use(express.json());
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'build')));
-
-// Add this route at the end to handle dynamic React routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
-
 // importing routers 
 import adminRouter from "./routers/admin.js";
 import classRouter from "./routers/class.js";
