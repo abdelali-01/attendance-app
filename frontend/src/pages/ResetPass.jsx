@@ -1,34 +1,55 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 export default function ResetPass({ resetPassword }) {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
+  const {token} = useParams();
+
+  useEffect(() => {
+    if (token) {
+      // If there is a token, we are on the reset password page
+      setIsSubmit(false);
+      setEmail("");  // Clear the email field
+    }
+  }, [token]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(
-        `https://attendance-app-backend-dhre.onrender.com/admin/reset-pass`,
-        { email }
-      );
-      if(res.status === 200){
-        setIsSubmit(true)
+        // For password reset, pass both token and new password
+        if (token) {
+          const res = await axios.post(
+            `https://attendance-app-backend-dhre.onrender.com/admin/reset-pass/${token}`,
+            { password }
+          );
+          if (res.status === 200) {
+            setIsSubmit(true);
+          }
+        } else {
+          // For email submission
+          const res = await axios.post(
+            `https://attendance-app-backend-dhre.onrender.com/admin/reset-pass`,
+            { email }
+          );
+          if (res.status === 200) {
+            setIsSubmit(true);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response?.status === 400) {
+          alert("Failed to check your email, please try again!");
+        } else {
+          alert(error.response?.data || "Something went wrong");
+        }
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.log(error);
-      if (error.status === 400) {
-        alert("faild to check you email , please try again !");
-      } else {
-        alert(error.response.data);
-      }
-    } finally {
-      setLoading(false);
-    }
   };
   return (
     <div
