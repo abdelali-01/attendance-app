@@ -44,6 +44,7 @@ function App() {
         <Route path="/add-class" element={<AddClass/>}/>
         <Route path="/:class/:studentMatricule" element={<CreateStudent classes={classes} updateStudent={true}/> }/>
         <Route path="/reset-pass" element={<ResetPass/>} />
+        <Route path="/reset-pass/:token" element={<ResetPass resetPassword/>} />
       </Routes>
     </div>
   );

@@ -122,7 +122,7 @@ adminRouter.post("/login", async (req, res) => {
           to: admin.email,
           subject: 'Verify Your Email',
           html: `<h1>Verify Your Email</h1>
-                <a href="${process.env.BASE_URL}/admin/verify/${verificationToken}"><button className="btn btn-primary">Verify My Account</button></a>`,
+                <a href="${process.env.BASE_URL}/verify/${verificationToken}"><button className="btn btn-primary">Verify My Account</button></a>`,
         };
 
         try {
@@ -149,9 +149,9 @@ adminRouter.post("/login", async (req, res) => {
 // reset password 
 adminRouter.post('/reset-pass' ,async (req , res)=>{
   try {
-    const {email} = req.body ;
+    const data = req.body ;
 
-    const admin = await Admin.findOne({email : email});
+    const admin = await Admin.findOne({email : data.email});
     if(!admin){
       return res.status(404).send("No account found with that email address.")
     }
@@ -164,7 +164,7 @@ adminRouter.post('/reset-pass' ,async (req , res)=>{
     );
 
     // the reset  link 
-    const resetLink = `${process.env.BASE_URL}/admin/reset-pass/${resetToken}`
+    const resetLink = `${process.env.BASE_URL}/reset-pass/${resetToken}`
 
         // Create email content
     const mailOptions = {

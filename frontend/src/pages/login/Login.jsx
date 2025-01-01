@@ -38,7 +38,7 @@ export default function Login() {
         height  :"100vh" ,
     }}>
         <form onSubmit={fetchData} className='p-4 rounded-3 flex-grow-1' style={{
-            maxWidth : "500px" ,
+            maxWidth : "400px" ,
             backgroundColor : "#F9FAFB",
             boxShadow : "1px 1px 20px #9a99f9"
         }}>
