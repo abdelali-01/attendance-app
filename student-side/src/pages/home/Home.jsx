@@ -21,7 +21,8 @@ export default function Home() {
 
     setInterval(fetchClass, 1000);
     fetchClass();
-  }, [student?.class]);
+
+  }, [student?.class , serverUri]);
 
   const checkPresent = async () => {
     const now = new Date().getTime(); // Current timestamp in milliseconds

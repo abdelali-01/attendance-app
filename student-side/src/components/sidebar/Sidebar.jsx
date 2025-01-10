@@ -11,6 +11,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Sidebar() {
+  const serverUri = process.env.BASE_URI ;
+
   const student = JSON.parse(localStorage.getItem("Student"));
   const [isDisabled, setIsDisabled] = useState(true);
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ export default function Sidebar() {
   useEffect(() => {
     const fetchClass = async () => {
       const res = await axios.get(
-        `https://attendance-app-backend-dhre.onrender.com/class/getclass/${student.class}`
+        `${serverUri}/class/getclass/${student.class}`
       );
       const posibilityStatus = res.data.posibility;
       setIsDisabled(!posibilityStatus);
