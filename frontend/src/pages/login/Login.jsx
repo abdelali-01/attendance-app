@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 
 export default function Login() {
-  const serverUri = process.env.BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI ;
 
     // set some hooks to manage the form 
     const [admin , setAdmin]= useState({

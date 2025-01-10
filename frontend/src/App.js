@@ -10,7 +10,7 @@ import AddClass from "./pages/addClass/AddClass";
 import ResetPass from "./pages/ResetPass";
 
 function App() {
-  const serverUri = process.env.BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI ;
   // create state to put the classes in
   const [classes, setClasses] = useState([]);
   const navigate = useNavigate();

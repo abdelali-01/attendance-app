@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function AddClass() {
-  const serverUri = process.env.BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI ;
 
   const navigate = useNavigate();
   const [classe, setClasse] = useState({

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-  const serverUri = process.env.BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI ;
 
     const navigate = useNavigate();
     // set some hooks to manage the form 

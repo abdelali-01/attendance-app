@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function ResetPass({ resetPassword }) {
-  const serverUri = process.env.BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI ;
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");

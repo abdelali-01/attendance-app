@@ -5,7 +5,7 @@ import moment from "moment";
 import StudentAttendance from "../../components/StudentAttendance";
 
 export default function Home() {
-  const serverUri = process.env.BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI ;
 
   const [loading, setLoading] = useState(false);
   const [studentClass, setStudentClass] = useState(null);

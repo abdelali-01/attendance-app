@@ -17,7 +17,7 @@ import {
 import StudentAttendance from "../../components/StudentAttendance";
 
 export default function Home({ classes }) {
-  const serverUri = process.env.BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI ;
 
   const [students, setStudents] = useState(null);
 

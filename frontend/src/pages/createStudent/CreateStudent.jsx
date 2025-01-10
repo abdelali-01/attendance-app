@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { deleteStudent } from "../../components/studentItem/StudentItem";
 
 export default function CreateStudent({ classes, updateStudent }) {
-  const serverUri = process.env.BASE_URI;
+  const serverUri = process.env.REACT_APP_BASE_URI;
 
   const [loading, setLoading] = useState(false);
   // to find the class

@@ -5,7 +5,7 @@ import absent_icon from "../icons/absent.svg";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const serverUri = process.env.BASE_URI ;
+const serverUri = process.env.REACT_APP_BASE_URI ;
   // delete student 
 export const deleteStudent= async (familyName , id) => {
 

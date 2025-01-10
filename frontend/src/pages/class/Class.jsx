@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import ClassName from "../../components/ClassName";
 
 export default function Class({ classData }) {
-  const serverUri = process.env.BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI ;
 
   const [loading, setLoading] = useState(false);
 
