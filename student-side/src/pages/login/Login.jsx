@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+  const serverUri = process.env.BASE_URI ;
+
     const navigate = useNavigate();
     // set some hooks to manage the form 
     const [student , setStudent]= useState({
@@ -20,7 +22,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const res = await axios.post('https://attendance-app-backend-dhre.onrender.com/student/login' , student);
+            const res = await axios.post(serverUri+'/student/login' , student);
             const studentData = res.data ;
             localStorage.setItem('Student' , JSON.stringify(studentData));
             navigate("/")

@@ -5,6 +5,8 @@ import moment from "moment";
 import StudentAttendance from "../../components/StudentAttendance";
 
 export default function Home() {
+  const serverUri = process.env.BASE_URI ;
+
   const [loading, setLoading] = useState(false);
   const [studentClass, setStudentClass] = useState(null);
   const student = JSON.parse(localStorage.getItem("Student"));
@@ -12,7 +14,7 @@ export default function Home() {
   useEffect(() => {
     const fetchClass = async () => {
       const res = await axios.get(
-        `https://attendance-app-backend-dhre.onrender.com/class/getclass/${student.class}`
+        `${serverUri}/class/getclass/${student.class}`
       );
       setStudentClass(res.data);
     };
@@ -33,7 +35,7 @@ export default function Home() {
     setLoading(true);
     try {
       await axios.put(
-        `https://attendance-app-backend-dhre.onrender.com/student/checkattendance/${student._id}`
+        `${serverUri}/student/checkattendance/${student._id}`
       );
       localStorage.setItem("lastCheckAttendance", now); // Store the current timestamp
     } catch (error) {
