@@ -1,10 +1,9 @@
-import express, { Router } from "express";
+import express from "express";
 import bcrypt from "bcryptjs";
-import { Class } from "../models/Class.js";
 import { Student } from "../models/Student.js";
 import { Admin } from "../models/Admin.js";
 import nodemailer from 'nodemailer';
-import jwt, { decode } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'
 dotenv.config();
 
@@ -27,7 +26,7 @@ transporter.verify((error , success)=>{
   }else{
     console.log(success);
   }
-})
+});
 
 // create the signup system for the admin 
 adminRouter.post("/signup", async (req, res) => {

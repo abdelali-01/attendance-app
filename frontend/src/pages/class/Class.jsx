@@ -9,6 +9,8 @@ import { Link } from "react-router-dom";
 import ClassName from "../../components/ClassName";
 
 export default function Class({ classData }) {
+  const serverUri = process.env.BASE_URI ;
+
   const [loading, setLoading] = useState(false);
 
   const [students, setStudents] = useState([]);
@@ -33,7 +35,7 @@ export default function Class({ classData }) {
   useEffect(() => {
     const fetchData = async () => {
       const studentList = await axios.get(
-        `https://attendance-app-backend-dhre.onrender.com/student/studentsList/${classData.class}`
+        `${serverUri}/student/studentsList/${classData.class}`
       );
       const sortedStudents = studentList.data.sort((a, b) =>
         a.familyName.localeCompare(b.familyName)
@@ -41,7 +43,7 @@ export default function Class({ classData }) {
       setStudents(sortedStudents);
     };
     fetchData();
-  }, [classData.class]);
+  }, [classData.class , serverUri]);
 
   // filter student for the search
   const filteredStudents = students.filter(
@@ -82,7 +84,7 @@ export default function Class({ classData }) {
         });
 
         absentStudents.forEach(async (student) => {
-          await axios.put(`https://attendance-app-backend-dhre.onrender.com/admin/absence/${student._id}`);
+          await axios.put(`${serverUri}/admin/absence/${student._id}`);
         });
 
         // Reset statuses for all students in the class with pending status
@@ -91,7 +93,7 @@ export default function Class({ classData }) {
         });
       }
       await axios.put(
-        `https://attendance-app-backend-dhre.onrender.com/class/changePosibility/${classData.class}`,
+        `${serverUri}/class/changePosibility/${classData.class}`,
         {
           date: currentDate,
           absenceCount: absentCount,
@@ -115,7 +117,7 @@ export default function Class({ classData }) {
 
     if (confirmDelete) {
       try {
-        await axios.delete(`https://attendance-app-backend-dhre.onrender.com/class/${classData.class}`);
+        await axios.delete(`${serverUri}/class/${classData.class}`);
       } catch (error) {
         console.error("Error deleting the class:", error);
         alert("Failed to delete the class. Please try again.");
@@ -126,7 +128,7 @@ export default function Class({ classData }) {
   // reset all absences 
   const reset = async () => {
     try {
-      await axios.put(`https://attendance-app-backend-dhre.onrender.com/student/reset/${classData.class}`);
+      await axios.put(`${serverUri}/student/reset/${classData.class}`);
     } catch (error) {
       alert("faild to reset , please try again !");
     }

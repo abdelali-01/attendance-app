@@ -17,6 +17,8 @@ import {
 import StudentAttendance from "../../components/StudentAttendance";
 
 export default function Home({ classes }) {
+  const serverUri = process.env.BASE_URI ;
+
   const [students, setStudents] = useState(null);
 
   const [selectedClass, setSelecedClass] = useState(
@@ -40,7 +42,7 @@ export default function Home({ classes }) {
       // fetch the student of the selected class
       const fetchStudents = async () => {
         const res = await axios.get(
-          `https://attendance-app-backend-dhre.onrender.com/student/studentsList/${selectedClass}`
+          `${serverUri}/student/studentsList/${selectedClass}`
         );
         setStudents(res.data);
       };
@@ -52,7 +54,7 @@ export default function Home({ classes }) {
       }
     }
     setLoading(false);
-  }, [selectedClass, classes]); // Effect depends on selectedClass and classes
+  }, [selectedClass, classes , serverUri]); // Effect depends on selectedClass and classes
 
   // calculate the average percentage
   const calculateAveragePercentage = (dataAbsence , dataAttendance) => {

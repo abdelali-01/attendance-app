@@ -10,6 +10,7 @@ import AddClass from "./pages/addClass/AddClass";
 import ResetPass from "./pages/ResetPass";
 
 function App() {
+  const serverUri = process.env.BASE_URI ;
   // create state to put the classes in
   const [classes, setClasses] = useState([]);
   const navigate = useNavigate();
@@ -17,11 +18,11 @@ function App() {
   // get the classes
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get("https://attendance-app-backend-dhre.onrender.com/class/all");
+      const res = await axios.get(serverUri+"/class/all");
       setClasses(res.data);
     };
     fetchData();
-  }, [classes]);
+  }, [classes , serverUri]);
 
   // check if there is admin in the page or not 
   const admin = localStorage.getItem('admin');

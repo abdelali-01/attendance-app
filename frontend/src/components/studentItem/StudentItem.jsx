@@ -5,12 +5,14 @@ import absent_icon from "../icons/absent.svg";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+const serverUri = process.env.BASE_URI ;
   // delete student 
 export const deleteStudent= async (familyName , id) => {
+
     const confirm = window.confirm("Are you sure to delete "+ familyName);
 
     if(confirm) {
-      await axios.delete(`https://attendance-app-backend-dhre.onrender.com/admin/deleteStudentAccount/${id}`);
+      await axios.delete(`${serverUri}/admin/deleteStudentAccount/${id}`);
       window.location.reload();
     }
   }
@@ -37,7 +39,7 @@ export default function StudentItem({ student, posibilityStatus , i}) {
       try {
         // Fetch the student's data to check the updated attendance
         const res = await axios.get(
-          `https://attendance-app-backend-dhre.onrender.com/student/${student.matricule}`
+          `${serverUri}/student/${student.matricule}`
         );
         const updatedAttendance = res.data.attendance;
         const updatedAbsences = res.data.absences;
@@ -82,7 +84,7 @@ export default function StudentItem({ student, posibilityStatus , i}) {
       return;
     }
 
-    await axios.put(`https://attendance-app-backend-dhre.onrender.com/admin/absence/${student._id}`);
+    await axios.put(`${serverUri}/admin/absence/${student._id}`);
     setStatus("absent");
 
     // Update absences count after marking absent

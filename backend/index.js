@@ -9,6 +9,7 @@ app.use(cors());
 dotenv.config();
 app.use(express.json());
 
+
 // importing routers 
 import adminRouter from "./routers/admin.js";
 import classRouter from "./routers/class.js";
@@ -20,8 +21,6 @@ app.use("/class" , classRouter);
 app.use("/student" , studentRouter);
 
 
-
-
 // connect with MongoDB database and run the server 
 const port = process.env.PORT ;
 mongoose.connect(process.env.DATABASE_URL).then(
@@ -29,6 +28,6 @@ mongoose.connect(process.env.DATABASE_URL).then(
         console.log("connected to database");
         app.listen(port , ()=>{
             console.log("server running at port :" + port);  
-        })
+        });
     }
 );

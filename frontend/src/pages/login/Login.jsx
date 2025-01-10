@@ -3,15 +3,19 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 
 export default function Login() {
+  const serverUri = process.env.BASE_URI ;
+
     // set some hooks to manage the form 
     const [admin , setAdmin]= useState({
         email : "" ,
         password : ""
     });
+    
     const [loading , setLoading] = useState(false) ;
     const handleChange =(e)=>{
         setAdmin({...admin , [e.target.name] : e.target.value})
     }
+
 
     // fetching 
     const fetchData = async(e) =>{
@@ -19,7 +23,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const res = await axios.post('https://attendance-app-backend-dhre.onrender.com/admin/login' , admin);
+            const res = await axios.post(serverUri+'/admin/login' , admin);
             const adminData = res.data ;
             localStorage.setItem('admin' , adminData);
         } catch (error) {

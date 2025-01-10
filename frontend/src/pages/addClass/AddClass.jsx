@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function AddClass() {
+  const serverUri = process.env.BASE_URI ;
+
   const navigate = useNavigate();
   const [classe, setClasse] = useState({
     class: "",
@@ -22,7 +24,7 @@ export default function AddClass() {
     try {
       try {
         const res = await axios.post(
-          "https://attendance-app-backend-dhre.onrender.com/class/newclass",
+          serverUri+"/class/newclass",
           classe
         );
         navigate(`/${res.data.class}`);

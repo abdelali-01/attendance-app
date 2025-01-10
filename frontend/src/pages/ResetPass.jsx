@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function ResetPass({ resetPassword }) {
+  const serverUri = process.env.BASE_URI ;
+
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +31,7 @@ export default function ResetPass({ resetPassword }) {
       if (token) {
         if(password === confPassword){
             const res = await axios.post(
-                `https://attendance-app-backend-dhre.onrender.com/admin/reset-pass/${token}`,
+                `${serverUri}/admin/reset-pass/${token}`,
                 { password }
               );
               if (res.status === 200) {
@@ -41,7 +43,7 @@ export default function ResetPass({ resetPassword }) {
         }
       } else {
         // For email submission
-        const res = await axios.post(`https://attendance-app-backend-dhre.onrender.com/admin/reset-pass`, {
+        const res = await axios.post(`${serverUri}/admin/reset-pass`, {
           email,
         });
         if (res.status === 200) {
