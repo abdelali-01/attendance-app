@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// the admin is the teacher 
 const adminSchema = new mongoose.Schema({
     name:{
         type : String ,
@@ -11,11 +12,15 @@ const adminSchema = new mongoose.Schema({
     },
     email : {
         type : String ,
-        required : true
+        required : true ,
+        unique : true
     },
     password :{
         type : String ,
         required : true
+    },
+    role : {
+        type : String ,
     },
     isVerified : {
         type : Boolean ,

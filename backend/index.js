@@ -11,11 +11,13 @@ app.use(express.json());
 
 
 // importing routers 
+import authRouter from "./routers/auth.js";
 import adminRouter from "./routers/admin.js";
 import classRouter from "./routers/class.js";
 import studentRouter from "./routers/student.js";
 
 
+app.use("/auth" , authRouter);
 app.use("/admin" , adminRouter);
 app.use("/class" , classRouter);
 app.use("/student" , studentRouter);

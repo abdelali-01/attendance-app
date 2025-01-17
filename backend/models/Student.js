@@ -31,6 +31,9 @@ const studentSchema = new mongoose.Schema({
         type : Number ,
         default : 5
     },
+    role : {
+        type : String ,
+    },
     attendance : {
         type : Number ,
         default : 0
@@ -39,10 +42,14 @@ const studentSchema = new mongoose.Schema({
         type : Number ,
         default : 0 
     },
-    class : {
-        type : String ,
-        required : true
-    }
+
+    isVerified : {
+        type : Boolean ,
+        default : false ,
+    },
+    verificationToken : String,
+    resetPasswordToken: String,  
+    resetPasswordExpires: Date, 
 },{timestamps : true});
 
 export const Student = mongoose.model('Student' , studentSchema);
