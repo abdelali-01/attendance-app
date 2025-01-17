@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import { Student } from "../models/Student.js";
 import { Admin } from "../models/Admin.js";
-import { Auth } from "../models/auth.js";
+import { Auth } from "../models/Auth.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
