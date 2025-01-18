@@ -6,6 +6,7 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
+    origin : "https://attendance-73cv.onrender.com" ,
     credentials: true, // Allow cookies and credentials to be sent with requests
   })
 );
