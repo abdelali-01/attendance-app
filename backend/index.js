@@ -6,7 +6,6 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin: "https://attendance-cirlce-app.vercel.app", // Frontend URL
     credentials: true, // Allow cookies and credentials to be sent with requests
   })
 );
