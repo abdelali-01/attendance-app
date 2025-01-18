@@ -9,8 +9,10 @@ import report_icon from "../icons/Reports.svg";
 import settings_icon from "../icons/Settings.svg";
 import logout_icon from "../icons/Logout.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/auth";
 
 export default function Sidebar({ classes }) {
+  const { logout, role } = useAuth();
   // create state -useState- to manage the arrow_icon
   const [arrow, setArrow] = useState(false);
   // create state to manage the active link
@@ -21,7 +23,7 @@ export default function Sidebar({ classes }) {
     setActiveLink(location.pathname);
   }, [location]);
 
-  // call useNavigate hook to manage the admin position when he logout 
+  // call useNavigate hook to manage the admin position when he logout
   const navigate = useNavigate();
 
   //create hooks for the responsive
@@ -55,7 +57,7 @@ export default function Sidebar({ classes }) {
     window.addEventListener("mousedown", handleInteraction);
     window.addEventListener("scroll", handleScroll);
   }, []);
-  
+
   // close sidebar when we click any link in
   const hendleLink = () => {
     if (window.innerWidth < 1200) {
@@ -101,47 +103,62 @@ export default function Sidebar({ classes }) {
           <div className="sidebar-links d-flex flex-column align-items-start gap-1 my-5 w-100">
             <Link
               onClick={hendleLink}
-              to="/"
+              to="/home"
               className={`sidebar-link ${
-                activeLink === "/" ? "active" : ""
+                activeLink === "/home" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
             >
               <img src={home_icon} alt="" />
-              <span>Dashboard</span>
+              <span>{role === "student" ? "Home" : "Dashboard"}</span>
             </Link>
 
-            <div className="dropdown w-100 d-flex flex-column align-items-center">
-              <div
+            {role === "teacher" ? (
+              <div className="dropdown w-100 d-flex flex-column align-items-center">
+                <div
+                  className={`sidebar-link ${
+                    isActiveDropdown ? "active" : ""
+                  } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
+                  onClick={() => setArrow(!arrow)}
+                  id="dropdownMenuButton"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#studentsDropdown"
+                  aria-expanded="false"
+                  aria-controls="studentsDropdown"
+                  role="button"
+                >
+                  <img src={students_icon} alt="" />
+                  <span>Students</span>
+                  <img
+                    className={`arrow-icon ${arrow ? "rotate" : ""}`}
+                    src={arrow_icon}
+                    alt=""
+                  />
+                </div>
+                <div className="collapse ms-3" id="studentsDropdown">
+                  <ul className="list-unstyled">
+                    {classes.map((c) => (
+                      <Link onClick={hendleLink} to={`/${c.class}`} key={c._id}>
+                        <li>{c.class}</li>
+                      </Link>
+                    ))}
+                    <Link to={"/add-class"} onClick={hendleLink}>
+                      <li>Add new class</li>
+                    </Link>
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <Link
+                onClick={hendleLink}
+                to="/classes"
                 className={`sidebar-link ${
-                  isActiveDropdown ? "active" : ""
+                  activeLink === "/classes" ? "active" : ""
                 } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
-                onClick={() => setArrow(!arrow)}
-                id="dropdownMenuButton"
-                data-bs-toggle="collapse"
-                data-bs-target="#studentsDropdown"
-                aria-expanded="false"
-                aria-controls="studentsDropdown"
-                role="button"
               >
                 <img src={students_icon} alt="" />
-                <span>Students</span>
-                <img
-                  className={`arrow-icon ${arrow ? "rotate" : ""}`}
-                  src={arrow_icon}
-                  alt=""
-                />
-              </div>
-              <div className="collapse ms-3" id="studentsDropdown">
-                <ul className="list-unstyled">
-                  {classes.map((c) => (
-                    <Link onClick={hendleLink} to={`/${c.class}`} key={c._id}>
-                      <li>{c.class}</li>
-                    </Link>
-                  ))}
-                  <Link to={"/add-class"} onClick={hendleLink}><li>Add new class</li></Link>
-                </ul>
-              </div>
-            </div>
+                <span>Classes</span>
+              </Link>
+            )}
 
             <Link
               onClick={hendleLink}
@@ -178,10 +195,12 @@ export default function Sidebar({ classes }) {
               <span>Settings</span>
             </Link>
 
-            <div onClick={()=>{
-              localStorage.removeItem('admin');
-              navigate("/")
-            }} className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3">
+            <div
+              onClick={() => {
+                logout();
+              }}
+              className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3"
+            >
               <img src={logout_icon} alt="" />
               <span>Logout</span>
             </div>

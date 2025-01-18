@@ -2,29 +2,79 @@ import express from "express";
 import { Student } from "../models/Student.js";
 import bcrypt from "bcryptjs";
 import { Class } from "../models/Class.js";
+import mongoose from "mongoose";
 
 const studentRouter = express.Router();
 
-// create login system for the student
-studentRouter.post("/login", async (req, res) => {
+// enter in some class with the shareCode
+studentRouter.put("/enter/:studentId", async (req, res) => {
   try {
-    let student = await Student.findOne({ matricule: req.body.matricule });
+    const { shareCode } = req.body;
+
+    const student = await Student.findById(req.params.studentId);
     if (!student) {
-      return res.status(401).send("Your email or password is incorrect !");
+      return res.status(404).send("student not found !");
     }
 
-    // compare the valid password with the crypted
-    let validPass = await bcrypt.compare(req.body.password, student.password);
-    if (!validPass) {
-      return res.status(401).send("Your email or password is incorrect !");
+    // find the class by the shareCode
+    const sharedClass = await Class.findOne({ shareCode });
+    if (!sharedClass) {
+      return res.status(404).send("Code Invalid !");
     }
 
-    res.status(200).send(student);
+    // Check if the student is already enrolled in the class by matching classId
+    const existingClass = student.classes.find(
+      (classItem) => classItem.classId.toString() === sharedClass._id.toString()
+    );
+
+    if (!existingClass) {
+      // Push the new class object into the student's classes array
+      student.classes.push({
+        classId: sharedClass._id,
+        module: sharedClass.module,
+      });
+
+      // Save the student document with the updated classes array
+      await student.save();
+
+      return res.status(200).send("Successfully entered the class.");
+    } else {
+      return res.status(400).send("You are already enrolled in this class.");
+    }
   } catch (error) {
+    console.error("error during enter the class", error);
     res.status(400).send(error);
   }
 });
 
+// Get the list of students by their class
+studentRouter.get("/studentsList/:classId", async (req, res) => {
+  try {
+    // Find all students whose `classes` array contains the `classId`
+    const studentsList = await Student.find({
+      "classes.classId": req.params.classId,
+    });
+    res.status(200).send(studentsList);
+  } catch (error) {
+    console.error("error during get the class list", error);
+    res.status(400).send(error);
+  }
+});
+
+// get the list of the classes of student
+studentRouter.get("/classes/:studentId", async (req, res) => {
+  const { studentId } = req.params;
+  console.log(studentId);
+  
+
+  try {
+    const student = await Student.findOne({_id : studentId});
+    res.status(200).send(student.classes);
+  } catch (error) {
+    console.error("error during get the studentClasses", error);
+    res.status(400).send(error);
+  }
+});
 // update password account from student
 studentRouter.put("/updatepass/:id", async (req, res) => {
   if (req.body.studentId === req.params.id) {
@@ -84,17 +134,7 @@ studentRouter.get("/:matricule", async (req, res) => {
   }
 });
 
-// Get the list of students by their class
-studentRouter.get("/studentsList/:class", async (req, res) => {
-  try {
-    const studentsList = await Student.find({ class: req.params.class });
-    res.status(200).send(studentsList);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
-
-// reset all absences from the admin
+// reset all absences from the teacher
 studentRouter.put("/reset/:class", async (req, res) => {
   try {
     await Student.updateMany(

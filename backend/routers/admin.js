@@ -9,6 +9,8 @@ dotenv.config();
 
 const adminRouter = express.Router();
 
+// the admin is the teacher 
+
 
 // create update profile for the admin
 // >> this code work just with the first document in admins collection

@@ -5,10 +5,13 @@ import { Admin } from "../models/Admin.js";
 import { Auth } from "../models/Auth.js";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import session from "express-session";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 
 const authRouter = express.Router();
+authRouter.use(cookieParser());
 
 // email setup nodemailer
 const transporter = nodemailer.createTransport({
@@ -31,12 +34,19 @@ transporter.verify((error, success) => {
 // Signup route for both students and teachers
 authRouter.post("/signup", async (req, res) => {
   try {
-    const { email, password, role , name , familyName , matricule} = req.body;
+    const { email, password, role, name, familyName, matricule } = req.body;
 
-    // Check if the email already exists for the role
-    const existingUser = await Auth.findOne({email});
-    if (existingUser) {
+    // Check if the email already exists 
+    const existingEmail = await Auth.findOne({ email });
+    if (existingEmail) {
       return res.status(401).send("This email already exists!");
+    }
+    // Check if the matricule already exists 
+    if(matricule){
+      const existingMatricule = await Student.findOne({matricule});
+      if(existingMatricule){
+        return res.status(401).send("This matricule already exists!")
+      }
     }
 
     // Create a hashed password
@@ -50,11 +60,11 @@ authRouter.post("/signup", async (req, res) => {
 
     // save the user in the auths collection
     const auth = new Auth({
-        email ,
-        password : hashedPassword ,
-        role ,
+      email,
+      password: hashedPassword,
+      role,
     });
-    await auth.save()
+    await auth.save();
     // Determine the user model based on the role
     let user;
     if (role === "student") {
@@ -62,9 +72,9 @@ authRouter.post("/signup", async (req, res) => {
         email,
         password: hashedPassword,
         role,
-        name ,
-        familyName ,
-        matricule ,
+        name,
+        familyName,
+        matricule,
         verificationToken,
       });
     } else {
@@ -72,8 +82,8 @@ authRouter.post("/signup", async (req, res) => {
         email,
         password: hashedPassword,
         role,
-        name ,
-        familyName ,
+        name,
+        familyName,
         verificationToken,
       });
     }
@@ -87,7 +97,7 @@ authRouter.post("/signup", async (req, res) => {
       to: email,
       subject: "Verify Your Email",
       html: `<h1>Please verify your email to complete your signup.</h1>
-               <button>Click <a href="${process.env.BASE_URL}/auth/verify/${verificationToken}">here</a> to verify your account.</button>`,
+               <button>Click <a href="${process.env.BASE_URL}/verification/${verificationToken}">here</a> to verify your account.</button>`,
     };
 
     // Send verification email
@@ -130,7 +140,7 @@ authRouter.get("/verify/:token", async (req, res) => {
 
     res.status(200).send("Email verified successfully!");
   } catch (error) {
-    console.error("error during the email verification " , error);
+    console.error("error during the email verification ", error);
     res.status(400).json({ error: "Invalid or expired token" });
   }
 });
@@ -140,14 +150,14 @@ authRouter.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find the user 
-    let user ;
-    user = await Admin.findOne({email});
-    if(!user){
-        user = await Student.findOne({email});
-        if(!user){
-            return res.status(404).send("Your email or password is incorrect!")
-        }
+    // Find the user
+    let user;
+    user = await Admin.findOne({ email });
+    if (!user) {
+      user = await Student.findOne({ email });
+      if (!user) {
+        return res.status(404).send("Your email or password is incorrect!");
+      }
     }
 
     // Check if the user's email is verified
@@ -165,7 +175,7 @@ authRouter.post("/login", async (req, res) => {
         to: user.email,
         subject: "Verify Your Email",
         html: `<h1>Verify Your Email</h1>
-                 <a href="${process.env.BASE_URL}/auth/verify/${verificationToken}"><button>Verify My Account</button></a>`,
+                 <a href="${process.env.BASE_URL}/verification/${verificationToken}"><button>Verify My Account</button></a>`,
       };
 
       try {
@@ -183,6 +193,20 @@ authRouter.post("/login", async (req, res) => {
       }
     }
 
+
+    // generate token
+    const token = jwt.sign({ userId : user._id , role : user.role} ,
+      process.env.JWT_SECRET ,
+      {expiresIn : "1d"}
+    );
+
+    res.cookie("auth_token" , token , {
+      httpOnly : true ,
+      secure : true ,
+      maxAge : 1000 * 60 * 60 * 24 ,  
+      path: '/'
+    });
+
     // Compare the valid password with the hashed one
     const validPass = await bcrypt.compare(password, user.password);
     if (!validPass) {
@@ -191,42 +215,61 @@ authRouter.post("/login", async (req, res) => {
 
     res.status(200).send(user);
   } catch (error) {
-    console.error('error durring the login' , error)
+    console.error("error durring the login", error);
     res.status(400).send(error);
   }
 });
 
-// reset password 
-authRouter.post('/reset-pass' ,async (req , res)=>{
+authRouter.get('/user', (req, res) => {
+  // Get the token from the cookie
+  const token = req.cookies.auth_token;
+
+  if (!token) {
+    return res.status(401).send('Unauthorized');
+  }
+
   try {
-    const {email} = req.body ;
+    // Verify and decode the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Send the user data back in the response
+    res.json({ userId: decoded.userId, role: decoded.role });
+  } catch (error) {
+    console.error(error)
+    res.status(401).send('Invalid token');
+  }
+});
 
+// reset password
+authRouter.post("/reset-pass", async (req, res) => {
+  try {
+    const { email } = req.body;
 
-    const admin = await Admin.findOne({email});
-    let student ;
-    if(!admin){
-        student = await Student.findOne({email});
-        if(!student){
-            return res.status(404).send("No account found with that email address.")
-        }
+    const admin = await Admin.findOne({ email });
+    let student;
+    if (!admin) {
+      student = await Student.findOne({ email });
+      if (!student) {
+        return res
+          .status(404)
+          .send("No account found with that email address.");
+      }
     }
 
-    // generate a reset token 
-    const resetToken = jwt.sign(
-      {email : email} ,
-      process.env.JWT_SECRET ,
-      {expiresIn : "1h"} 
-    );
+    // generate a reset token
+    const resetToken = jwt.sign({ email: email }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
-    // the reset  link 
-    const resetLink = `${process.env.BASE_URL}/auth/reset-pass/${resetToken}`
+    // the reset  link
+    const resetLink = `${process.env.BASE_URL}/reset-pass/${resetToken}`;
 
-        // Create email content
+    // Create email content
     const mailOptions = {
-          from: process.env.EMAIL,
-          to: email,
-          subject: 'Password Reset Request',
-          html: `
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Password Reset Request",
+      html: `
             <h1>Password Reset Request</h1>
             <p>You requested a password reset. Please click the link below to reset your password:</p>
             <a href="${resetLink}"><button>Reset Your Password</button></a>
@@ -236,38 +279,39 @@ authRouter.post('/reset-pass' ,async (req , res)=>{
 
     try {
       await transporter.sendMail(mailOptions);
-      res.status(200).send("A password reset link has been sent to your email.");
+      res
+        .status(200)
+        .send("A password reset link has been sent to your email.");
     } catch (error) {
       return res.status(500).send("Error sending the password reset email.");
     }
-
   } catch (error) {
-    res.status(400).send(error)
+    res.status(400).send(error);
   }
 });
 
-authRouter.post("/reset-pass/:token" , async (req ,res) => {
+authRouter.post("/reset-pass/:token", async (req, res) => {
   try {
-    const {token} = req.params ;
-    const {password} = req.body ;
+    const { token } = req.params;
+    const { password } = req.body;
 
-    // verify the token 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);     
-    const auth = await Auth.findOne({email : decoded.email});
-    let user ;
+    // verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const auth = await Auth.findOne({ email: decoded.email });
+    let user;
 
-    if(!auth && !decoded){
-        return res.status(400).json({ error: 'Invalid token' });
+    if (!auth && !decoded) {
+      return res.status(400).json({ error: "Invalid token" });
     }
-    if(auth.role === "teacher"){
-        user = await Admin.findOne({email : decoded.email})
-    }else{
-        user = await Student.findOne({email : decoded.email})
+    if (auth.role === "teacher") {
+      user = await Admin.findOne({ email: decoded.email });
+    } else {
+      user = await Student.findOne({ email: decoded.email });
     }
 
-    // generate new hashed password 
+    // generate new hashed password
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password , salt);
+    user.password = await bcrypt.hash(password, salt);
 
     await user.save();
 
@@ -275,7 +319,16 @@ authRouter.post("/reset-pass/:token" , async (req ,res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-})
+});
 
+authRouter.post("/logout", (req, res) => {
+  res.clearCookie("auth_token", {
+    httpOnly: true,  
+    secure: true, 
+    path: '/',  
+  });
+
+  res.status(200).send("Logged out successfully!");
+});
 
 export default authRouter;

@@ -3,13 +3,13 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 export default function ResetPass({ resetPassword }) {
-  const serverUri = process.env.REACT_APP_BASE_URI ;
+  const serverUri = process.env.REACT_APP_BASE_URI;
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
-  const [passError , setPassError] = useState(false);
+  const [passError, setPassError] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
   const { token } = useParams();
 
@@ -29,17 +29,17 @@ export default function ResetPass({ resetPassword }) {
     try {
       // For password reset, pass both token and new password
       if (token) {
-        if(password === confPassword){
-            const res = await axios.post(
-                `${serverUri}/admin/reset-pass/${token}`,
-                { password }
-              );
-              if (res.status === 200) {
-                navigate("/");
-              }
-        }else{
-            setPassError(true);
-            setConfPassword('')
+        if (password === confPassword) {
+          const res = await axios.post(
+            `${serverUri}/admin/reset-pass/${token}`,
+            { password }
+          );
+          if (res.status === 200) {
+            navigate("/");
+          }
+        } else {
+          setPassError(true);
+          setConfPassword("");
         }
       } else {
         // For email submission
@@ -77,13 +77,13 @@ export default function ResetPass({ resetPassword }) {
             boxShadow: "1px 1px 20px #9a99f9",
           }}
         >
-          <h6 className="text-center">Check you Email</h6>
+          <h6 className="text-center">Check your Email</h6>
           <p className="mt-4">
             A password reset link has been sent to your email. <b>{email}</b>
           </p>
           <span
             disabled={loading}
-            className="text-primary"
+            className={`${loading ? "text-black-50" : "text-primary"}`}
             role="button"
             onClick={submitHandler}
             style={{
@@ -139,7 +139,13 @@ export default function ResetPass({ resetPassword }) {
                     setConfPassword(e.target.value);
                   }}
                 />
-                {passError ? <div class="form-text text-danger">It's not the same. Please select the correct one.</div> : <></>}
+                {passError ? (
+                  <div class="form-text text-danger">
+                    It's not the same. Please select the correct one.
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
             </>
           ) : (
