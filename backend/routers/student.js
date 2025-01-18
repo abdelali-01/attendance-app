@@ -64,9 +64,7 @@ studentRouter.get("/studentsList/:classId", async (req, res) => {
 // get the list of the classes of student
 studentRouter.get("/classes/:studentId", async (req, res) => {
   const { studentId } = req.params;
-  console.log(studentId);
   
-
   try {
     const student = await Student.findOne({_id : studentId});
     res.status(200).send(student.classes);
