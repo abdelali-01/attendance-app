@@ -6,7 +6,7 @@ import cors from "cors";
 const app = express();
 app.use(
   cors({
-    origin : "https://attendance-73cv.onrender.com" ,
+    origin : "http://localhost:3000" ,
     credentials: true, // Allow cookies and credentials to be sent with requests
   })
 );

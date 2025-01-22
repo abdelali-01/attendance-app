@@ -21,7 +21,6 @@ studentRouter.put("/enter/:studentId", async (req, res) => {
     if (!sharedClass) {
       return res.status(404).send("Code Invalid !");
     }
-
     // Check if the student is already enrolled in the class by matching classId
     const existingClass = student.classes.find(
       (classItem) => classItem.classId.toString() === sharedClass._id.toString()
@@ -32,6 +31,9 @@ studentRouter.put("/enter/:studentId", async (req, res) => {
       student.classes.push({
         classId: sharedClass._id,
         module: sharedClass.module,
+        d_AttendanceMark: sharedClass.d_AttendanceMark,
+        attendanceMark: sharedClass.d_AttendanceMark,
+        minusWithAbsence: sharedClass.minusWithAbsence,
       });
 
       // Save the student document with the updated classes array
@@ -39,8 +41,37 @@ studentRouter.put("/enter/:studentId", async (req, res) => {
 
       return res.status(200).send("Successfully entered the class.");
     } else {
-      return res.status(400).send("You are already enrolled in this class.");
+      return res.status(401).send("You are already enrolled in this class.");
     }
+  } catch (error) {
+    console.error("error during enter the class", error);
+    res.status(400).send(error);
+  }
+});
+
+// unenroll class
+studentRouter.put("/unenroll/:studentId", async (req, res) => {
+  try {
+    const { classId } = req.body;
+
+    const student = await Student.findById(req.params.studentId);
+    if (!student) {
+      return res.status(404).send("student not found !");
+    }
+
+    // find the class by the shareCode
+    const sharedClass = await Class.findOne({ _id: classId });
+    if (!sharedClass) {
+      return res.status(404).send("Class not found !");
+    }
+
+    // rmove the class object from the student's classes array
+    student.classes.pull({ classId });
+
+    // Save the student document with the updated classes array
+    await student.save();
+
+    return res.status(200).send("Successfully unenroll the class.");
   } catch (error) {
     console.error("error during enter the class", error);
     res.status(400).send(error);
@@ -61,18 +92,25 @@ studentRouter.get("/studentsList/:classId", async (req, res) => {
   }
 });
 
-// get the list of the classes of student
+// get the classes list of the student
 studentRouter.get("/classes/:studentId", async (req, res) => {
   const { studentId } = req.params;
-  
+
   try {
-    const student = await Student.findOne({_id : studentId});
-    res.status(200).send(student.classes);
+    const student = await Student.findOne({ _id: studentId });
+    const studentClasses = await Promise.all(
+      student.classes.map(async (classe) => {
+        return await Class.findById(classe.classId);
+      })
+    );
+
+    res.status(200).send(studentClasses);
   } catch (error) {
     console.error("error during get the studentClasses", error);
     res.status(400).send(error);
   }
 });
+
 // update password account from student
 studentRouter.put("/updatepass/:id", async (req, res) => {
   if (req.body.studentId === req.params.id) {
@@ -99,46 +137,63 @@ studentRouter.put("/updatepass/:id", async (req, res) => {
 
 // Allow the students to check their attendance
 studentRouter.put("/checkattendance/:id", async (req, res) => {
+  const { classId } = req.body;
+
   try {
-    let student = await Student.findById(req.params.id);
+    const student = await Student.findById(req.params.id);
     if (!student) {
-      return res.status(404).send("student not found !");
+      return res.status(404).send("Student not found");
     }
 
-    const studentClass = await Class.findOne({ class: student.class });
-    if (studentClass.posibility) {
-      await Student.findByIdAndUpdate(req.params.id, {
-        attendance: student.attendance + 1,
-      });
-      res.status(200).send("Marked as present successfully");
-    } else {
-      res.status(401).send("The class is closed. Please try again later.");
-    }
+    const currentClass = student.classes.find((c) => c.classId === classId);
+    currentClass.attendances += 1;
+
+    student.save();
+    res.status(200).send("Marked as absent successfully");
   } catch (error) {
     res.status(400).send(error);
   }
 });
 
-// get student with his matricule
-studentRouter.get("/:matricule", async (req, res) => {
+// get student with his id
+studentRouter.get("/:id", async (req, res) => {
+  const { classId } = req.query;
   try {
-    const student = await Student.findOne({ matricule: req.params.matricule });
+    const student = await Student.findById(req.params.id);
     if (!student) {
       return res.status(404).send({ message: "Student not found" });
     }
-    res.status(200).send(student);
+
+    const currentClass = student.classes.find((c) => c.classId === classId);
+    res.status(200).json({student , currentClass});
   } catch (error) {
     res.status(400).send(error);
   }
 });
 
 // reset all absences from the teacher
-studentRouter.put("/reset/:class", async (req, res) => {
+studentRouter.put("/reset/:classId", async (req, res) => {
   try {
-    await Student.updateMany(
-      { class: req.params.class },
-      { absences: 0, attendanceMark: 5 }
-    );
+    const currentClass = await Class.findById(req.params.classId);
+    if (!currentClass) {
+      return res.status(404).send("class not found !");
+    }
+
+    const students = await Student.find({
+      "classes.classId": req.params.classId,
+    });
+    
+    students.forEach(async (student) => {
+      // Loop through the student's classes and reset absences for the class with matching classId
+      student.classes.forEach((classItem) => {
+        if (classItem.classId === req.params.classId) {
+          classItem.absences = 0;  // Reset the absences to 0
+        }
+      });
+    
+      // Save the updated student document
+      await student.save();  // You need to `await` save to ensure it's done before moving to the next student
+    });
 
     res.status(200).send("success");
   } catch (error) {

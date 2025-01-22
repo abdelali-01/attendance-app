@@ -1,9 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {useAuth} from "../../contexts/auth"
 
 export default function AddClass() {
   const serverUri = process.env.REACT_APP_BASE_URI ;
+  const {user} = useAuth();
 
   const navigate = useNavigate();
   const [classe, setClasse] = useState({
@@ -11,7 +13,9 @@ export default function AddClass() {
     speciality: "",
     system: "",
     module : "" ,
-    deleugate : ""
+    deleugate : "" ,
+    d_AttendanceMark : null ,
+    minusWithAbsence : null ,
   });
   const handleChange = (e) => {
     setClasse({ ...classe, [e.target.name]: e.target.value });
@@ -24,10 +28,10 @@ export default function AddClass() {
     try {
       try {
         const res = await axios.post(
-          serverUri+"/class/newclass",
+          serverUri+"/class/newclass/"+user,
           classe
         );
-        navigate(`/${res.data.class}`);
+        navigate(`/${res.data._id}`);
       } catch (error) {
         alert(error.response.data);
       }
@@ -40,7 +44,7 @@ export default function AddClass() {
     <div className="add-class px-3 flex-grow-1 d-flex flex-column align-items-center mt-5">
       <h3 className="my-5">Add new Class</h3>
       <form onSubmit={fetchData}>
-        <div className="row w-100 m-auto my-3 gap-3">
+        <div className="row w-100 m-auto my-3 gap-1">
         <div className="field  col">
             <label htmlFor="system">system </label>
             <select
@@ -63,7 +67,7 @@ export default function AddClass() {
             </select>
           </div>
           <div className="field col">
-            <label htmlFor="speciality">Speciality</label>
+            <label htmlFor="speciality">Speciality *</label>
             <input
               value={classe.speciality}
               onChange={handleChange}
@@ -74,12 +78,12 @@ export default function AddClass() {
               required
             />
           </div>
-        </div>
-        <div className="row w-100 m-auto gap-3">
           <div className="field col">
-            <label htmlFor="module">Module</label>
-            <input type="text" name="module" id="module"/>
+            <label htmlFor="module">Module *</label>
+            <input type="text" name="module" id="module" required placeholder="your module" value={classe.module} onChange={handleChange}/>
           </div>
+        </div>
+        <div className="row w-100 m-auto gap-1">
           <div className="field col">
             <label htmlFor="class">Class name</label>
             <input
@@ -96,7 +100,16 @@ export default function AddClass() {
             <label htmlFor="deleguate">Class deleguate</label>
             <input type="text" name="deleguate" id="deleguate" placeholder="deleguate name"/>
           </div>
-
+        </div>
+        <div className="row w-100 m-auto mt-3 gap-1">
+          <div className="field col">
+            <label htmlFor="d_AttendanceMark">A-mark </label>
+            <input type="number" step={"0.25"} name="d_AttendanceMark" id="d_AttendanceMark" value={classe.d_AttendanceMark} placeholder="example : 5" required onChange={handleChange}/>
+          </div>
+          <div className="field col">
+            <label htmlFor="minusWithAbsence">Minus with absence</label>
+            <input type="number" step={"0.25"} name="minusWithAbsence" id="minusWithAbsence" value={classe.minusWithAbsence} placeholder="example : 0.5" required onChange={handleChange}/>
+          </div>
         </div>
         <div className="cta w-100 text-center mt-5">
           <button className="btn open-style rounded-3 px-5">Submit</button>

@@ -6,9 +6,10 @@ import students_icon from "../icons/Customers.svg";
 import arrow_icon from "../icons/Downarrow.svg";
 import activity_icon from "../icons/Activity.svg";
 import report_icon from "../icons/Reports.svg";
+import message_icon from "../icons/Message.svg"
 import settings_icon from "../icons/Settings.svg";
 import logout_icon from "../icons/Logout.svg";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 
 export default function Sidebar({ classes }) {
@@ -23,8 +24,6 @@ export default function Sidebar({ classes }) {
     setActiveLink(location.pathname);
   }, [location]);
 
-  // call useNavigate hook to manage the admin position when he logout
-  const navigate = useNavigate();
 
   //create hooks for the responsive
   const [sidebarStatus, setSidebarStatus] = useState(window.innerWidth > 1200);
@@ -67,13 +66,13 @@ export default function Sidebar({ classes }) {
 
   // Check if the current path matches any class
   const isActiveDropdown = classes.some((c) =>
-    location.pathname.includes(c.class)
+    location.pathname.includes(c._id)
   );
 
   return (
     <>
       <i
-        class="fa-solid fa-bars text-white position-absolute fs-3"
+        className="fa-solid fa-bars text-white position-absolute fs-3"
         onClick={() => setSidebarStatus(true)}
       ></i>
       <div
@@ -85,7 +84,7 @@ export default function Sidebar({ classes }) {
         {sidebarStatus && window.innerWidth < 1200 ? (
           <i
             role="button"
-            class="fa-regular fa-circle-xmark position-absolute fs-4"
+            className="fa-regular fa-circle-xmark position-absolute fs-4"
             onClick={() => setSidebarStatus(false)}
             style={{
               top: "5px",
@@ -137,7 +136,7 @@ export default function Sidebar({ classes }) {
                 <div className="collapse ms-3" id="studentsDropdown">
                   <ul className="list-unstyled">
                     {classes.map((c) => (
-                      <Link onClick={hendleLink} to={`/${c.class}`} key={c._id}>
+                      <Link onClick={hendleLink} to={`/${c._id}`} key={c._id}>
                         <li>{c.class}</li>
                       </Link>
                     ))}
@@ -152,7 +151,7 @@ export default function Sidebar({ classes }) {
                 onClick={hendleLink}
                 to="/classes"
                 className={`sidebar-link ${
-                  activeLink === "/classes" ? "active" : ""
+                  activeLink.startsWith("/classes") ? "active" : ""
                 } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
               >
                 <img src={students_icon} alt="" />
@@ -181,6 +180,17 @@ export default function Sidebar({ classes }) {
               <img src={report_icon} alt="" />
               <span>Reports</span>
             </Link>
+
+            <Link
+              onClick={hendleLink}
+              to="/messages"
+              className={`sidebar-link ${
+                activeLink === "/messages" ? "active" : ""
+              } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
+            >
+              <img src={message_icon} alt="" />
+              <span>Messages</span>
+            </Link>
           </div>
 
           <div className="sidebar-profile-actions w-100 d-flex flex-column align-items-start gap-4">
@@ -198,6 +208,7 @@ export default function Sidebar({ classes }) {
             <div
               onClick={() => {
                 logout();
+                sessionStorage.clear();
               }}
               className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3"
             >

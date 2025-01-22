@@ -1,5 +1,5 @@
 import express from "express";
-import { Class } from "../models/Class.js";
+import { Class, generateCode } from "../models/Class.js";
 import { Student } from "../models/Student.js";
 
 const classRouter = express.Router();
@@ -49,6 +49,23 @@ classRouter.get("/getclass/:classId", async (req, res) => {
   }
 });
 
+// generate new shareCode for the class
+classRouter.put("/code/:classId" , async (req , res) => {
+  const {classId} = req.params ;
+  try {
+    const classe = await Class.findByIdAndUpdate(classId , {
+      shareCode : generateCode()
+    });
+    res.status(200).json({
+      message : "success with update the code" ,
+      shareCode : classe.shareCode
+    });
+  } catch (error) {
+    console.error("error during generate the class code" , error);
+    res.status(400).send(error)
+  }
+})
+
 // create the system of open and close posibility of checking
 classRouter.put("/changePosibility/:classId", async (req, res) => {
   try {
@@ -85,8 +102,17 @@ classRouter.put("/changePosibility/:classId", async (req, res) => {
 
 // delete the class if needed
 classRouter.delete("/:classId", async (req, res) => {
+  const { classId } = req.params
   try {
-    await Class.findOneAndDelete({ _id: req.params.classId });
+    await Class.findOneAndDelete({ _id: classId });
+
+    const studentsOnThisClass = await Student.find({"classes.classId" : classId});
+
+    studentsOnThisClass.forEach( async (student) => {
+      student.classes.pull({classId});
+
+      await student.save();
+    })
 
     res.status(200).send("class deleted Successfully");
   } catch (error) {

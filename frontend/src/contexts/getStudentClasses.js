@@ -17,6 +17,7 @@ export default function GetStudentClassesProvider({children}){
   const {user , role} = useAuth();
 
   const [studentClasses , setStudentClasses] = useState(null);
+  const [loading , setLoading] = useState(true);
   
   useEffect(()=>{
     const fetchClasses = async () => {
@@ -26,6 +27,8 @@ export default function GetStudentClassesProvider({children}){
         } catch (error) {
             console.error('error during getStudentClasses' , error);
             alert('Request Faild , Try later !');
+        }finally{
+          setLoading(false)
         }
     }
 
@@ -36,7 +39,7 @@ export default function GetStudentClassesProvider({children}){
 
 
   return(
-    <GetStudentClasses.Provider value={{studentClasses}}>
+    <GetStudentClasses.Provider value={{studentClasses , loading}}>
         {children}
     </GetStudentClasses.Provider>
   )

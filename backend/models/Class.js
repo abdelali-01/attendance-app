@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 import crypto from 'crypto';
-import { type } from "os";
 
-const generateCode = ()=>{
+export const generateCode = ()=>{
   return crypto.randomBytes(3).toString('hex');
 }
 
@@ -14,6 +13,7 @@ const classSchema = new mongoose.Schema(
     },
     module : {
       type : String ,
+      required : true
     },
     posibility: {
       type: Boolean,
@@ -28,11 +28,21 @@ const classSchema = new mongoose.Schema(
     },
     system : {
       type: String ,
-      required : true
     },
     shareCode : {
       type : String ,
       unique : true 
+    },
+    deleugate : {
+      type : String
+    } ,
+    d_AttendanceMark: {
+      type : Number ,
+      required : true
+    },
+    minusWithAbsence: {
+      type : Number ,
+      required : true
     },
     absences: [
       {

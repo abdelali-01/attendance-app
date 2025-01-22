@@ -43,9 +43,10 @@ export const AuthProvider = ({ children }) => {
     fetchUserData();
 
     if(user && location.pathname === "/login"){
+
       navigate('/home')
     }
-  }, [navigate, serverUri , user]);
+  }, [navigate, serverUri , user , location.pathname]);
 
   // Login function to set token and user details
   const login = () => {

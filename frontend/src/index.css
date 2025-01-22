@@ -19,13 +19,33 @@
     --primary : #5A57FF ;
     --dark : #353535 ;
     --gray : #CCCCCC ;
+    /* --gray : #75757563 ; */
 }
 
+/* Default light mode styles */
 body {
     overflow-x: hidden;
+    background-color: white;
+    color: black;
 }
 
 a{
     text-decoration: none !important;
     color: inherit !important;
+}
+
+
+form .field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-grow: 1;
+    min-width: 200px;
+}
+
+form .field input , form .field select{
+    border: 1px solid #4B5563;
+    outline: none;
+    padding: 6px ;
+    border-radius: 5px;
 }
