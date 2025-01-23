@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import delete_icon from "../icons/trash.svg";
-import update_icon from "../icons/pen.svg";
-import absent_icon from "../icons/absent.svg";
+import delete_icon from "./icons/trash.svg";
+import update_icon from "./icons/pen.svg";
+import absent_icon from "./icons/absent.svg";
 import axios from "axios";
 import { Link, useLocation, useParams } from "react-router-dom";
-import Popup from "../Popup";
+import Popup from "./Popup";
 
 const serverUri = process.env.REACT_APP_BASE_URI;
 // delete student

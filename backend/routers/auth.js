@@ -36,16 +36,16 @@ authRouter.post("/signup", async (req, res) => {
   try {
     const { email, password, role, name, familyName, matricule } = req.body;
 
-    // Check if the email already exists 
+    // Check if the email already exists
     const existingEmail = await Auth.findOne({ email });
     if (existingEmail) {
       return res.status(401).send("This email already exists!");
     }
-    // Check if the matricule already exists 
-    if(matricule){
-      const existingMatricule = await Student.findOne({matricule});
-      if(existingMatricule){
-        return res.status(401).send("This matricule already exists!")
+    // Check if the matricule already exists
+    if (matricule) {
+      const existingMatricule = await Student.findOne({ matricule });
+      if (existingMatricule) {
+        return res.status(401).send("This matricule already exists!");
       }
     }
 
@@ -193,18 +193,18 @@ authRouter.post("/login", async (req, res) => {
     //   }
     // }
 
-
     // generate token
-    const token = jwt.sign({ userId : user._id , role : user.role} ,
-      process.env.JWT_SECRET ,
-      {expiresIn : "1d"}
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
     );
 
-    res.cookie("auth_token" , token , {
-      httpOnly : true ,
-      secure : true ,
-      maxAge : 1000 * 60 * 60 * 24 ,  
-      path: '/'
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 1000 * 60 * 60 * 24,
+      path: "/",
     });
 
     // Compare the valid password with the hashed one
@@ -220,23 +220,43 @@ authRouter.post("/login", async (req, res) => {
   }
 });
 
-authRouter.get('/user', (req, res) => {
+authRouter.get("/user", async (req, res) => {
   // Get the token from the cookie
   const token = req.cookies.auth_token;
 
   if (!token) {
-    return res.status(401).send('Unauthorized');
+    return res.status(401).send("Unauthorized");
   }
 
   try {
     // Verify and decode the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+
+    // find the user for send the data
+    let userData;
+    if (decoded.role === "teacher") {
+      userData = await Admin.findOne({ _id: decoded.userId });
+    } else {
+      userData = await Student.findOne({ _id: decoded.userId });
+    }
+
+    // check if there is user or not
+    if (!userData) {
+      return res.status(404).send("User not found !");
+    }
+
+    // remove the sensitive data from the userData object
+    const { password, _id, verificationToken, ...otherData } = userData._doc;
+
     // Send the user data back in the response
-    res.json({ userId: decoded.userId, role: decoded.role });
+    res.json({
+      userId: decoded.userId,
+      role: decoded.role,
+      userData: otherData,
+    });
   } catch (error) {
-    console.error(error)
-    res.status(401).send('Invalid token');
+    console.error(error);
+    res.status(401).send("Invalid token");
   }
 });
 
@@ -323,12 +343,45 @@ authRouter.post("/reset-pass/:token", async (req, res) => {
 
 authRouter.post("/logout", (req, res) => {
   res.clearCookie("auth_token", {
-    httpOnly: true,  
-    secure: true, 
-    path: '/',  
+    httpOnly: true,
+    secure: true,
+    path: "/",
   });
 
   res.status(200).send("Logged out successfully!");
+});
+
+// update the account
+authRouter.put("/update/:id", async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.query;
+  const data = req.body;
+  try {
+    // generate new password if exist in the data
+    if (data.password !== "" && data.password) {
+      const salt = await bcrypt.genSalt(10);
+      data.password = await bcrypt.hash(data.password, salt);
+    }else{
+      delete data.password ;
+    }
+    // find the user based on his id
+    let user;
+    // check the user role to know from where we bring the user
+    if (role === "teacher") {
+      user = await Admin.findByIdAndUpdate(id, { $set: data });
+    } else {
+      user = await Student.findByIdAndUpdate(id, { $set: data });
+    }
+
+    if(!user){
+      return res.status(404).send("user not found !");
+    }
+
+    res.status(200).send("account updated successfully");
+  } catch (error) {
+    console.error("error during updating the account", error);
+    res.status(400).send(error);
+  }
 });
 
 export default authRouter;

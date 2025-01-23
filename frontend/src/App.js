@@ -12,6 +12,8 @@ import Signup from "./pages/signup/Signup";
 import Verification from "./pages/Verification";
 import Classes from "./pages/studentPages/Classes";
 import { Class as StudentClassPage } from "./pages/studentPages/Class";
+import Settings from "./pages/settings/Settings";
+import Reports from "./pages/Reports";
 
 function App() {
   const serverUri = process.env.REACT_APP_BASE_URI;
@@ -62,6 +64,8 @@ function App() {
             path="/reset-pass/:token"
             element={<ResetPass resetPassword />}
           />
+          <Route path="/settings" element={<Settings classes={classes}/>} />
+          <Route path="/reports" element={<Reports classes={classes}/>} />
           {role === "teacher" ? (
             <>
               {/* set the teacher pages */}

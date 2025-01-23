@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import Loader from "../components/Loader";
 
 // Create context
 const AuthContext = createContext();
@@ -16,7 +17,8 @@ export const AuthProvider = ({ children }) => {
 
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
-  
+  const [userData , setUserData] = useState(null);
+    
   const [loading, setLoading] = useState(true); // To handle loading state while checking token
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,10 +29,11 @@ export const AuthProvider = ({ children }) => {
       const res = await axios.get(`${serverUri}/auth/user`, {
         withCredentials: true,
       });
-
+      
       // Assuming the server sends back user data in the response
       setUser(res.data.userId);
-      setRole(res.data.role);      
+      setRole(res.data.role); 
+      setUserData(res.data.userData);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -68,11 +71,11 @@ export const AuthProvider = ({ children }) => {
 
   // If the app is still loading, don't render anything yet
   if (loading) {
-    return <div>Loading...</div>;
+    return <div><Loader/></div>;
   }
 
   return (
-    <AuthContext.Provider value={{ user, role, login, logout }}>
+    <AuthContext.Provider value={{ user, role, userData , login, logout }}>
       {children}
     </AuthContext.Provider>
   );

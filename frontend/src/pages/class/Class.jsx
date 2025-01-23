@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./class.css";
-import StudentItem from "../../components/studentItem/StudentItem";
+import StudentItem from "../../components/StudentItem";
 import axios from "axios";
 import search_icon from "../../components/icons/search.svg";
 import moment from "moment";

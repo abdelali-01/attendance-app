@@ -43,7 +43,7 @@ form .field {
     min-width: 200px;
 }
 
-form .field input , form .field select{
+form .field input , form .field select , form .field textarea{
     border: 1px solid #4B5563;
     outline: none;
     padding: 6px ;

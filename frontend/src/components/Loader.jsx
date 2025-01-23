@@ -1,12 +1,12 @@
 import React from "react";
 
-export default function Loader() {
+export default function Loader({h}) {
   return (
     <div
       className="position-relative"
       style={{
         width: "100%",
-        height: "100vh",
+        height: `${h ? h : "100vh"}`,
       }}
     >
       <div
