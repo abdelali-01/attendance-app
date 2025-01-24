@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 export default function Classes() {
   const { studentClasses, loading } = useStudentClasses();
-
+  
   // manage the join class popup display with state
   const [isVisible, setIsVisible] = useState(false);
 

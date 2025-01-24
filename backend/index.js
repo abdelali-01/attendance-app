@@ -18,11 +18,13 @@ import authRouter from "./routers/auth.js";
 import adminRouter from "./routers/admin.js";
 import classRouter from "./routers/class.js";
 import studentRouter from "./routers/student.js";
+import reportRouter from "./routers/report.js";
 
 app.use("/auth", authRouter);
 app.use("/admin", adminRouter);
 app.use("/class", classRouter);
 app.use("/student", studentRouter);
+app.use("/report" , reportRouter);
 
 // connect with MongoDB database and run the server
 const port = process.env.PORT;

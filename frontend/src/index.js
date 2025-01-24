@@ -7,13 +7,16 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import { BrowserRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./contexts/auth";
 import GetStudentClassesProvider from "./contexts/getStudentClasses";
+import GetReportsProvider from "./contexts/getReports";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Router>
     <AuthProvider>
       <GetStudentClassesProvider>
-        <App />
+        <GetReportsProvider>
+          <App />
+        </GetReportsProvider>
       </GetStudentClassesProvider>
     </AuthProvider>
   </Router>

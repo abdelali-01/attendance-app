@@ -137,7 +137,7 @@ export default function Sidebar({ classes }) {
                   <ul className="list-unstyled">
                     {classes.map((c) => (
                       <Link onClick={hendleLink} to={`/${c._id}`} key={c._id}>
-                        <li>{c.class}</li>
+                        <li style={{textTransform : "capitalize"}}>{c.class}</li>
                       </Link>
                     ))}
                     <Link to={"/add-class"} onClick={hendleLink}>
@@ -158,17 +158,6 @@ export default function Sidebar({ classes }) {
                 <span>Classes</span>
               </Link>
             )}
-
-            <Link
-              onClick={hendleLink}
-              to="/activity"
-              className={`sidebar-link ${
-                activeLink === "/activity" ? "active" : ""
-              } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
-            >
-              <img src={activity_icon} alt="" />
-              <span>Activities</span>
-            </Link>
 
             <Link
               onClick={hendleLink}
