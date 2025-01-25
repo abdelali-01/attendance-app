@@ -24,8 +24,8 @@ export default function Classes() {
         ) : (
           studentClasses.map((classe) => {
             return (
-              <Link to={`/classes/${classe._id}`}>
-                <ClassItem key={classe._id} classe={classe} />
+              <Link to={`/classes/${classe._id}`} key={classe._id}>
+                <ClassItem  classe={classe} />
               </Link>
             )
           })

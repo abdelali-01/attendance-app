@@ -39,7 +39,8 @@ export default function Home({ classes }) {
     if (classes.length > 0 && selectedClass === "") {
       // Set the absences of the first class by default
       setSelecedClass(classes[0]._id);
-    } else if (selectedClass) {
+    } else if (selectedClass !== "") {
+      setLoading(true);
       // Find the class with the selectedClass identifier (e.g., class name or ID)
       const foundClass = classes.find((cls) => cls._id === selectedClass); // Adjust property to match your data
       
@@ -50,12 +51,12 @@ export default function Home({ classes }) {
         );
         setStudents(res.data);
       };
-      fetchStudents();
 
-      if (foundClass) {        
+      if (foundClass) {     
         setAbsences(foundClass.absences); // Set absences for the selected class
         setAttendances(foundClass.attendances);
         fetchStudents();
+        setLoading(false)
       }
     }
     setLoading(false);
@@ -185,7 +186,7 @@ export default function Home({ classes }) {
                           <option
                             style={{ textTransform: "capitalize" }}
                             key={c._id}
-                            value={c.class}
+                            value={c._id}
                           >
                             {c.class}
                           </option>
@@ -290,14 +291,11 @@ export default function Home({ classes }) {
                     <p className="text-center my-4">No available students. </p>
                   ) : students.length > 0 ? (
                     students.map((student) => {
-                      const studentClass = student.classes.find(
-                        (c) => c.classId === selectedClass
-                      );
                       return (
                         <StudentAttendance
                           key={student._id}
                           student={student}
-                          currentClass={studentClass}
+                          selectedClass={selectedClass}
                         />
                       );
                     })

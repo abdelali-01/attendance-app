@@ -2,20 +2,45 @@ import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 
-export default function StudentAttendance({ student, currentClass }) {
+export default function StudentAttendance({
+  student,
+  selectedClass,
+  fromStudent,
+}) {
   const [percentage, setPercentage] = useState(100);
-  useEffect(() => {
-    const attendances = currentClass.attendances;
-    const absences = currentClass.absences;
-    if (absences === 0) {
-      return setPercentage(100);
+  const [currentClass, setCurrentClass] = useState(null);
+
+  useEffect(()=>{
+    if (selectedClass && !fromStudent) {
+      const studentClass = student.classes.find(
+        (c) => c.classId && c.classId.toString() === selectedClass.toString()
+      );
+      setCurrentClass(studentClass);
     }
 
-    // calculate the attendance percentage
-    const percentage = (attendances / (attendances + absences)) * 100;
-    
-    setPercentage(percentage.toFixed(0));
-  }, [percentage, currentClass.attendances, currentClass.absences]);
+    if (selectedClass && fromStudent) {
+      setCurrentClass({
+        attendances: selectedClass.attendances,
+        absences: selectedClass.absences,
+      });
+    }
+  },[selectedClass , fromStudent , student])
+
+  
+  useEffect(() => {
+    if (currentClass) {
+      const attendances = currentClass.attendances;
+      const absences = currentClass.absences;
+      if (absences === 0) {
+        return setPercentage(100);
+      }
+
+      // calculate the attendance percentage
+      const percentage = (attendances / (attendances + absences)) * 100;
+
+      setPercentage(percentage.toFixed(0));
+    }
+  }, [percentage,currentClass]);
 
   return (
     <div className="d-flex align-items-center gap-3 p-2">

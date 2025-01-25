@@ -16,7 +16,7 @@ export default function Reports({ classes }) {
           <h4>Recent reports</h4>
           {reports ? (
             reports.map((report) => {
-              return <ReportsItem report={report} />;
+              return <ReportsItem key={report._id} report={report} />;
             })
           ) : (
             <p className="text-black-50">No available reports</p>

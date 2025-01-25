@@ -161,37 +161,37 @@ authRouter.post("/login", async (req, res) => {
     }
 
     // Check if the user's email is verified
-    if (!user.isVerified) {
-      const verificationToken = jwt.sign(
-        { email: user.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1h" }
-      );
-      user.verificationToken = verificationToken;
-      await user.save();
+    // if (!user.isVerified) {
+    //   const verificationToken = jwt.sign(
+    //     { email: user.email },
+    //     process.env.JWT_SECRET,
+    //     { expiresIn: "1h" }
+    //   );
+    //   user.verificationToken = verificationToken;
+    //   await user.save();
 
-      const mailOptions = {
-        from: process.env.EMAIL,
-        to: user.email,
-        subject: "Verify Your Email",
-        html: `<h1>Verify Your Email</h1>
-                 <a href="${process.env.BASE_URL}/verification/${verificationToken}"><button>Verify My Account</button></a>`,
-      };
+    //   const mailOptions = {
+    //     from: process.env.EMAIL,
+    //     to: user.email,
+    //     subject: "Verify Your Email",
+    //     html: `<h1>Verify Your Email</h1>
+    //              <a href="${process.env.BASE_URL}/verification/${verificationToken}"><button>Verify My Account</button></a>`,
+    //   };
 
-      try {
-        await transporter.sendMail(mailOptions);
-        return res
-          .status(401)
-          .send(
-            "Your email is not verified. A verification email has been sent."
-          );
-      } catch (emailError) {
-        console.error("Error sending verification email:", emailError);
-        return res
-          .status(500)
-          .json({ error: "Error sending verification email." });
-      }
-    }
+    //   try {
+    //     await transporter.sendMail(mailOptions);
+    //     return res
+    //       .status(401)
+    //       .send(
+    //         "Your email is not verified. A verification email has been sent."
+    //       );
+    //   } catch (emailError) {
+    //     console.error("Error sending verification email:", emailError);
+    //     return res
+    //       .status(500)
+    //       .json({ error: "Error sending verification email." });
+    //   }
+    // }
 
     // generate token
     const token = jwt.sign(

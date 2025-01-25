@@ -14,6 +14,7 @@ import Classes from "./pages/studentPages/Classes";
 import { Class as StudentClassPage } from "./pages/studentPages/Class";
 import Settings from "./pages/settings/Settings";
 import Reports from "./pages/Reports";
+import NoDisponibleFeature from "./components/NoDisponibleFeature";
 
 function App() {
   const serverUri = process.env.REACT_APP_BASE_URI;
@@ -66,6 +67,7 @@ function App() {
           />
           <Route path="/settings" element={<Settings classes={classes}/>} />
           <Route path="/reports" element={<Reports classes={classes}/>} />
+          <Route path="/messages" element={<NoDisponibleFeature/>} />
           {role === "teacher" ? (
             <>
               {/* set the teacher pages */}
@@ -86,7 +88,7 @@ function App() {
             <>
               <Route
                 path="/home"
-                element={<div>welcome in the student home page</div>}
+                element={<NoDisponibleFeature/>}
               />
               <Route path="/classes" element={<Classes />} />
               <Route path="/classes/:classId" element={<StudentClassPage />} />
