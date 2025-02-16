@@ -45,11 +45,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // Try to fetch the user data on initial load
     fetchUserData();
-
-    if(!user){
-      navigate('/login')
-    }
-
     if(user && location.pathname === "/login"){
       navigate('/home')
     }
