@@ -19,11 +19,12 @@ export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(null);
   const [userData , setUserData] = useState(null);
     
-  const [loading, setLoading] = useState(true); // To handle loading state while checking token
+  const [loading, setLoading] = useState(false); // To handle loading state while checking token
   const navigate = useNavigate();
   const location = useLocation();
 
   const fetchUserData = async () => {
+    if(!user) setLoading(true) 
     try {
       // Send a request to the server to fetch user details based on the JWT cookie
       const res = await axios.get(`${serverUri}/auth/user`, {
@@ -34,10 +35,10 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.userId);
       setRole(res.data.role); 
       setUserData(res.data.userData);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching user data:", error);
-      setLoading(false);
+    } finally{
+      setLoading(false)
     }
   };
 
@@ -45,8 +46,11 @@ export const AuthProvider = ({ children }) => {
     // Try to fetch the user data on initial load
     fetchUserData();
 
-    if(user && location.pathname === "/login"){
+    if(!user){
+      navigate('/login')
+    }
 
+    if(user && location.pathname === "/login"){
       navigate('/home')
     }
   }, [navigate, serverUri , user , location.pathname]);

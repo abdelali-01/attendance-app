@@ -18,8 +18,6 @@ export default function GetReportsProvider({ children }) {
     const fetchReports = async () => {
       try {
         const res = await axios.get(`${serverUri}/report/${user}`);
-        console.log(res);
-        
 
         // Assuming the reports have a timestamp field (e.g., 'createdAt'), you can sort by that
         const sortedReports = res.data.sort((a, b) => {

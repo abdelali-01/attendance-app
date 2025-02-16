@@ -17,10 +17,11 @@ export default function GetStudentClassesProvider({children}){
   const {user , role} = useAuth();
 
   const [studentClasses , setStudentClasses] = useState(null);
-  const [loading , setLoading] = useState(true);
+  const [loading , setLoading] = useState(false);
   
   useEffect(()=>{
     const fetchClasses = async () => {
+      setLoading(true)
         try {
             const response = await axios.get(`${serverUri}/student/classes/${user}`);
             setStudentClasses(response.data);

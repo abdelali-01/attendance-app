@@ -168,7 +168,7 @@ export default function Home({ classes }) {
         <p className="text-black-50">Welcome back , teacher</p>
       </div>
       {loading ? (
-        <p>Loading ...</p>
+        <p><Loader/></p>
       ) : (
         <>
           <div className="charts-part w-100 d-flex flex-column align-items-end">
@@ -199,8 +199,8 @@ export default function Home({ classes }) {
                 </div>
               </form>
             </div>
-            <div className="statistics d-flex w-100 gap-4 py-3">
-              <div className="charts-statistics flex-grow-1">
+            <div className="statistics d-flex flex-wrap gap-4 py-3 w-100">
+              <div className="charts-statistics flex-grow-1" style={{maxWidth : "560px"}}>
                 <div className="row m-auto">
                   <div className="col">
                     <Charts
@@ -277,6 +277,7 @@ export default function Home({ classes }) {
                 className="students-attendance  card rounded-5 flex-grow-1"
                 style={{
                   width : "300px",
+                  maxWidth : "400px",
                   overflowY: "auto",
                   maxHeight: "100%",
                   marginBottom :"30px" ,
