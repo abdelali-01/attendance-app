@@ -1,6 +1,6 @@
 import express from "express";
 import { Report } from "../models/Report.js";
-import { Admin } from "../models/Admin.js";
+import { Teacher } from "../models/Teacher.js";
 import { Student } from "../models/Student.js";
 
 const reportRouter = express.Router();
@@ -11,7 +11,7 @@ reportRouter.post("/share/:teacherId", async (req, res) => {
 
   try {
     // find the teacher by his id
-    const teacher = await Admin.findById(req.params.teacherId);
+    const teacher = await Teacher.findById(req.params.teacherId);
     if (!teacher) {
       return res.status(404).send("teacher not found !");
     }
@@ -36,7 +36,7 @@ reportRouter.get("/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
     // check the user if exist / the userId is valid
-    let user = await Admin.findById(userId);
+    let user = await Teacher.findById(userId);
     if (!user) {
       user = await Student.findById(userId);
       if (!user) {
@@ -60,7 +60,7 @@ reportRouter.get("/:userId", async (req, res) => {
       const reportsWithTeachers = await Promise.all(
         flattenedReports.map(async (report) => {
           // Find the teacher based on teacherId in the report
-          const teacher = await Admin.findById(report.teacherId); // assuming Teacher is the model for teacher data
+          const teacher = await Teacher.findById(report.teacherId); // assuming Teacher is the model for teacher data
           const { _id , password , role , verificationToken , isVerified , ...otherTeacherData} = teacher._doc ;
           // Combine teacher and report
           return {
