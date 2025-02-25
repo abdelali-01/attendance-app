@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import { Student } from "../models/Student.js";
 import { Teacher } from "../models/Teacher.js";
-import jwt from "jsonwebtoken";
+import jwt, { decode } from "jsonwebtoken";
 import dotenv from "dotenv";
 import { emailSender } from "../utils/EmailSender.js";
 import {
@@ -105,10 +105,11 @@ authRouter.get("/verify/:token", async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+    
+    const emailField = decoded.email ? "email" : "username";
     const user =
-      (await Student.findOne({ email: decoded.username })) ||
-      (await Teacher.findOne({ email: decoded.username }));
+      (await Student.findOne({ email: decoded[emailField] })) ||
+      (await Teacher.findOne({ email: decoded[emailField] }));
 
     if (!user) return res.status(400).json({ error: "Invalid token" });
 
@@ -201,7 +202,6 @@ authRouter.post("/reset-pass/:token", async (req, res) => {
     const user =
       (await Teacher.findOne({ email: decoded.email })) ||
       (await Student.findOne({ email: decoded.email }));
-    
 
     if (!user || !decoded) {
       return res.status(400).json({ error: "Invalid token" });
@@ -236,39 +236,6 @@ authRouter.post("/logout", (req, res, next) => {
       return res.status(200).json({ message: "Logged out successfully" });
     });
   });
-});
-
-// update the account
-authRouter.put("/update/:id", async (req, res) => {
-  const { id } = req.params;
-  const { role } = req.query;
-  const data = req.body;
-  try {
-    // generate new password if exist in the data
-    if (data.password !== "" && data.password) {
-      const salt = await bcrypt.genSalt(10);
-      data.password = await bcrypt.hash(data.password, salt);
-    } else {
-      delete data.password;
-    }
-    // find the user based on his id
-    let user;
-    // check the user role to know from where we bring the user
-    if (role === "teacher") {
-      user = await Teacher.findByIdAndUpdate(id, { $set: data });
-    } else {
-      user = await Student.findByIdAndUpdate(id, { $set: data });
-    }
-
-    if (!user) {
-      return res.status(404).send("user not found !");
-    }
-
-    res.status(200).send("account updated successfully");
-  } catch (error) {
-    console.error("error during updating the account", error);
-    res.status(400).send(error);
-  }
 });
 
 export default authRouter;

@@ -27,8 +27,15 @@ const TeacherSchema = new mongoose.Schema({
         default : false ,
     },
     verificationToken : String,
-    resetPasswordToken: String,  
-    resetPasswordExpires: Date, 
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
+
+    // for payment details
+    plan: {
+        type: String,
+        enum: ["free", "standard", "premium"],
+        default: "free",
+    },
 });
 
 export const Teacher = mongoose.model('Teacher' , TeacherSchema);

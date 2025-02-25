@@ -54,15 +54,13 @@ app.use(passport.session());
 
 // importing routers
 import authRouter from "./routers/auth.js";
-import adminRouter from "./routers/Teacher.js"
 import classRouter from "./routers/class.js";
-import studentRouter from "./routers/student.js";
 import reportRouter from "./routers/report.js";
+import userRouter from './routers/user.js';
 
 app.use("/auth", authRouter);
-app.use("/admin", adminRouter);
+app.use("/user", userRouter);
 app.use("/class", classRouter);
-app.use("/student", studentRouter);
 app.use("/report" , reportRouter);
 
 // connect with MongoDB database and run the server

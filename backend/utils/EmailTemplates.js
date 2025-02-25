@@ -116,5 +116,4 @@ export const resetPasswordTemplate = (link) => {
   
   </body>
   </html>`;
-  };
-  
+};
