@@ -5,19 +5,14 @@ import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import { BrowserRouter as Router } from "react-router-dom";
-import { AuthProvider } from "./contexts/auth";
-import GetStudentClassesProvider from "./contexts/getStudentClasses";
-import GetReportsProvider from "./contexts/getReports";
+import store from "./store/store";
+import { Provider } from "react-redux";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Router>
-    <AuthProvider>
-      <GetStudentClassesProvider>
-        <GetReportsProvider>
-          <App />
-        </GetReportsProvider>
-      </GetStudentClassesProvider>
-    </AuthProvider>
+    <Provider store={store}>
+      <App />
+    </Provider>
   </Router>
 );

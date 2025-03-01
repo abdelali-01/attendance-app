@@ -5,8 +5,7 @@ const router = express.Router();
 
 router.route("/").post(checkUserRole("teacher"), paymentController.subscribe);
 
-router
-  .route("/hook")
-  .post(paymentController.subscribeHook);
+// this is the route that recieve the response from chargilyPay gateway
+router.route("/hook").post(paymentController.subscribeHook);
 
 export default router;

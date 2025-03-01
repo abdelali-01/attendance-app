@@ -20,7 +20,7 @@ passport.use(
           (await Teacher.findOne({ email: username })) ||
           (await Student.findOne({ email: username }));
         
-        if(!findUser) throw new Error("User Not Found !");
+        if(!findUser) throw new Error("Invalid Credintials !");
 
         // compare the passwords 
         const compare = await bcrypt.compare(password , findUser.password);

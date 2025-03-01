@@ -28,7 +28,7 @@ mongoose.connect(process.env.DATABASE_URL).then(() => {
 app.use(
   cors({
     origin: ["http://localhost:3000", "*"], // Allow frontend + any origin
-    methods: ["POST"], // Allow all methods
+    methods: ["POST"],
     credentials: true,
   })
 );

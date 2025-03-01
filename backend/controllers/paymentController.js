@@ -56,12 +56,16 @@ const subscribe = async (req, res) => {
 const subscribeHook = async (req, res) => {
   try {
     const { id, data } = req.body;
-    const { amount, status, metadata, created_at } = data;
+    const { amount, status, metadata } = data;
     const { plan, duration, teacherId, teacherEmail } = metadata || {};
 
     if (status === "paid") {
       // Check if payment already exists
       const existingPayment = await Payment.findOne({ transactionId: id });
+      // find the teacher who pay
+      const findTeacher = await Teacher.findById(teacherId);
+      if (findTeacher) findTeacher.plan = plan;
+      await findTeacher.save();
 
       if (!existingPayment) {
         // Create new payment document

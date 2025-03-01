@@ -35,8 +35,6 @@ const checkExpiredSubscriptions = async () => {
       // turn the teacher in the free plan
       teacher.plan = "free";
       await teacher.save();
-
-      console.log(`Email sent to ${teacher.email}`);
     }
   } catch (error) {
     console.error("Error checking expired subscriptions:", error);
