@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../../contexts/auth";
 import arrow from "../../components/icons/Downarrow-black.svg";
 import axios from "axios";
 import Loader from "../../components/Loader";
+import {useSelector} from 'react-redux';
 
 export default function UpdateProfile() {
   const serverUri = process.env.REACT_APP_BASE_URI;
 
-  const { userData, role, user } = useAuth();
+  const {role, user } = useSelector(state => state.user);
 
   // manage the form display with state
   const [isVisible, setIsVisible] = useState(false);
@@ -26,16 +26,16 @@ export default function UpdateProfile() {
   };
 
   useEffect(() => {
-    if (userData) {
+    if (user) {
       setForm({
-        name: userData.name,
-        familyName: userData.familyName,
+        name: user.name,
+        familyName: user.familyName,
         password: "",
         confPass: "",
-        matricule: role === "student" ? userData.matricule : "",
+        matricule: role === "student" ? user.matricule : "",
       });
     }
-  }, [userData, role]);
+  }, [user, role]);
 
   // update function
   const update = async (e) => {
@@ -49,7 +49,7 @@ export default function UpdateProfile() {
   }
 
     try {
-      await axios.put(`${serverUri}/auth/update/${user}?role=${role}`, form);
+      await axios.put(`${serverUri}/auth/update/${user._id}?role=${role}`, form);
       window.location.reload();
     } catch (error) {
       console.error("error during updating the account", error);
@@ -73,9 +73,9 @@ export default function UpdateProfile() {
             Manage and update your profile details
           </p>
           <h6 className="mt-3" style={{ textTransform: "capitalize" }}>
-            Welcome, {userData.familyName} {userData.name} !
+            Welcome, {user.familyName} {user.name} !
           </h6>
-          <p className="my-0">Email : {userData.email}</p>
+          <p className="my-0">Email : {user.email}</p>
         </div>
         <div className="right me-4">
           <img

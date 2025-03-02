@@ -1,6 +1,6 @@
 .sidebar {
     background-color: var(--primary);
-    width:280px ;
+    width: 320px ;
     top: 0;
     height: 100vh;
     overflow-y:auto ;
@@ -70,6 +70,14 @@
     height: 100%;
     background-color: #fff;
     left: 0;
+}
+
+.sidebar-link .fa-crown {
+    color: #FFD700;
+    font-size: 12px;
+    position: absolute;
+    right: 60px;
+    opacity: 1 !important;
 }
 
 @media (max-width : 1200px){

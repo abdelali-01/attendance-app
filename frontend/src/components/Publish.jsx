@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/auth";
+import { useSelector } from "react-redux";
 
 export default function Publish({ classes }) {
   const serverUri = process.env.REACT_APP_BASE_URI;
 
-  const { user } = useAuth();
+  const { user } = useSelector(state => state.user);
   // manage the report with states
   const [report, setReport] = useState("");
   const [reportClasses, setReportClasses] = useState([]);

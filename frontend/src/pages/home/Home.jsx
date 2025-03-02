@@ -29,7 +29,6 @@ export default function Home({ classes }) {
   const [absences, setAbsences] = useState([]);
   const [attendances, setAttendances] = useState([]);
   // console.log(absences , attendances);
-  
 
   const [loading, setLoading] = useState(false);
 
@@ -43,7 +42,7 @@ export default function Home({ classes }) {
       setLoading(true);
       // Find the class with the selectedClass identifier (e.g., class name or ID)
       const foundClass = classes.find((cls) => cls._id === selectedClass); // Adjust property to match your data
-      
+
       // fetch the student of the selected class
       const fetchStudents = async () => {
         const res = await axios.get(
@@ -52,11 +51,11 @@ export default function Home({ classes }) {
         setStudents(res.data);
       };
 
-      if (foundClass) {     
+      if (foundClass) {
         setAbsences(foundClass.absences); // Set absences for the selected class
         setAttendances(foundClass.attendances);
         fetchStudents();
-        setLoading(false)
+        setLoading(false);
       }
     }
     setLoading(false);
@@ -168,7 +167,9 @@ export default function Home({ classes }) {
         <p className="text-black-50">Welcome back , teacher</p>
       </div>
       {loading ? (
-        <p><Loader/></p>
+        <p>
+          <Loader />
+        </p>
       ) : (
         <>
           <div className="charts-part w-100 d-flex flex-column align-items-end">
@@ -199,8 +200,8 @@ export default function Home({ classes }) {
                 </div>
               </form>
             </div>
-            <div className="statistics d-flex flex-wrap gap-4 py-3 w-100">
-              <div className="charts-statistics flex-grow-1" style={{maxWidth : "560px"}}>
+            <div className="statistics d-flex justify-content-center flex-wrap gap-4 py-3 w-100">
+              <div className="charts-statistics flex-grow-1" style={{ width : "60%"}}>
                 <div className="row m-auto">
                   <div className="col">
                     <Charts
@@ -276,12 +277,12 @@ export default function Home({ classes }) {
               <div
                 className="students-attendance  card rounded-5 flex-grow-1"
                 style={{
-                  width : "300px",
-                  maxWidth : "400px",
+                  width: "30%",
+                  maxWidth : "360px" ,
                   overflowY: "auto",
                   maxHeight: "100%",
-                  marginBottom :"30px" ,
-                  padding : "20px"
+                  marginBottom: "30px",
+                  padding: "20px",
                 }}
               >
                 <p className="fw-semibold text-black-50">
@@ -289,7 +290,7 @@ export default function Home({ classes }) {
                 </p>
                 <div className="">
                   {students === null ? (
-                    <p className="text-center my-4">No available students. </p>
+                    <Loader />
                   ) : students.length > 0 ? (
                     students.map((student) => {
                       return (
@@ -301,7 +302,7 @@ export default function Home({ classes }) {
                       );
                     })
                   ) : (
-                    <Loader />
+                    <p className="text-center my-4">No available students. </p>
                   )}
                 </div>
               </div>

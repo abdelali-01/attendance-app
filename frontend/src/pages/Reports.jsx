@@ -1,12 +1,11 @@
 import React from "react";
 import Publish from "../components/Publish";
-import { useAuth } from "../contexts/auth";
-import { useReports } from "../contexts/getReports";
 import ReportsItem from "../components/ReportsItem";
+import { useSelector } from "react-redux";
 
 export default function Reports({ classes }) {
-  const { role } = useAuth();
-  const { reports } = useReports();
+  const { role } = useSelector(state => state.user);
+ const reports = []  // i will made a store for them
 
   return (
     <div className="reports-page">

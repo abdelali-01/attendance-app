@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useStudentClasses } from "../../contexts/getStudentClasses";
 import ClassItem from "../../components/ClassItem";
 import Popup from "../../components/Popup";
 import { Link } from "react-router-dom";
 
 export default function Classes() {
-  const { studentClasses, loading } = useStudentClasses();
+  const studentClasses = [] // just for now 
+  const loading = false ; 
   
   // manage the join class popup display with state
   const [isVisible, setIsVisible] = useState(false);

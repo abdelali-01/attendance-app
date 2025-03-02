@@ -1,9 +1,9 @@
 import React from "react";
-import { useAuth } from "../contexts/auth";
 import moment from "moment";
+import { useSelector } from "react-redux";
 
 export default function ReportsItem({ report }) {
-  const { userData, role } = useAuth();
+  const { user, role } = useSelector(state => state.user);
 
   return (
     <div className="report-item card rounded-4 p-3 my-3 position-relative">
@@ -21,9 +21,9 @@ export default function ReportsItem({ report }) {
         {role === "teacher" ? (
           <>
             <h6 className="mb-0" style={{ textTransform: "capitalize" }}>
-              {userData.familyName} {userData.name}
+              {user.familyName} {user.name}
             </h6>
-            <p className="text-black-50">{userData.email}</p>
+            <p className="text-black-50">{user.email}</p>
           </>
         ) : (
           <>

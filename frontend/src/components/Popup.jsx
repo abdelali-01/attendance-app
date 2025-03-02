@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/auth";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 export default function Popup({ display, closePopup, updateStudent , currentClass , fetchData}) {
   const serverUri = process.env.REACT_APP_BASE_URI;
-  const { user } = useAuth();  
+  const { user } = useSelector(state => state.user);  
 
   const [code, setCode] = useState("");
   const [alert, setAlert] = useState("");

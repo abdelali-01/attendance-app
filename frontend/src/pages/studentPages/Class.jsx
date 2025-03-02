@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useStudentClasses } from "../../contexts/getStudentClasses";
 import Loader from "../../components/Loader";
 import moment from "moment";
-import { useAuth } from "../../contexts/auth";
 import axios from "axios";
 import StudentAttendance from "../../components/StudentAttendance";
+import { useSelector } from "react-redux";
 
 export function Class() {
   const serverUri = process.env.REACT_APP_BASE_URI;
 
   const navigate = useNavigate();
   const { classId } = useParams();
-  const { studentClasses } = useStudentClasses();
-  const { user } = useAuth();
+  const studentClasses = [];
+  const { user } = useSelector((state) => state.user);
 
   // set loading state to manage the loading when the component mount
   const [loading, setLoading] = useState(true);
@@ -43,7 +42,7 @@ export function Class() {
   // Update class-related state after student data is fetched
   useEffect(() => {
     if (classId && studentClasses && student) {
-      const foundClass = studentClasses.find((c) => c._id === classId);      
+      const foundClass = studentClasses.find((c) => c._id === classId);
       if (foundClass) {
         setCurrentClass(foundClass);
         const matchedClass = student.classes.find(
@@ -55,7 +54,7 @@ export function Class() {
         setLoading(false);
       }
     }
-  }, [student, studentClasses, classId]);
+  }, [student, classId]);
 
   const checkPresence = async () => {
     const now = new Date().getTime(); // Current timestamp in milliseconds
@@ -124,7 +123,7 @@ export function Class() {
                     }`}
                     disabled={!currentClass.posibility}
                   >
-                    {loading ? <Loader h={"10"}/> : "I'm present"}
+                    {loading ? <Loader h={"10"} /> : "I'm present"}
                   </button>
                 </div>
               </div>

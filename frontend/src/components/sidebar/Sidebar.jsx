@@ -6,14 +6,18 @@ import students_icon from "../icons/Customers.svg";
 import arrow_icon from "../icons/Downarrow.svg";
 import activity_icon from "../icons/Activity.svg";
 import report_icon from "../icons/Reports.svg";
-import message_icon from "../icons/Message.svg"
+import message_icon from "../icons/Message.svg";
 import settings_icon from "../icons/Settings.svg";
 import logout_icon from "../icons/Logout.svg";
-import { Link, useLocation} from "react-router-dom";
-import { useAuth } from "../../contexts/auth";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../store/auth/authHandler";
 
 export default function Sidebar({ classes }) {
-  const { logout, role } = useAuth();
+  const { role, user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   // create state -useState- to manage the arrow_icon
   const [arrow, setArrow] = useState(false);
   // create state to manage the active link
@@ -23,7 +27,6 @@ export default function Sidebar({ classes }) {
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location]);
-
 
   //create hooks for the responsive
   const [sidebarStatus, setSidebarStatus] = useState(window.innerWidth > 1200);
@@ -102,9 +105,9 @@ export default function Sidebar({ classes }) {
           <div className="sidebar-links d-flex flex-column align-items-start gap-1 my-5 w-100">
             <Link
               onClick={hendleLink}
-              to="/home"
+              to="/dashboard"
               className={`sidebar-link ${
-                activeLink === "/home" ? "active" : ""
+                activeLink === "/dashboard" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
             >
               <img src={home_icon} alt="" />
@@ -136,11 +139,13 @@ export default function Sidebar({ classes }) {
                 <div className="collapse ms-3" id="studentsDropdown">
                   <ul className="list-unstyled">
                     {classes.map((c) => (
-                      <Link onClick={hendleLink} to={`/${c._id}`} key={c._id}>
-                        <li style={{textTransform : "capitalize"}}>{c.class}</li>
+                      <Link onClick={hendleLink} to={`/dashboard/${c._id}`} key={c._id}>
+                        <li style={{ textTransform: "capitalize" }}>
+                          {c.class}
+                        </li>
                       </Link>
                     ))}
-                    <Link to={"/add-class"} onClick={hendleLink}>
+                    <Link to={"/dashboard/add-class"} onClick={hendleLink}>
                       <li>Add new class</li>
                     </Link>
                   </ul>
@@ -149,9 +154,9 @@ export default function Sidebar({ classes }) {
             ) : (
               <Link
                 onClick={hendleLink}
-                to="/classes"
+                to="/dashboard/classes"
                 className={`sidebar-link ${
-                  activeLink.startsWith("/classes") ? "active" : ""
+                  activeLink.startsWith("/dashboard/classes") ? "active" : ""
                 } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
               >
                 <img src={students_icon} alt="" />
@@ -160,34 +165,44 @@ export default function Sidebar({ classes }) {
             )}
 
             <Link
-              onClick={hendleLink}
-              to="/reports"
-              className={`sidebar-link ${
-                activeLink === "/reports" ? "active" : ""
+              onClick={user.plan !== "free" && hendleLink}
+              to={user.plan !== "free" && "/dashboard/reports"}
+              className={`sidebar-link upgrade-trigger ${
+                activeLink === "/dashboard/reports" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
+              style={{
+                opacity: user.plan === "free" && ".6",
+                cursor: user.plan === "free" && "not-allowed",
+              }}
             >
               <img src={report_icon} alt="" />
               <span>Reports</span>
+              <i className="fa-solid fa-crown"></i>
             </Link>
 
             <Link
-              onClick={hendleLink}
-              to="/messages"
-              className={`sidebar-link ${
-                activeLink === "/messages" ? "active" : ""
+              onClick={user.plan !== "free" && hendleLink}
+              to={user.plan !== "free" && "/dashboard/messages"}
+              className={`sidebar-link upgrade-trigger ${
+                activeLink === "/dashboard/messages" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
+              style={{
+                opacity: user.plan === "free" && ".6",
+                cursor: user.plan === "free" && "not-allowed",
+              }}
             >
               <img src={message_icon} alt="" />
               <span>Messages</span>
+              <i className="fa-solid fa-crown"></i>
             </Link>
           </div>
 
           <div className="sidebar-profile-actions w-100 d-flex flex-column align-items-start gap-4">
             <Link
               onClick={hendleLink}
-              to="/settings"
+              to="/dashboard/settings"
               className={`sidebar-link ${
-                activeLink === "/settings" ? "active" : ""
+                activeLink === "/dashboard/settings" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
             >
               <img src={settings_icon} alt="" />
@@ -196,8 +211,7 @@ export default function Sidebar({ classes }) {
 
             <div
               onClick={() => {
-                logout();
-                sessionStorage.clear();
+                dispatch(logout(navigate));
               }}
               className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3"
             >

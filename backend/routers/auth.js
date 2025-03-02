@@ -125,10 +125,29 @@ authRouter.get("/verify/:token", async (req, res) => {
 });
 
 // Login route for both students and teachers
-authRouter.post("/login", passport.authenticate("local"), async (req, res) => {
-  req.authInfo?.message
-    ? res.status(req.authInfo.status).send(req.authInfo.message)
-    : res.sendStatus(200);
+authRouter.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    console.log("Auth Response:", { err, user, info }); // Debugging
+
+    if (err) {
+      return res.status(500).json({ message: "Internal server error", error: err.message });
+    }
+
+    if (!user) {
+      return res.status(info?.status || 401).json({ message: info?.message || "Authentication failed" });
+    }
+
+    // Store `info` in `req.authInfo` so it can be used in other middleware
+    req.authInfo = info;
+
+    req.logIn(user, (loginErr) => {
+      if (loginErr) {
+        return res.status(500).json({ message: "Login failed", error: loginErr.message });
+      }
+
+      return res.status(200).json({ message: "Login successful", user, info: req.authInfo });
+    });
+  })(req, res, next);
 });
 
 authRouter.get("/user", async (req, res) => {

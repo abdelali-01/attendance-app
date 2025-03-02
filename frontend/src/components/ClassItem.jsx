@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useAuth } from "../contexts/auth";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 export default function ClassItem({ classe }) {
   const serverUri = process.env.REACT_APP_BASE_URI;
 
-  const { user } = useAuth();
+  const { user } = useSelector(state => state.user);
 
   const unenroll = async () => {
     const confirm = window.confirm(

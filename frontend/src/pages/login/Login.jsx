@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/auth";
+import { login } from "../../store/auth/authHandler";
 
 export default function Login() {
-  const serverUri = process.env.REACT_APP_BASE_URI;
   const navigate = useNavigate();
   // set some hooks to manage the form
   const [user, setUser] = useState({
@@ -13,35 +13,15 @@ export default function Login() {
   });
 
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
-
-  const { login } = useAuth();
-
   // fetching
   const fetchData = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      await axios.post(`${serverUri}/auth/login`, user, {
-        withCredentials: true,
-      });
-      login();
-      navigate("/home");
-    } catch (error) {
-      console.log("error during the login", error);
-      if (error.response.status === 404) {
-        alert("Your Email or password is incorrect!");
-      } else if (error.response.status === 401) {
-        navigate("/verification");
-      } else {
-        alert("Failed to login, please try again.");
-      }
-    } finally {
-      setLoading(false); // Stop the loading state after the request is done
-    }
+    dispatch(login(user , navigate));
   };
 
   return (

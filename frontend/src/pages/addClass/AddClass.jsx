@@ -1,11 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {useAuth} from "../../contexts/auth"
 
 export default function AddClass() {
   const serverUri = process.env.REACT_APP_BASE_URI ;
-  const {user} = useAuth();
+  const {user} = useSelector(state => state.user);
 
   const navigate = useNavigate();
   const [classe, setClasse] = useState({
@@ -28,8 +28,9 @@ export default function AddClass() {
     try {
       try {
         const res = await axios.post(
-          serverUri+"/class/newclass/"+user,
-          classe
+          serverUri+"/class",
+          classe ,
+          {withCredentials : true}
         );
         navigate(`/${res.data._id}`);
       } catch (error) {
