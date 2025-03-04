@@ -19,7 +19,7 @@
     --primary : #5A57FF ;
     --dark : #353535 ;
     --gray : #CCCCCC ;
-    /* --gray : #75757563 ; */
+    --gray : #75757563 ;
 }
 
 /* Default light mode styles */
@@ -48,4 +48,16 @@ form .field input , form .field select , form .field textarea{
     outline: none;
     padding: 6px ;
     border-radius: 5px;
+}
+
+
+/* style the open class button */
+.open-style{
+    background-color: var(--primary) !important;
+    color: white !important;
+}
+
+.open-style-outline{
+    border: 1px solid var(--primary) !important;
+    color: #000 !important;
 }

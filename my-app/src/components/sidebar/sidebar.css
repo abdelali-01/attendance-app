@@ -1,0 +1,88 @@
+.sidebar {
+    background-color: var(--primary);
+    width: 320px ;
+    top: 0;
+    height: 100vh;
+    overflow-y:auto ;
+    overflow-x: hidden;
+    transition: .3s;
+}
+.closed-side{
+    transition: .3s;
+    width: 0 ;
+}
+.fa-bars {
+    left: 10px;
+    top: 10px;
+    background-color: var(--primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 100;
+}
+.sidebar-actions {
+    height: 100vh;
+}
+.dropdown .arrow-icon{ 
+    transition: .3s;
+}
+.dropdown .rotate{
+    rotate: 180deg;
+    transition: .3s;
+}
+.dropdown .collapse ul{
+    padding: 10px 0;
+}
+.dropdown li{
+    padding: 5px 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    border-radius: 7px;
+    position: relative;
+}
+.dropdown li.active , .dropdown li::after{
+    content: "";
+    position: absolute;
+    height: 3px;
+    width: 0;
+    background-image: linear-gradient(to right , #fff , var(--primary));
+    left: 0;
+    bottom: -1px;
+    border-radius: 1px;
+    transition: 0.3s;
+}
+.dropdown li.active , .dropdown li:hover::after{
+    width: 100%;
+}
+.sidebar-link {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+}
+.sidebar-link.active::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 100%;
+    background-color: #fff;
+    left: 0;
+}
+
+.sidebar-link .fa-crown {
+    color: #FFD700;
+    font-size: 12px;
+    position: absolute;
+    right: 60px;
+    opacity: 1 !important;
+}
+
+@media (max-width : 1200px){
+    .sidebar {
+        position: fixed !important;
+        box-shadow: 6px 10px 10px #00000078;
+    }
+}

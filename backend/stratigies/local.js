@@ -55,6 +55,7 @@ passport.use(
               html,
             });
             return done(null, findUser, {
+              isVerified : false ,
               status: 200,
               message:
                 "Login Success , Verify Your email to complete the process !",

@@ -16,7 +16,7 @@ classRouter
     checkUserRole("teacher"),
     classController.addNewClass
   )
-  .get(checkUserRole("teacher"), classController.getTeacherClasses);
+  .get(classController.getClasses);
 
 classRouter
   .route("/:classId")

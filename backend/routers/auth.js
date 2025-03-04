@@ -252,6 +252,8 @@ authRouter.post("/logout", (req, res, next) => {
       }
 
       res.clearCookie("connect.sid"); // Default session cookie name
+      console.log('success');
+      
       return res.status(200).json({ message: "Logged out successfully" });
     });
   });

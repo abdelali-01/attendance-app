@@ -205,7 +205,7 @@ router.put(
 
       return res.status(200).send("Successfully unenroll the class.");
     } catch (error) {
-      console.error("error during enter the class", error);
+      console.error("error during unroll the class", error);
       res.status(400).send(error);
     }
   }

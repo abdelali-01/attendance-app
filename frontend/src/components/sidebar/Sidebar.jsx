@@ -13,8 +13,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/auth/authHandler";
 
-export default function Sidebar({ classes }) {
+export default function Sidebar() {
   const { role, user } = useSelector((state) => state.user);
+  const { classes } = useSelector((state) => state.classes);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -68,7 +69,7 @@ export default function Sidebar({ classes }) {
   };
 
   // Check if the current path matches any class
-  const isActiveDropdown = classes.some((c) =>
+  const isActiveDropdown = classes?.some((c) =>
     location.pathname.includes(c._id)
   );
 
@@ -138,13 +139,18 @@ export default function Sidebar({ classes }) {
                 </div>
                 <div className="collapse ms-3" id="studentsDropdown">
                   <ul className="list-unstyled">
-                    {classes.map((c) => (
-                      <Link onClick={hendleLink} to={`/dashboard/${c._id}`} key={c._id}>
-                        <li style={{ textTransform: "capitalize" }}>
-                          {c.class}
-                        </li>
-                      </Link>
-                    ))}
+                    {classes &&
+                      classes.map((c) => (
+                        <Link
+                          onClick={hendleLink}
+                          to={`/dashboard/classes/${c._id}`}
+                          key={c._id}
+                        >
+                          <li style={{ textTransform: "capitalize" }}>
+                            {c.class}
+                          </li>
+                        </Link>
+                      ))}
                     <Link to={"/dashboard/add-class"} onClick={hendleLink}>
                       <li>Add new class</li>
                     </Link>

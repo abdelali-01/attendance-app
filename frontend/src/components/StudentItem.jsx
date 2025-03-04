@@ -7,39 +7,21 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import Popup from "./Popup";
 
 const serverUri = process.env.REACT_APP_BASE_URI;
-// delete student
-export const deleteStudent = async (familyName, id) => {
-  const confirm = window.confirm("Are you sure to delete " + familyName);
-
-  if (confirm) {
-    await axios.delete(`${serverUri}/admin/deleteStudentAccount/${id}`);
-    window.location.reload();
-  }
-};
 
 export default function StudentItem({ student, posibilityStatus, i }) {
-  const location = useLocation();
-
-  const [classId, setClassId] = useState(null);
+  const { classId } = useParams();
   const [currentClass, setCurrentClass] = useState(null);
 
   useEffect(() => {
-    // Extract classId from pathname
-    const extractedClassId = location.pathname.split("/")[1]; // Assuming the URL structure is like /:classId
-
     // Find the corresponding class from student's classes
-    const foundClass = student.classes.find(
-      (c) => c.classId === extractedClassId
-    );
+    const foundClass = student.classes.find((c) => c.classId === classId);
 
     // Update state with the new values
-    setClassId(extractedClassId);
     setCurrentClass(foundClass);
-  }, [location, student]);
+  }, [student, classId]);
 
   // manage the popup display
   const [isVisible, setIsVisible] = useState(false);
-
   const [status, setStatus] = useState(() => {
     // Load initial status from session storage or default to "pending"
     const savedStatus = sessionStorage.getItem(`status-${student._id}`);
@@ -65,9 +47,7 @@ export default function StudentItem({ student, posibilityStatus, i }) {
   const fetchData = async () => {
     try {
       // Fetch the student's data to check the updated attendance
-      const res = await axios.get(
-        `${serverUri}/student/${student._id}?classId=${classId}`
-      );
+      const res = await axios.get(`/user/${student._id}?classId=${classId}`);
 
       const updatedAttendance = res.data.currentClass.attendances;
       // console.log(updatedAttendance);
@@ -98,17 +78,15 @@ export default function StudentItem({ student, posibilityStatus, i }) {
   };
 
   useEffect(() => {
-    let intervalId;
-
-    if (classId && posibilityStatus) {
-      intervalId = setInterval(fetchData, 1000); // Fetch every second
-    }
-
+    // let intervalId;
+    // if (classId && posibilityStatus) {
+    //   intervalId = setInterval(fetchData, 1000); // Fetch every second
+    // }
     fetchData(); // Initial fetch
 
     // Clean up the interval on component unmount or when dependencies change
-    return () => clearInterval(intervalId);
-  }, [attendance, student._id, absences, status, classId, currentClass]);
+    // return () => clearInterval(intervalId);
+  }, [student._id, status, classId, posibilityStatus]);
 
   // set the absent to the student from teacher
   const setAbsent = async () => {
@@ -122,9 +100,13 @@ export default function StudentItem({ student, posibilityStatus, i }) {
     }
 
     try {
-      await axios.put(`${serverUri}/admin/absence/${student._id}`, {
-        classId,
-      });
+      await axios.put(
+        `${serverUri}/user/absence/${student._id}`,
+        {
+          classId,
+        },
+        { withCredentials: true }
+      );
       setStatus("absent");
 
       // Store the current time as the last marked time

@@ -31,12 +31,12 @@ export default function Popup({ display, closePopup, updateStudent , currentClas
       setAbsences(updateStudent.absences);
       setMark(updateStudent.mark)
     }
-  }, [display]);
+  }, [display , updateStudent]);
 
   const submitJoin = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${serverUri}/student/enter/${user}`, {
+      await axios.put(`${serverUri}/user/enter/${user._id}`, {
         shareCode: code,
       });
       window.location.reload();
@@ -50,20 +50,19 @@ export default function Popup({ display, closePopup, updateStudent , currentClas
   };
 
   const submitUpdate = async (e) => {
-    console.log(updateStudent.student._id);
     e.preventDefault();
 
     try {
-       await axios.put(`${serverUri}/admin/updateStudentMark/${updateStudent.student._id}` , {
+       await axios.put(`${serverUri}/user/updateStudentMark/${updateStudent.student._id}` , {
         classId : currentClass.classId ,
         absences ,
-      })
+      },{withCredentials : true})
       
       fetchData();
       closePopup();
     } catch (error) {
       console.error("error during update the student mark" , error);
-      alert("Faild , please Try again !");
+      // alert("Faild , please Try again !");
     }
   }
 

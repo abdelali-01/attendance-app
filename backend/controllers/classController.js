@@ -1,4 +1,6 @@
 import { Class, generateCode } from "../models/Class.js";
+import { Student } from "../models/Student.js";
+import { Teacher } from "../models/Teacher.js";
 
 const addNewClass = async (req, res) => {
   try {
@@ -22,13 +24,26 @@ const addNewClass = async (req, res) => {
   }
 };
 
-const getTeacherClasses = async (req, res) => {
+const getClasses = async (req, res) => {
   try {
-    const teacherId = req.session?.passport?.user || null;
-    if (!teacherId) return res.sendStatus(401);
-    const all = await Class.find({ teacherId });
+    const userId = req.session?.passport?.user || null;
+    if (!userId) return res.sendStatus(401);
 
-    res.status(200).send(all);
+    // find the user for role checking
+    const findUser =
+      (await Teacher.findById(userId)) || (await Student.findById(userId));
+    if (!findUser) return res.status(404).send("User not found !");
+
+    let allClasses;
+    if (findUser.role === "teacher") allClasses = await Class.find({ teacherId : userId });
+    else
+      allClasses = await Promise.all(
+        findUser.classes.map(async (classe) => {
+          return await Class.findById(classe.classId);
+        })
+      );
+
+    res.status(200).send(allClasses);
   } catch (error) {
     console.error("error durring get classes ", error);
     res.status(400).send(error);
@@ -117,9 +132,9 @@ const deleteClass = async (req, res) => {
 
 export default {
   addNewClass,
-  getTeacherClasses,
+  getClasses,
   getClassStatus,
   generateClassCode,
   changeClassStatus,
-  deleteClass
+  deleteClass,
 };

@@ -37,7 +37,10 @@ export const checkClassLimit = async (req, res, next) => {
 
     // Check if the teacher has reached their limit
     if (classCount >= planLimits[teacher.plan]) {
-      return res.status(403).send("Class limit reached for your plan");
+      return res.status(403).json({
+        reason: "plan",
+        message: "Class limit reached for your plan",
+      });
     }
 
     next(); // Proceed if within limit
@@ -77,9 +80,10 @@ export const checkStudentLimit = async (req, res, next) => {
 
     // Check if the class has reached the student limit
     if (studentCount >= planLimits[teacher.plan]) {
-      return res
-        .status(403)
-        .send("Class is full based on teacher subscription plan.");
+      return res.status(403).json({
+        reason: "plan",
+        messgae: "Class is full based on teacher subscription plan.",
+      });
     }
 
     next(); // Proceed if within limit
@@ -126,7 +130,10 @@ export const checkPlanDate = async (req, res, next) => {
         console.log("Error during Sendig the ended subscription email", error);
       }
 
-      return res.status(403).send("Your plan has expired. Please renew.");
+      return res.status(403).json({
+        reason: "plan",
+        message: "Your plan has expired. Please renew.",
+      });
     }
 
     next(); // Payment is valid, continue to the next middleware

@@ -28,23 +28,21 @@ mongoose.connect(process.env.DATABASE_URL).then(() => {
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "*"], // Allow frontend + any origin
+    origin: ["http://localhost:5173", "http://localhost:3000" ,"*"], // Allow frontend + any origin
     credentials: true,
   })
 );
 app.use(express.json());
 app.use(helmet());
 
-
 // limit the requests for the user
 app.set("trust proxy", 1);
-app.use(
-  rateLimit({
-    windowMs: 10 * 60 * 1000, // 10 min
-    max: 100, // Limit each IP to 100 requests per window
-  })
-);
-
+// app.use(
+//   rateLimit({
+//     windowMs: 10 * 60 * 1000, // 10 min
+//     max: 100, // Limit each IP to 100 requests per window
+//   })
+// );
 
 // Prevents NoSQL injection by sanitizing user input.
 app.use(mongoSanitize());

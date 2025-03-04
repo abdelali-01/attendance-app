@@ -12,7 +12,6 @@ export const checkUser = (navigate) => async (dispatch) => {
     });
 
     dispatch(userLog(response.data));
-    // navigate("/");
   } catch (error) {
     console.log("error during requesting the Checking ", error);
   }
@@ -25,9 +24,12 @@ export const login = (user, navigate) => async (dispatch) => {
       withCredentials: true,
     });
 
-    if (response.statusText === "OK") {
+    if(!response.data.isVerified)
+      navigate('/verification')
+
+    if (response.statusText === "OK" && response.data.isVerified) {
       dispatch(userLog(response.data.user));
-      navigate("/");
+      navigate("/dashboard");
     }
   } catch (error) {
     console.log("error during requesting the login ", error);
