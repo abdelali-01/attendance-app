@@ -4,7 +4,6 @@ import logo from "../icons/logo.svg";
 import home_icon from "../icons/Overview.svg";
 import students_icon from "../icons/Customers.svg";
 import arrow_icon from "../icons/Downarrow.svg";
-import activity_icon from "../icons/Activity.svg";
 import report_icon from "../icons/Reports.svg";
 import message_icon from "../icons/Message.svg";
 import settings_icon from "../icons/Settings.svg";

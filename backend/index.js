@@ -9,80 +9,67 @@ import xss from "xss-clean";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import passport from "passport";
-import csurf from "csurf";
 import bodyParser from "body-parser";
 import MongoStore from "connect-mongo";
+import http from "http";
+import { WebSocketServer } from "ws";
 import "./cron.js";
+
 dotenv.config();
 
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
+export const clients = new Map()
 
-// connect with MongoDB database and run the server
-const port = process.env.PORT;
 mongoose.connect(process.env.DATABASE_URL).then(() => {
-  console.log("connected to database");
-  app.listen(port, () => {
-    console.log("server running at port :" + port);
+  console.log("Connected to database");
+  server.listen(process.env.PORT, () => {
+    console.log(`Server running at port: ${process.env.PORT}`);
   });
 });
 
-app.use(
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:3000" ,"*"], // Allow frontend + any origin
-    credentials: true,
-  })
-);
+// WebSocket setup
+wss.on("connection", (ws) => {
+  console.log("A client connected");
+
+  ws.on("message", (message) => {
+    try {
+      const data = JSON.parse(message);
+      if (data.type === "joinClass") {
+        clients.set(ws, data.classId); // Store client with classId
+      }
+    } catch (error) {
+      console.error("Invalid message format:", error);
+    }
+  });
+
+  ws.on("close", () => {
+    clients.delete(ws);
+    console.log("Client disconnected");
+  });
+});
+
+// Middleware
+app.use(cors({ origin: ["http://localhost:5173", "http://localhost:3000", "*"], credentials: true }));
 app.use(express.json());
 app.use(helmet());
-
-// limit the requests for the user
-app.set("trust proxy", 1);
-// app.use(
-//   rateLimit({
-//     windowMs: 10 * 60 * 1000, // 10 min
-//     max: 100, // Limit each IP to 100 requests per window
-//   })
-// );
-
-// Prevents NoSQL injection by sanitizing user input.
 app.use(mongoSanitize());
-//Protects against cross-site scripting (XSS) attacks by sanitizing input.
 app.use(xss());
-
-// Middleware to capture raw body as Buffer
-app.use(
-  bodyParser.json({
-    verify: (req, res, buf) => {
-      req.rawBody = buf;
-    },
-  })
-);
-
-// set up the cookies and session and passport
 app.use(cookieParser());
-app.use(
-  session({
-    secret: "MyHardAndLongSecretInThisWorld",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 10 * 24 * 60 * 60 * 1000, // 10days
-      secure: process.env.NODE_ENV === "production",
-      httpOnly: true,
-      // sameSite: "none",
-    },
-    store: MongoStore.create({
-      client: mongoose.connection.getClient(),
-    }),
-  })
-);
-// Protects against CSRF attacks.
-// app.use(csurf({cookie : true}))
+
+app.use(session({
+  secret: "MyHardAndLongSecretInThisWorld",
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 10 * 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === "production", httpOnly: true },
+  store: MongoStore.create({ client: mongoose.connection.getClient() }),
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-// importing routers
+// Importing routers
 import authRouter from "./routers/auth.js";
 import classRouter from "./routers/class.js";
 import reportRouter from "./routers/report.js";

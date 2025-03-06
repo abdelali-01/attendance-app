@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Charts from "../../../components/Charts";
 import "./home.css";
-import axios from "axios";
 import Loader from "../../../components/Loader";
+import { Link } from "react-router-dom";
 
 import trend_up from "../../../components/icons/trend-up.svg";
 import trend_down from "../../../components/icons/trend-down.svg";
@@ -16,48 +16,37 @@ import {
   XAxis,
 } from "recharts";
 import StudentAttendance from "../../../components/StudentAttendance";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { findClass } from "../../../store/class/classHandler";
+import { getStudents } from "../../../store/students/studentsHandler";
 
 export default function Home() {
-  const serverUrl = import.meta.env.VITE_BASE_URI;
-  const { classes } = useSelector((state) => state.classes);
-  const [students, setStudents] = useState([]);
+  const { classes, foundedClass } = useSelector((state) => state.classes);
+
+  const { students } = useSelector((state) => state.students);
+  const { loading } = useSelector((state) => state.loading);
+  const dispatch = useDispatch();
 
   const [selectedClass, setSelecedClass] = useState();
-
   const [absences, setAbsences] = useState([]);
   const [attendances, setAttendances] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-
   // Find the selected class based on selectedClass state
-  // useEffect(() => {
-  //   setLoading(true);
-  //   if (classes.length > 0 && selectedClass === "") {
-  //     // Set the absences of the first class by default
-  //     setSelecedClass(classes[0]._id);
-  //   } else if (selectedClass !== "") {
-  //     setLoading(true);
-  //     // Find the class with the selectedClass identifier (e.g., class name or ID)
-  //     const foundClass = classes.find((cls) => cls._id === selectedClass); // Adjust property to match your data
+  useEffect(() => {
+    if (classes && classes.length > 0 && !selectedClass) {
+      // Set the absences of the first class by default
+      setSelecedClass(classes[0]._id);
+    } else if (classes) {
+      // Find the class with the selectedClass identifier (e.g., class name or ID)
+      dispatch(findClass(classes, selectedClass));
+      dispatch(getStudents(selectedClass));
+    }
 
-  //     // fetch the student of the selected class
-  //     const fetchStudents = async () => {
-  //       const res = await axios.get(
-  //         `${serverUri}/student/studentsList/${selectedClass}`
-  //       );
-  //       setStudents(res.data);
-  //     };
-
-  //     if (foundClass) {
-  //       setAbsences(foundClass.absences); // Set absences for the selected class
-  //       setAttendances(foundClass.attendances);
-  //       fetchStudents();
-  //       setLoading(false);
-  //     }
-  //   }
-  //   setLoading(false);
-  // }, [selectedClass, classes, serverUri]); // Effect depends on selectedClass and classes
+    if (foundedClass) {
+      setAbsences(foundedClass.absences); // Set absences for the selected class
+      setAttendances(foundedClass.attendances);
+    }
+  }, [classes, selectedClass, foundedClass, dispatch]); // Effect depends on selectedClass and classes
 
   // calculate the average percentage
   const calculateAveragePercentage = (dataAbsence, dataAttendance) => {
@@ -98,7 +87,7 @@ export default function Home() {
     }));
 
     // Create an array of 5 default bars
-    const defaultBars = Array.from({ length: 8 }, (index) => ({
+    const defaultBars = Array.from({ length: 8 }, () => ({
       day: ``,
       value: 0,
     }));
@@ -165,10 +154,8 @@ export default function Home() {
         <p className="text-black-50">Welcome back , teacher</p>
       </div>
       {loading ? (
-        <p>
-          <Loader />
-        </p>
-      ) : (
+        <Loader />
+      ) : classes && classes.length > 0 ? (
         <>
           <div className="charts-part w-100 d-flex flex-column align-items-end">
             <div className="row mb-4">
@@ -179,8 +166,8 @@ export default function Home() {
                     value={selectedClass}
                     onChange={(e) => setSelecedClass(e.target.value)}
                   >
-                    {classes && classes.length > 0 ? (
-                      classes.map((c, i) => {
+                    {classes &&
+                      classes.map((c) => {
                         return (
                           <option
                             style={{ textTransform: "capitalize" }}
@@ -190,10 +177,7 @@ export default function Home() {
                             {c.class}
                           </option>
                         );
-                      })
-                    ) : (
-                      <option>No class available</option>
-                    )}
+                      })}
                   </select>
                 </div>
               </form>
@@ -290,9 +274,7 @@ export default function Home() {
                   Students' Attendance
                 </p>
                 <div className="">
-                  {students === null ? (
-                    <Loader />
-                  ) : students.length > 0 ? (
+                  {students && students.length > 0 ? (
                     students.map((student) => {
                       return (
                         <StudentAttendance
@@ -310,6 +292,15 @@ export default function Home() {
             </div>
           </div>
         </>
+      ) : (
+        <div className=" my-5 d-flex align-items-center justify-content-center">
+          <div className="text-center my-5">
+            <h3 className="text-black-50">No Classes Available</h3>
+            <Link to={"/dashboard/add-class"}>
+              <button className="btn open-style mt-3">Create Class</button>
+            </Link>
+          </div>
+        </div>
       )}
     </div>
   );

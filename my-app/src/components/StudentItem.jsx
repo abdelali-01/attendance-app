@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from "react";
-import delete_icon from "./icons/trash.svg";
+// import delete_icon from "./icons/trash.svg";
 import update_icon from "./icons/pen.svg";
 import absent_icon from "./icons/absent.svg";
 import axios from "axios";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Popup from "./Popup";
-
-const serverUrl = import.meta.env.VITE_BASE_URI;
-
 
 export default function StudentItem({ student, posibilityStatus, i }) {
   const { classId } = useParams();
   const [currentClass, setCurrentClass] = useState(null);
+
+  const [attendance, setAttendance] = useState(null); // Track attendance
+  const [absences, setAbsences] = useState(null); // Track absences
+  const [mark, setMark] = useState(null);
 
   useEffect(() => {
     // Find the corresponding class from student's classes
     const foundClass = student.classes.find((c) => c.classId === classId);
 
     // Update state with the new values
-    setCurrentClass(foundClass);
+    if (foundClass) {
+      setCurrentClass(foundClass);
+      setAttendance(foundClass.attendances);
+      setAbsences(foundClass.absences);
+      setMark(foundClass.attendanceMark);
+    }
   }, [student, classId]);
 
   // manage the popup display
@@ -40,54 +46,35 @@ export default function StudentItem({ student, posibilityStatus, i }) {
     sessionStorage.setItem(`status-${student._id}`, status);
   }, [status, student._id]);
 
-  const [attendance, setAttendance] = useState(null); // Track attendance
-  const [absences, setAbsences] = useState(null); // Track absences
-  const [mark, setMark] = useState(null);
-
   // Check for attendance updates
-  const fetchData = async () => {
-    try {
-      // Fetch the student's data to check the updated attendance
-      const res = await axios.get(`/user/${student._id}?classId=${classId}`);
-
-      const updatedAttendance = res.data.currentClass.attendances;
-      // console.log(updatedAttendance);
-
-      const updatedAbsences = res.data.currentClass.absences;
-      const updatedMark = res.data.currentClass.attendanceMark;
-
-      // Only update status to "present" if it's not "absent"
-      if (
-        status !== "absent" &&
-        updatedAttendance > attendance &&
-        attendance !== null
-      ) {
-        if (updatedAbsences > absences) {
-          return setStatus("absent");
-        }
-
-        setStatus("present");
-      }
-
-      // Update the local state with the latest attendance
-      setAttendance(updatedAttendance);
-      setAbsences(updatedAbsences);
-      setMark(updatedMark);
-    } catch (error) {
-      console.error("Error fetching student data:", error);
-    }
-  };
-
+  // WebSocket Connection
   useEffect(() => {
-    // let intervalId;
-    // if (classId && posibilityStatus) {
-    //   intervalId = setInterval(fetchData, 1000); // Fetch every second
-    // }
-    fetchData(); // Initial fetch
+    const ws = new WebSocket("ws://localhost:4620");
 
-    // Clean up the interval on component unmount or when dependencies change
-    // return () => clearInterval(intervalId);
-  }, [student._id, status, classId, posibilityStatus]);
+    ws.onopen = () => {
+      console.log("WebSocket connected");
+      ws.send(JSON.stringify({ type: "joinClass" , classId}));
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === "studentUpdate") {
+        if (data.studentId === student._id) {
+          // Update only if attendance increased
+          if (data.updatedAttendance > attendance) {
+            setStatus("present");
+          }
+          setAttendance(data.updatedAttendance);
+          setAbsences(data.updatedAbsences);
+          setMark(data.updatedMark);
+        }
+      }
+    };
+
+    ws.onclose = () => console.log("WebSocket disconnected");
+
+    return () => ws.close();
+  }, [classId, student._id, attendance]);
 
   // set the absent to the student from teacher
   const setAbsent = async () => {
@@ -102,14 +89,13 @@ export default function StudentItem({ student, posibilityStatus, i }) {
 
     try {
       await axios.put(
-        `${serverUri}/user/absence/${student._id}`,
+        `/user/absence/${student._id}`,
         {
           classId,
         },
         { withCredentials: true }
       );
       setStatus("absent");
-
       // Store the current time as the last marked time
       localStorage.setItem(`lastAbsent-${student._id}`, now.toISOString());
     } catch (error) {
@@ -184,7 +170,6 @@ export default function StudentItem({ student, posibilityStatus, i }) {
           closePopup={() => setIsVisible(false)}
           updateStudent={{ absences, mark, student }}
           currentClass={currentClass}
-          fetchData={() => fetchData()}
         />
       </div>
     </>

@@ -35,7 +35,8 @@ const getClasses = async (req, res) => {
     if (!findUser) return res.status(404).send("User not found !");
 
     let allClasses;
-    if (findUser.role === "teacher") allClasses = await Class.find({ teacherId : userId });
+    if (findUser.role === "teacher")
+      allClasses = await Class.find({ teacherId: userId });
     else
       allClasses = await Promise.all(
         findUser.classes.map(async (classe) => {
@@ -108,6 +109,39 @@ const changeClassStatus = async (req, res) => {
   }
 };
 
+const updateClass = async (req, res) => {
+  const { details, controls, classId } = req.body;
+
+  try {
+    // Extracting fields that actually exist in the schema
+    const updateData = {};
+
+    if (details) {
+      updateData.class = details.class;
+      updateData.speciality = details.speciality;
+      updateData.system = details.system;
+      updateData.module = details.module;
+      updateData.deleugate = details.deleugate;
+      updateData.d_AttendanceMark = Number(details.d_AttendanceMark);
+      updateData.minusWithAbsence = Number(details.minusWithAbsence);
+    }
+
+    if (controls) {
+      updateData.reminder = {
+        active: controls.active,
+        reminderDays: controls.reminderDays,
+        reminderTime: controls.reminderTime,
+      };
+    }
+
+    await Class.findByIdAndUpdate(classId, { $set: updateData });
+
+    res.status(200).json({ message: "Class updated successfully" });
+  } catch (error) {
+    console.error("error during updating the class", error);
+  }
+};
+
 const deleteClass = async (req, res) => {
   const { classId } = req.params;
   try {
@@ -137,4 +171,5 @@ export default {
   generateClassCode,
   changeClassStatus,
   deleteClass,
+  updateClass,
 };

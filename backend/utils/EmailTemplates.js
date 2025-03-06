@@ -302,3 +302,52 @@ export const paymentFailedTemplate = (retryLink) => {
     </html>`;
 };
 
+
+export const reminderEmailTemplate = (className, module, reminderTime) => {
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Class Reminder</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f8f8f8; color: #353535; line-height: 1.6;">
+  
+    <!-- Main Container -->
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); overflow: hidden;">
+  
+        <!-- Header -->
+        <div style="background-color: #007bff; color: white; padding: 20px 0; text-align: center;">
+            <h1 style="margin: 0; font-size: 28px;">Class Reminder</h1>
+        </div>
+  
+        <!-- Body -->
+        <div style="padding: 30px; text-align: center;">
+            <p style="font-size: 18px; color: #353535; margin-bottom: 20px;">
+                This is a reminder for your upcoming class.
+            </p>
+  
+            <p style="font-size: 16px; color: #353535; margin-bottom: 20px;">
+                <strong>Class:</strong> ${className} <br>
+                <strong>Module:</strong> ${module} <br>
+                <strong>Time:</strong> ${reminderTime}
+            </p>
+  
+            <p style="font-size: 14px; color: #353535; margin-top: 20px;">
+                Please be on time and mark attendance accordingly.
+            </p>
+        </div>
+  
+        <!-- Footer -->
+        <div style="background-color: #f8f8f8; padding: 15px; text-align: center; color: #666666; font-size: 12px;">
+            <p style="margin: 0;">&copy; 2025 Attendance App. All rights reserved.</p>
+            <p style="margin: 0;">Need help? <a href="mailto:support@yourcompany.com" style="color: #007bff; text-decoration: none;">Contact Support</a></p>
+        </div>
+  
+    </div>
+  
+    </body>
+    </html>`;
+  };
+  
+

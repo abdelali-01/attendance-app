@@ -8,6 +8,7 @@ import {
   checkUserRole,
 } from "../utils/middlewares.js";
 import { Class } from "../models/Class.js";
+import { clients } from "../index.js";
 dotenv.config();
 
 const router = express.Router();
@@ -75,16 +76,38 @@ router.put("/checkattendance/:id", async (req, res) => {
 
   try {
     const student = await Student.findById(req.params.id);
-    if (!student) {
-      return res.status(404).send("Student not found");
-    }
+    if (!student) return res.status(404).send("Student not found");
 
     const currentClass = student.classes.find((c) => c.classId === classId);
-    currentClass.attendances += 1;
+    if (!currentClass) return res.status(404).send("Class not found");
 
-    student.save();
-    res.status(200).send("Marked as absent successfully");
+    // find the class to check the posibility
+    const findClass = await Class.findById(classId);
+    if (findClass && !findClass.posibility)
+      return res.status(401).send("The Class it`s closed , please try later !");
+
+    currentClass.attendances += 1;
+    await student.save();
+
+    // Notify WebSocket clients
+    clients.forEach((clientClassId, ws) => {
+      if (clientClassId === classId && ws.readyState === ws.OPEN) {
+        ws.send(
+          JSON.stringify({
+            type: "studentUpdate",
+            studentId: student._id,
+            classId,
+            updatedAttendance: currentClass.attendances,
+            updatedMark: currentClass.attendanceMark,
+            updatedAbsences: currentClass.absences,
+          })
+        );
+      }
+    });
+
+    res.status(200).send("Attendance updated successfully");
   } catch (error) {
+    console.log("Error during check the attendace ", error);
     res.status(400).send(error);
   }
 });
@@ -100,8 +123,24 @@ router.put(
 
       const currentClass = student.classes.find((c) => c.classId === classId);
       currentClass.absences = absences;
-
       student.save();
+
+      // Notify WebSocket clients
+      clients.forEach((clientClassId, ws) => {
+        if (clientClassId === classId && ws.readyState === ws.OPEN) {
+          ws.send(
+            JSON.stringify({
+              type: "studentUpdate",
+              studentId: student._id,
+              classId,
+              updatedAttendance: currentClass.attendances,
+              updatedMark: currentClass.attendanceMark,
+              updatedAbsences: currentClass.absences,
+            })
+          );
+        }
+      });
+
       res.status(200).send("student mark updated");
     } catch (error) {
       res.status(200).send(error);
@@ -121,8 +160,24 @@ router.put("/absence/:id", checkUserRole("teacher"), async (req, res) => {
 
     const currentClass = student.classes.find((c) => c.classId === classId);
     currentClass.absences += 1;
-
     student.save();
+
+    // Notify WebSocket clients
+    clients.forEach((clientClassId, ws) => {
+      if (clientClassId === classId && ws.readyState === ws.OPEN) {
+        ws.send(
+          JSON.stringify({
+            type: "studentUpdate",
+            studentId: student._id,
+            classId,
+            updatedAttendance: currentClass.attendances,
+            updatedMark: currentClass.attendanceMark,
+            updatedAbsences: currentClass.absences,
+          })
+        );
+      }
+    });
+
     res.status(200).send("Marked as absent successfully");
   } catch (error) {
     res.status(400).send(error);

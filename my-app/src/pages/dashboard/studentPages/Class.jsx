@@ -7,10 +7,9 @@ import StudentAttendance from "../../../components/StudentAttendance";
 import { useDispatch, useSelector } from "react-redux";
 import { removeLoading, setLoading } from "../../../store/Loading";
 import { findClass } from "../../../store/class/classHandler";
+import { checkStudentPresence } from "../../../store/students/studentsHandler";
 
 export function Class() {
-  const serverUri = import.meta.env.VITE_BASE_URI;
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { classId } = useParams();
@@ -49,27 +48,6 @@ export function Class() {
     }
   }, [classId , studentClasses , dispatch]);
 
-  const checkPresence = async () => {
-    const now = new Date().getTime(); // Current timestamp in milliseconds
-    const lastChecked = localStorage.getItem("lastCheckAttendance");
-
-    // Check if 90 minutes (1h30min) have passed
-    if (lastChecked && now - lastChecked < 90 * 60 * 1000) {
-      alert("You can only check attendance once every 1 hour and 30 minutes.");
-      return;
-    }
-
-    try {
-      await axios.put(`${serverUri}/student/checkattendance/${student._id}`, {
-        classId: currentClass._id,
-      });
-      alert("Thanks for check your attendance .");
-      localStorage.setItem("lastCheckAttendance", now); // Store the current timestamp
-    } catch (error) {
-      console.error("error during set the present", error);
-      alert("Faild to check you presence , please try agin !");
-    }
-  };
 
   if(loading) return <Loader/>
 
@@ -111,7 +89,7 @@ export function Class() {
                 <div className="student-interaction w-100 d-flex flex-column align-items-end">
                   <div className="btns d-flex align-items-center gap-3">
                     <button
-                      onClick={checkPresence}
+                      onClick={()=> dispatch(checkStudentPresence(classId , student._id))}
                       className={`btn btn-${
                         foundedClass.posibility ? "success" : "secondary"
                       }`}

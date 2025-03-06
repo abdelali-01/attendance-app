@@ -32,7 +32,7 @@ export const deleteClass = (classId, navigate) => async (dispatch) => {
   );
 
   if (confirmDelete) {
-    dispatch(request());
+    dispatch(setLoading());
     try {
       await axios.delete(`/class/${classId}`);
       navigate("/dashboard");
@@ -41,6 +41,8 @@ export const deleteClass = (classId, navigate) => async (dispatch) => {
     } catch (error) {
       console.error("Error deleting the class:", error);
       alert("Failed to delete the class. Please try again.");
+    } finally {
+      dispatch(removeLoading());
     }
   }
 };
@@ -71,7 +73,21 @@ export const updateClassCode = (classId) => async (dispatch) => {
   } catch (error) {
     console.error("error during update code ", error);
     alert("Faild to update the code , please try again !");
-  }finally {
+  } finally {
     dispatch(removeLoading());
   }
 };
+
+export const updateClass = (details , controls, classId) => async (dispatch) => {
+  dispatch(setLoading());
+
+  try {
+    await axios.put('/class' , {
+      details , controls , classId
+    } , {withCredentials : true});
+  } catch (error) {
+    console.log('error during updating the class ' , error);
+  } finally {
+    dispatch(removeLoading());
+  }
+}

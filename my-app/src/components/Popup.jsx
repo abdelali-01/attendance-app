@@ -8,7 +8,6 @@ export default function Popup({
   closePopup,
   updateStudent,
   currentClass,
-  fetchData,
 }) {
   const serverUri = import.meta.env.VITE_BASE_URI;
   const { user } = useSelector((state) => state.user);
@@ -76,8 +75,7 @@ export default function Popup({
         },
         { withCredentials: true }
       );
-
-      fetchData();
+      
       closePopup();
     } catch (error) {
       console.error("error during update the student mark", error);

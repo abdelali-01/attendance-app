@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteClass,
   findClass,
+  updateClass,
   updateClassCode,
 } from "../../../store/class/classHandler";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../../../components/Loader";
 
 function Settings() {
+  const { user } = useSelector((state) => state.user);
   const { classId } = useParams();
   const { classes, foundedClass } = useSelector((state) => state.classes);
   const { loading } = useSelector((state) => state.loading);
@@ -30,7 +32,6 @@ function Settings() {
 
   useEffect(() => {
     dispatch(findClass(classes, classId));
-
     if (foundedClass) {
       setClasse({
         class: foundedClass.class,
@@ -41,8 +42,61 @@ function Settings() {
         d_AttendanceMark: foundedClass.d_AttendanceMark,
         minusWithAbsence: foundedClass.minusWithAbsence,
       });
+      setIsCheked(foundedClass.reminder.active);
+      setSelectedDays(foundedClass.reminder.reminderDays);
+      setTime(foundedClass.reminder.reminderTime);
     }
   }, [classId, classes, foundedClass, dispatch]);
+
+  const [isChecked, setIsCheked] = useState(false);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [time, setTime] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null); // Reference to dropdown
+
+  const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Saturday",
+    "Sunday",
+  ];
+
+  const handleCheckboxChange = (day) => {
+    setSelectedDays((prev) =>
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+    );
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    dispatch(
+      updateClass(
+        classe,
+        {
+          active: isChecked,
+          reminderDays: selectedDays,
+          reminderTime: time,
+        },
+        classId
+      )
+    );
+  };
 
   return (
     <div className="class-settings conatiner py-5 px-4">
@@ -54,7 +108,7 @@ function Settings() {
           <hr />
           <div className="class-details mt-4">
             <h6 className="text-primary">Class Details</h6>
-            <form>
+            <form onSubmit={submitHandler}>
               <div className="row w-100 m-auto my-3 gap-1">
                 <div className="field  col">
                   <label htmlFor="system">system </label>
@@ -153,38 +207,127 @@ function Settings() {
                   />
                 </div>
               </div>
-              <div className="cta w-100 text-end mt-5">
+
+              <hr />
+              <div className="invite-code">
+                <h6 className="text-primary">Invite code</h6>
+                <div className="shareCode mt-3 d-flex align-items-center justify-content-between">
+                  <span>Class code : {foundedClass.shareCode}</span>
+                  <div
+                    className="reset-code"
+                    role="button"
+                    onClick={() => dispatch(updateClassCode(classId))}
+                  >
+                    <span className="fw-semibold text-primary">Reset</span>
+                  </div>
+                </div>
+              </div>
+
+              <hr />
+              <div className="class-controls position-relative">
+                <h6 className="text-primary">
+                  Class Controls
+                  <i
+                    className="fa-solid fa-crown position-absolute ms-2"
+                    style={{ color: "#FFD700" }}
+                  ></i>
+                </h6>
+                <div className="class-control-reminder my-4">
+                  <div className="d-flex align-items-center justify-content-between gap-3">
+                    <div>
+                      <h6>Class Reminder </h6>
+                      <p className="text-black-50">
+                        Reminds you to open your class and mark your students
+                        presence
+                      </p>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input
+                        class="form-check-input upgrade-trigger"
+                        type="checkbox"
+                        role="switch"
+                        checked={isChecked}
+                        data-plan="premium"
+                        onChange={() =>
+                          user.plan === "premium" && setIsCheked(!isChecked)
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div
+                    className="reminder-content my-4 d-flex align-items-start justify-content-between gap-3 flex-wrap"
+                    style={{ opacity: isChecked ? "1" : "0.6" }}
+                  >
+                    <div
+                      className="days-selected flex-grow-1"
+                      ref={dropdownRef}
+                    >
+                      <label className="mb-2">Select Reminder Days</label>
+                      {/* Dropdown Button */}
+                      <button
+                        disabled={!isChecked}
+                        className="form-control text-start"
+                        onClick={() => setDropdownOpen(!dropdownOpen)}
+                      >
+                        {selectedDays.length > 0
+                          ? selectedDays.join(", ")
+                          : "Select Days"}
+                      </button>
+
+                      {/* Dropdown Menu */}
+                      {dropdownOpen && (
+                        <div
+                          className="bg-white border p-2 mt-1 rounded shadow"
+                          style={{ width: "100%" }}
+                        >
+                          {days.map((day) => (
+                            <div key={day} className="form-check">
+                              <input
+                                type="checkbox"
+                                id={day}
+                                className="form-check-input"
+                                checked={selectedDays.includes(day)}
+                                onChange={() => handleCheckboxChange(day)}
+                              />
+                              <label className="form-check-label" htmlFor={day}>
+                                {day}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div className="time-selected flex-grow-1">
+                      <label htmlFor="time" className="mb-1">
+                        Select Reminder Time
+                      </label>
+                      <input
+                        disabled={!isChecked}
+                        className="w-100 p-2 rounded-2 border form-control"
+                        value={time}
+                        onChange={(e) => setTime(e.target.value)}
+                        onFocus={(e) => (e.target.value = "")}
+                        placeholder="Select Time"
+                        type="time"
+                        name="reminderTime"
+                        id="time"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr />
+
+              <div className="cta d-flex align-items-center justify-content-end gap-3  my-5 flex-wrap">
+                <button
+                  onClick={() => dispatch(deleteClass(classId, navigate))}
+                  className="btn btn-danger rounded-3"
+                >
+                  Delete class
+                </button>
                 <button className="btn open-style rounded-3 px-5">Save</button>
               </div>
             </form>
-          </div>
-
-          <hr />
-          <div className="invite-code">
-            <h6 className="text-primary">Invite code</h6>
-            <div
-              role="button"
-              className="shareCode mt-3 d-flex align-items-center justify-content-between"
-              onClick={() => dispatch(updateClassCode(classId))}
-            >
-              <span>Class code : {foundedClass.shareCode}</span>
-              <div className="reset-code">
-                <span className="fw-semibold text-primary">Reset</span>
-              </div>
-            </div>
-          </div>
-
-          <hr />
-
-          <div className="class-actions  d-flex justify-content-between w-100 flex-wrap">
-            <div className="cta-right d-flex flex-wrap gap-2 my-3">
-              <button
-                onClick={() => dispatch(deleteClass(classId, navigate))}
-                className="btn btn-danger rounded-3 flex-grow-1"
-              >
-                Delete class
-              </button>
-            </div>
           </div>
         </>
       )}
