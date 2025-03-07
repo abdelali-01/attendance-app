@@ -101,7 +101,8 @@ function Settings() {
   return (
     <div className="class-settings conatiner py-5 px-4">
       {loading || !foundedClass ? (
-        <Loader />
+        <Loader /> 
+        // <></>
       ) : (
         <>
           <h3>Class Settings</h3>
@@ -243,7 +244,7 @@ function Settings() {
                     </div>
                     <div class="form-check form-switch">
                       <input
-                        class="form-check-input upgrade-trigger"
+                        class={`form-check-input ${user.plan !== 'premium' && 'upgrade-trigger'}`}
                         type="checkbox"
                         role="switch"
                         checked={isChecked}
@@ -267,6 +268,7 @@ function Settings() {
                       <button
                         disabled={!isChecked}
                         className="form-control text-start"
+                        type="button"
                         onClick={() => setDropdownOpen(!dropdownOpen)}
                       >
                         {selectedDays.length > 0

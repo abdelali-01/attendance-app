@@ -24,7 +24,7 @@ export const login = (user, navigate) => async (dispatch) => {
       withCredentials: true,
     });
 
-    if (!response.data.info.isVerified) navigate("/verification");
+    if (!response.data.user.isVerified) navigate("/verification");
 
     if (response.statusText === "OK" && response.data.user.isVerified) {
       dispatch(userLog(response.data.user));

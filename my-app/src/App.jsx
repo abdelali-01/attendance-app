@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useEffect} from "react";
+import { Routes, Route, useNavigate} from "react-router-dom";
 import Login from "./pages/login/Login";
 import ResetPass from "./pages/ResetPass";
 import Signup from "./pages/signup/Signup";
@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkUser } from "./store/auth/authHandler";
 import Navbar from "./components/website/Navbar";
 import Home from "./pages/website/Home";
+import Pricing from "./pages/website/Pricing";
 
 function App() {
   const { user } = useSelector((state) => state.user);
@@ -18,7 +19,7 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(checkUser(navigate , "/"));
+    dispatch(checkUser(navigate));
   },[]);
 
   return (
@@ -26,6 +27,7 @@ function App() {
         <Navbar/>
         <Routes>
           <Route path="/" element={<Home/>} />
+          <Route path="/Pricing" element={<Pricing/>} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/verification" element={<Verification />} />
@@ -36,7 +38,6 @@ function App() {
             element={<ResetPass resetPassword />}
           />
         </Routes>
-      
     </div>
   );
 }

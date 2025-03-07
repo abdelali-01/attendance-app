@@ -263,6 +263,7 @@ export default function Home() {
                 className="students-attendance  card rounded-5 flex-grow-1"
                 style={{
                   width: "30%",
+                  minWidth : "250px" ,
                   maxWidth: "360px",
                   overflowY: "auto",
                   maxHeight: "100%",

@@ -127,7 +127,6 @@ authRouter.get("/verify/:token", async (req, res) => {
 // Login route for both students and teachers
 authRouter.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
-    console.log("Auth Response:", { err, user, info }); // Debugging
 
     if (err) {
       return res.status(500).json({ message: "Internal server error", error: err.message });
