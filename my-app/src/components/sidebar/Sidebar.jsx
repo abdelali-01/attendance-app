@@ -138,7 +138,7 @@ export default function Sidebar() {
                 </div>
                 <div className="collapse ms-3" id="studentsDropdown">
                   <ul className="list-unstyled">
-                    {classes &&
+                    {classes && Array.isArray(classes) &&
                       classes.map((c) => (
                         <Link
                           onClick={hendleLink}
