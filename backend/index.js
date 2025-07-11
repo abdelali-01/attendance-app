@@ -51,18 +51,19 @@ wss.on("connection", (ws) => {
 });
 
 // Middleware
-app.use(cors({ origin: "https://attendance-app-ux7c.vercel.app", credentials: true }));
+app.use(cors({ origin: ["https://attendance-app-ux7c.vercel.app" , "http://localhost:5173"], credentials: true }));
 app.use(express.json());
 app.use(helmet());
 app.use(mongoSanitize());
 app.use(xss());
 app.use(cookieParser());
 
+app.set("trust proxy", 1); // Trust first proxy for rate limiting
 app.use(session({
   secret: "MyHardAndLongSecretInThisWorld",
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 10 * 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === "production", httpOnly: true },
+  cookie: { maxAge: 10 * 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === "production", httpOnly: true , sameSite : "none" },
   store: MongoStore.create({ client: mongoose.connection.getClient() }),
 }));
 

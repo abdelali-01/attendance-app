@@ -69,7 +69,7 @@ export default function Sidebar() {
 
   // Check if the current path matches any class
   const isActiveDropdown =
-    classes && classes?.some((c) => location.pathname.includes(c._id));
+    classes && Array.isArray(classes) && classes.some((c) => location.pathname.includes(c._id));
 
     
   return (
