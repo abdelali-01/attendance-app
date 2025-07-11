@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Charts } from "../../components/Charts";
-import { safeMap, safeFilter } from "../../utils/safeArray";
+import { useDispatch, useSelector } from "react-redux";
+import { Charts } from "../../../components/Charts";
+import { safeMap, safeFilter } from "../../../utils/safeArray";
 import "./home.css";
 import Loader from "../../../components/Loader";
 import { Link } from "react-router-dom";
