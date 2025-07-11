@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { safeMap, safeFilter } from "../utils/safeArray";
 
 export default function Publish({ classes }) {
   const serverUri = process.env.REACT_APP_BASE_URI;
@@ -16,7 +17,7 @@ export default function Publish({ classes }) {
     setReportClasses((prevState) => {
       if (prevState.includes(classId)) {
         // If classId is already selected, remove it
-        return prevState.filter((id) => id !== classId);
+        return safeFilter(prevState, (id) => id !== classId);
       } else {
         // Else add classId to the list
         return [...prevState, classId];
@@ -27,7 +28,7 @@ export default function Publish({ classes }) {
   // set the classes as checked and put it in the reportClasses state
   useEffect(() => {
     if (!isChanged) {
-      const classesId = classes.map((c) => c._id);
+      const classesId = safeMap(classes, (c) => c._id);
       setReportClasses(classesId);
     }
   }, [classes, isChanged]);
@@ -102,7 +103,7 @@ export default function Publish({ classes }) {
               ) : classes.length < 1 ? (
                 <p className="text-black-50">There is no class !</p>
               ) : (
-                classes.map((c) => {
+                safeMap(classes, (c) => {
                   return (
                     <CheckClass
                       c={c}

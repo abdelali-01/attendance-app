@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Publish from "../../components/Publish";
 import ReportsItem from "../../components/ReportsItem";
 import { useSelector } from "react-redux";
+import { safeMap } from "../../utils/safeArray";
 
 export default function Reports({ classes }) {
   const { role } = useSelector(state => state.user);
@@ -14,7 +15,7 @@ export default function Reports({ classes }) {
         <div className="reports-items mt-5">
           <h4>Recent reports</h4>
           {reports ? (
-            reports.map((report) => {
+            safeMap(reports, (report) => {
               return <ReportsItem key={report._id} report={report} />;
             })
           ) : (

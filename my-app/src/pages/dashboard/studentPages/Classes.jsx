@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ClassItem from "../../../components/ClassItem";
 import Popup from "../../../components/Popup";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { safeMap } from "../../../utils/safeArray";
 
 export default function Classes() {
   const {classes : studentClasses} = useSelector((state)=> state.classes);
@@ -23,7 +24,7 @@ export default function Classes() {
             </p>
           </div>
         ) : (
-          studentClasses.map((classe) => {
+          safeMap(studentClasses, (classe) => {
             return (
               <Link to={`/dashboard/classes/${classe._id}`} key={classe._id}>
                 <ClassItem  classe={classe} />

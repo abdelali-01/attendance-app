@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { safeMap } from "../../../utils/safeArray";
 
 export default function Reminder({classes}) {
   return (
@@ -8,7 +10,7 @@ export default function Reminder({classes}) {
 
       <div className="classes mt-4">
         <h6>Your classes</h6>
-        {classes && classes.map(c => {
+        {safeMap(classes, (c) => {
             return <div>
                 <div className="filed">
                     <label htmlFor="">Time</label>

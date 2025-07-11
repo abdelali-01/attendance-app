@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import Charts from "../../../components/Charts";
+import { useSelector } from "react-redux";
+import { Charts } from "../../components/Charts";
+import { safeMap, safeFilter } from "../../utils/safeArray";
 import "./home.css";
 import Loader from "../../../components/Loader";
 import { Link } from "react-router-dom";
@@ -16,7 +18,6 @@ import {
   XAxis,
 } from "recharts";
 import StudentAttendance from "../../../components/StudentAttendance";
-import { useDispatch, useSelector } from "react-redux";
 import { findClass } from "../../../store/class/classHandler";
 import { getStudents } from "../../../store/students/studentsHandler";
 
@@ -53,12 +54,12 @@ export default function Home() {
     if (!dataAbsence || dataAbsence.length === 0) return 0;
 
     // Filter out entries without a valid `count` and default missing `count` to 0
-    const validAbsenceData = dataAbsence.map((item) => ({
+    const validAbsenceData = safeMap(dataAbsence, (item) => ({
       ...item,
       count: item.count || 0,
     }));
 
-    const validAttendanceData = dataAttendance.map((item) => ({
+    const validAttendanceData = safeMap(dataAttendance, (item) => ({
       ...item,
       count: item.count || 0,
     }));
@@ -81,7 +82,7 @@ export default function Home() {
 
   // Format data for charts
   const formatData = (data) => {
-    const formattedData = data.map((item) => ({
+    const formattedData = safeMap(data, (item) => ({
       day: item.date,
       value: item.count === undefined ? 0 : item.count,
     }));
@@ -109,7 +110,7 @@ export default function Home() {
 
   // calculate the average trend
   const AverageTrend = (data) => {
-    const validData = data.filter((item) => item.value !== undefined);
+    const validData = safeFilter(data, (item) => item.value !== undefined);
     if (validData.length === 0) return 0;
 
     const total = validData.reduce((sum, item) => sum + item.value, 0);
@@ -118,8 +119,7 @@ export default function Home() {
 
   // determin the trend for the statistic
   const determineAverageTrend = (data) => {
-    const validData = data.filter(
-      (item) => item.value !== 0 || item.day !== ""
+    const validData = safeFilter(data, (item) => item.value !== 0 || item.day !== ""
     );
 
     if (validData.length < 2) {
@@ -166,8 +166,7 @@ export default function Home() {
                     value={selectedClass}
                     onChange={(e) => setSelecedClass(e.target.value)}
                   >
-                    {classes &&
-                      classes.map((c) => {
+                    {safeMap(classes, (c) => {
                         return (
                           <option
                             style={{ textTransform: "capitalize" }}
@@ -276,7 +275,7 @@ export default function Home() {
                 </p>
                 <div className="">
                   {students && students.length > 0 ? (
-                    students.map((student) => {
+                    safeMap(students, (student) => {
                       return (
                         <StudentAttendance
                           key={student._id}

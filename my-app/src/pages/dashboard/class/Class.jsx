@@ -17,6 +17,7 @@ import {
   resetStudentsAbsence,
 } from "../../../store/students/studentsHandler";
 import { removeLoading, setLoading } from "../../../store/Loading";
+import { safeMap, safeFilter } from "../../utils/safeArray";
 
 export default function Class() {
   const serverUri = import.meta.env.VITE_BASE_URI;
@@ -59,7 +60,8 @@ export default function Class() {
   // filter student for the search
   const filteredStudents =
     students &&
-    students.filter(
+    safeFilter(
+      students,
       (student) =>
         student.familyName.toLowerCase().includes(search.toLowerCase()) ||
         student.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -75,12 +77,12 @@ export default function Class() {
       let currentDate = null;
 
       if (posibilityStatus) {
-        absentCount = students.filter((student) => {
+        absentCount = safeFilter(students, (student) => {
           const status = sessionStorage.getItem(`status-${student._id}`);
           return status === "absent" || status === "pending";
         }).length;
 
-        attendanceCount = students.filter((student) => {
+        attendanceCount = safeFilter(students, (student) => {
           const status = sessionStorage.getItem(`status-${student._id}`);
           return status === "present";
         }).length;
@@ -89,25 +91,27 @@ export default function Class() {
         currentDate = new Date().toISOString().split("T")[0];
 
         // here we get the students with pending status and put them absent when we close the class
-        const absentStudents = students.filter((student) => {
+        const absentStudents = safeFilter(students, (student) => {
           const absentStudentStatus = sessionStorage.getItem(
             `status-${student._id}`
           );
           return absentStudentStatus === "pending";
         });
 
-        absentStudents.forEach(async (student) => {
-          await axios.put(
-            `${serverUri}/user/absence/${student._id}`,
-            {
-              classId: foundedClass._id,
-            },
-            { withCredentials: true }
-          );
+        await Promise.all(
+          absentStudents.map(async (student) => {
+            await axios.put(
+              `${serverUri}/user/absence/${student._id}`,
+              {
+                classId: foundedClass._id,
+              },
+              { withCredentials: true }
+            );
 
-          // Reset statuses for all students in the class with pending status
-          sessionStorage.setItem(`status-${student._id}`, "absent");
-        });
+            // Reset statuses for all students in the class with pending status
+            sessionStorage.setItem(`status-${student._id}`, "absent");
+          })
+        );
       }
 
       await axios.put(
@@ -193,7 +197,7 @@ export default function Class() {
                     </thead>
 
                     <tbody>
-                      {filteredStudents.map((student, index) => {
+                      {safeMap(filteredStudents, (student, index) => {
                         return (
                           <StudentItem
                             i={index + 1}

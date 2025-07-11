@@ -11,6 +11,7 @@ import logout_icon from "../icons/Logout.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/auth/authHandler";
+import { safeMap, safeSome } from "../../utils/safeArray";
 
 export default function Sidebar() {
   const { role, user } = useSelector((state) => state.user);
@@ -69,7 +70,7 @@ export default function Sidebar() {
 
   // Check if the current path matches any class
   const isActiveDropdown =
-    classes && Array.isArray(classes) && classes.some((c) => location.pathname.includes(c._id));
+    classes && safeSome(classes, (c) => location.pathname.includes(c._id));
 
     
   return (
@@ -138,8 +139,7 @@ export default function Sidebar() {
                 </div>
                 <div className="collapse ms-3" id="studentsDropdown">
                   <ul className="list-unstyled">
-                    {classes && Array.isArray(classes) &&
-                      classes.map((c) => (
+                    {safeMap(classes, (c) => (
                         <Link
                           onClick={hendleLink}
                           to={`/dashboard/classes/${c._id}`}
