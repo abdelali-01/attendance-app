@@ -2,11 +2,14 @@ import { removeLoading, setLoading } from "../Loading";
 import { request, setClasses, setFoundedClass } from "./classSlice";
 import axios from "axios";
 
+const serverUrl = import.meta.env.VITE_BASE_URI;
+
+
 export const getClasses = () => async (dispatch) => {
   dispatch(request());
 
   try {
-    const response = await axios.get(`/class`, { withCredentials: true });
+    const response = await axios.get(`${serverUrl}/class`, { withCredentials: true });
     dispatch(setClasses(response.data));
     return { success: true };
   } catch (error) {
@@ -38,7 +41,7 @@ export const deleteClass = (classId, navigate) => async (dispatch) => {
   if (confirmDelete) {
     dispatch(setLoading());
     try {
-      await axios.delete(`/class/${classId}`);
+      await axios.delete(`${serverUrl}/class/${classId}`);
       navigate("/dashboard");
       dispatch(getClasses());
       return { success: true, message: "Class deleted successfully!" };
@@ -56,7 +59,7 @@ export const addClass = (classe, navigate) => async (dispatch) => {
   dispatch(request());
 
   try {
-    const res = await axios.post("/class", classe, { withCredentials: true });
+    const res = await axios.post(`${serverUrl}/class`, classe, { withCredentials: true });
     dispatch(getClasses());
     navigate(`/dashboard/classes/${res.data._id}`);
     return { success: true, message: "Class created successfully!" };
@@ -72,7 +75,7 @@ export const addClass = (classe, navigate) => async (dispatch) => {
 export const updateClassCode = (classId) => async (dispatch) => {
   dispatch(setLoading());
   try {
-    const res = await axios.patch(`/class/${classId}`);
+    const res = await axios.patch(`${serverUrl}/class/${classId}`);
     const shareCode = res.data.shareCode;
     dispatch(getClasses());
     return { success: true, message: "Class code updated successfully!", shareCode };
@@ -88,7 +91,7 @@ export const updateClass = (details, controls, classId) => async (dispatch) => {
   dispatch(setLoading());
 
   try {
-    await axios.put('/class', {
+      await axios.put(`${serverUrl}/class`, {
       details, controls, classId
     }, { withCredentials: true });
     return { success: true, message: "Class updated successfully!" };
