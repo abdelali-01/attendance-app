@@ -17,7 +17,7 @@ import {
   resetStudentsAbsence,
 } from "../../../store/students/studentsHandler";
 import { removeLoading, setLoading } from "../../../store/Loading";
-import { safeMap, safeFilter } from "../../utils/safeArray";
+import { safeMap, safeFilter } from "../../../utils/safeArray";
 
 export default function Class() {
   const serverUri = import.meta.env.VITE_BASE_URI;

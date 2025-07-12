@@ -21,11 +21,11 @@ authRouter.post("/signup", async (req, res) => {
     const { email, password, role, name, familyName, matricule } = req.body;
 
     // Check if the email already exists
-    // let existUser =
-    //   (await Student.findOne({ email: decoded.email })) ||
-    //   (await Teacher.findOne({ email: decoded.email }));
+    let existUser =
+      (await Student.findOne({ email: decoded.email })) ||
+      (await Teacher.findOne({ email: decoded.email }));
 
-    // if (existUser) return res.status(401).send("Email Already used !");
+    if (existUser) return res.status(401).send("Email Already used !");
 
     // Check if the matricule already exists
     if (matricule) {
@@ -133,7 +133,7 @@ authRouter.post("/login", (req, res, next) => {
     }
 
     if (!user) {
-      return res.status(info?.status || 401).json({ message: info?.message || "Authentication failed" });
+      return res.status(info?.status || 404).json({ message: info?.message || "Invalid email or password" });
     }
 
     // Store `info` in `req.authInfo` so it can be used in other middleware

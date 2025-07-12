@@ -11,7 +11,7 @@ export default function Signup() {
     familyName: "",
     email: "",
     password: "",
-    matricule: "",
+    matricule: null,
     role: "",
   });
 
@@ -28,11 +28,11 @@ export default function Signup() {
       await axios.post(`${serverUri}/auth/signup`, user);
       navigate('/verification')
     } catch (error) {
-      console.log("error during the login", error);
-      if (error.response && error.response.status === 401) {
-        alert(error.response.data);
+      console.log("error during the signup", error);
+      if (error.response) {
+        alert(error.response.data.message );
       } else {
-        alert("Failed to login, please try again.");
+        alert("Failed to signup, please try again.");
       }
     } finally {
       setLoading(false); // Stop the loading state after the request is done
@@ -127,7 +127,7 @@ export default function Signup() {
             onChange={handleChange}
             id="matricule"
             name="matricule"
-            type="text"
+            type="number"
             placeholder="Enter your matricule"
             minLength={"12"}
             maxLength={"12"}
