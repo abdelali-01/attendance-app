@@ -1,13 +1,14 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addClass } from "../../../store/class/classHandler";
+import { useToast } from "../../../components/Toast/ToastContainer";
 
 export default function AddClass() {
   const {user} = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showSuccess, showError } = useToast();
 
   const [classe, setClasse] = useState({
     class: "",
@@ -25,7 +26,15 @@ export default function AddClass() {
   // post the class in database
   const fetchData = async (e) => {
     e.preventDefault();
-    dispatch(addClass(classe , navigate))
+    const result = await dispatch(addClass(classe, navigate));
+    
+    if (result) {
+      if (result.success) {
+        showSuccess(result.message);
+      } else {
+        showError(result.message);
+      }
+    }
   };
   
   return (

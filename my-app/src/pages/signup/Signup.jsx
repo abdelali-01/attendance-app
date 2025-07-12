@@ -1,10 +1,13 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useToast } from "../../components/Toast/ToastContainer";
+import { useDispatch } from "react-redux";
+import { signup } from "../../store/auth/authHandler";
 
 export default function Signup() {
-  const serverUri = import.meta.env.VITE_BASE_URI;
+  const dispatch = useDispatch();
   const navigate = useNavigate()
+  const { showSuccess, showError} = useToast();
   // set some hooks to manage the form
   const [user, setUser] = useState({
     name: "",
@@ -25,15 +28,15 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      await axios.post(`${serverUri}/auth/signup`, user);
-      navigate('/verification')
+      const response = await dispatch(signup(user, navigate));
+      if (response.success) {
+        showSuccess(response.message);
+      } else {
+        showError(response.message);
+      }
     } catch (error) {
       console.log("error during the signup", error);
-      if (error.response) {
-        alert(error.response.data.message );
-      } else {
-        alert("Failed to signup, please try again.");
-      }
+      showError(error.response?.data || "Failed to signup, please try again.");
     } finally {
       setLoading(false); // Stop the loading state after the request is done
     }

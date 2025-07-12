@@ -71,7 +71,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 10 * 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === "production", httpOnly: true , 
-    sameSite : "none" 
+    // sameSite : "none" 
   },
   store: MongoStore.create({ client: mongoose.connection.getClient() }),
 }));

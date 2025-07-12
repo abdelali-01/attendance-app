@@ -25,13 +25,13 @@ authRouter.post("/signup", async (req, res) => {
       (await Student.findOne({ email: email })) ||
       (await Teacher.findOne({ email: email }));
 
-    if (existUser) return res.status(401).send("Email Already used !");
+    if (existUser) return res.status(401).json({ message: "Email Already used !" });
 
     // Check if the matricule already exists
     if (matricule) {
       const existingMatricule = await Student.findOne({ matricule });
       if (existingMatricule) {
-        return res.status(401).send("This matricule already exists!");
+        return res.status(401).json({ message: "This matricule already exists!" });
       }
     }
 

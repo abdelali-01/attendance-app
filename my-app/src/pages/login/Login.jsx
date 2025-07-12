@@ -1,11 +1,13 @@
-import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../store/auth/authHandler";
+import { useToast } from "../../components/Toast/ToastContainer";
 
 export default function Login() {
   const navigate = useNavigate();
+  const { showError, showSuccess } = useToast();
+  
   // set some hooks to manage the form
   const [user, setUser] = useState({
     email: "",
@@ -21,7 +23,21 @@ export default function Login() {
   // fetching
   const fetchData = async (e) => {
     e.preventDefault();
-    dispatch(login(user , navigate));
+    setLoading(true);
+    try {
+      const response = await dispatch(login(user, navigate));
+      if (response) {
+        if (response.success) {
+          showSuccess(response.message);
+        } else {
+          showError(response.message);
+        }
+      }
+    } catch {
+      showError('Login failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

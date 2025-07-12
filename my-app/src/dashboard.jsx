@@ -16,6 +16,7 @@ import Loader from "./components/Loader";
 import UpgradePopup from "./components/UpgradePopup";
 import { getClasses } from "./store/class/classHandler";
 import ClassSettings from "./pages/dashboard/class/Settings";
+import ToastContainer from "./components/Toast/ToastContainer";
 
 function Dashboard() {
   const { user, role } = useSelector((state) => state.user);
@@ -33,7 +34,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <>
+    <ToastContainer>
       {user && role && (
         <>
           {/* <Loader /> */}
@@ -72,7 +73,7 @@ function Dashboard() {
           </div>
         </>
       )}
-    </>
+    </ToastContainer>
   );
 }
 

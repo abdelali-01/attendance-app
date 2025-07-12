@@ -10,6 +10,8 @@ import { checkUser } from "./store/auth/authHandler";
 import Navbar from "./components/website/Navbar";
 import Home from "./pages/website/Home";
 import Pricing from "./pages/website/Pricing";
+import ToastContainer from "./components/Toast/ToastContainer";
+import ToastTest from "./pages/ToastTest";
 
 function App() {
   const { user } = useSelector((state) => state.user);
@@ -23,22 +25,25 @@ function App() {
   },[]);
 
   return (
-    <div className="App">
-        <Navbar/>
-        <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/Pricing" element={<Pricing/>} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/verification" element={<Verification />} />
-          <Route path="/verification/:token" element={<Verification />} />
-          <Route path="/reset-pass" element={<ResetPass />} />
-          <Route
-            path="/reset-pass/:token"
-            element={<ResetPass resetPassword />}
-          />
-        </Routes>
-    </div>
+    <ToastContainer>
+      <div className="App">
+          <Navbar/>
+          <Routes>
+            <Route path="/" element={<Home/>} />
+            <Route path="/Pricing" element={<Pricing/>} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/verification" element={<Verification />} />
+            <Route path="/verification/:token" element={<Verification />} />
+            <Route path="/reset-pass" element={<ResetPass />} />
+            <Route
+              path="/reset-pass/:token"
+              element={<ResetPass resetPassword />}
+            />
+            <Route path="/toast-test" element={<ToastTest />} />
+          </Routes>
+      </div>
+    </ToastContainer>
   );
 }
 
