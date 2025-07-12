@@ -51,7 +51,13 @@ wss.on("connection", (ws) => {
 });
 
 // Middleware
-app.use(cors({ origin: process.env.BASE_URL || "http://localhost:5173" , credentials: true }));
+app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:5173" , credentials: true }));
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL || "http://localhost:5173");
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 app.use(express.json());
 app.use(helmet());
 app.use(mongoSanitize());
