@@ -22,8 +22,8 @@ authRouter.post("/signup", async (req, res) => {
 
     // Check if the email already exists
     let existUser =
-      (await Student.findOne({ email: decoded.email })) ||
-      (await Teacher.findOne({ email: decoded.email }));
+      (await Student.findOne({ email: email })) ||
+      (await Teacher.findOne({ email: email }));
 
     if (existUser) return res.status(401).send("Email Already used !");
 
