@@ -23,7 +23,7 @@ import Charts from "../../../components/Charts";
 
 export default function Home() {
   const { classes, foundedClass } = useSelector((state) => state.classes);
-
+  console.log("classes from dash ", classes);
   const { students } = useSelector((state) => state.students);
   const { loading } = useSelector((state) => state.loading);
   const dispatch = useDispatch();
@@ -119,7 +119,9 @@ export default function Home() {
 
   // determin the trend for the statistic
   const determineAverageTrend = (data) => {
-    const validData = safeFilter(data, (item) => item.value !== 0 || item.day !== ""
+    const validData = safeFilter(
+      data,
+      (item) => item.value !== 0 || item.day !== ""
     );
 
     if (validData.length < 2) {
@@ -167,16 +169,16 @@ export default function Home() {
                     onChange={(e) => setSelecedClass(e.target.value)}
                   >
                     {safeMap(classes, (c) => {
-                        return (
-                          <option
-                            style={{ textTransform: "capitalize" }}
-                            key={c._id}
-                            value={c._id}
-                          >
-                            {c.class}
-                          </option>
-                        );
-                      })}
+                      return (
+                        <option
+                          style={{ textTransform: "capitalize" }}
+                          key={c._id}
+                          value={c._id}
+                        >
+                          {c.class}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
               </form>
@@ -262,7 +264,7 @@ export default function Home() {
                 className="students-attendance  card rounded-5 flex-grow-1"
                 style={{
                   width: "30%",
-                  minWidth : "250px" ,
+                  minWidth: "250px",
                   maxWidth: "360px",
                   overflowY: "auto",
                   maxHeight: "100%",

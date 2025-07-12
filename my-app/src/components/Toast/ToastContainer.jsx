@@ -58,7 +58,16 @@ const ToastContainer = ({ children }) => {
   return (
     <ToastContext.Provider value={toastContext}>
       {children}
-      <div className="toast-container">
+      <div 
+        className="toast-container"
+        style={{
+          position: 'fixed',
+          top: '20px',
+          right: '20px',
+          zIndex: 99999,
+          pointerEvents: 'none'
+        }}
+      >
         {toasts.map((toast) => (
           <Toast
             key={toast.id}
