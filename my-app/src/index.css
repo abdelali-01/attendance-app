@@ -35,6 +35,82 @@ a{
 }
 
 
+/* Modern Form Field Styles */
+.field {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    flex-grow: 1 !important;
+    min-width: 200px !important;
+    margin-bottom: 24px !important;
+}
+
+.field label {
+    display: block !important;
+    margin-bottom: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.field input,
+.field select,
+.field textarea {
+    width: 100% !important;
+    padding: 12px 16px !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    transition: all 0.3s ease !important;
+    box-sizing: border-box !important;
+    font-family: "Poppins", sans-serif !important;
+    background: white !important;
+    outline: none !important;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(90, 87, 255, 0.1) !important;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+    color: #9ca3af !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+/* Field variations */
+.field-row {
+    display: flex !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+}
+
+.field-row .field {
+    flex: 1 !important;
+    margin-bottom: 0 !important;
+}
+
+.field-compact {
+    margin-bottom: 16px !important;
+}
+
+.field-compact label {
+    font-size: 13px !important;
+    margin-bottom: 6px !important;
+}
+
+.field-compact input,
+.field-compact select,
+.field-compact textarea {
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+}
+
+/* Legacy form styles (keeping for backward compatibility) */
 form .field {
     display: flex;
     flex-direction: column;
@@ -43,11 +119,142 @@ form .field {
     min-width: 200px;
 }
 
-form .field input , form .field select , form .field textarea{
+form .field input, 
+form .field select, 
+form .field textarea {
     border: 1px solid #4B5563;
     outline: none;
-    padding: 6px ;
+    padding: 6px;
     border-radius: 5px;
+}
+
+/* Responsive Design for Auth Pages */
+@media (max-width: 1024px) {
+    .auth-container {
+        flex-direction: column;
+        min-height: auto;
+        padding: 20px;
+    }
+    
+    .auth-visual {
+        flex: none;
+        height: 300px;
+        padding: 30px 20px;
+    }
+    
+    .auth-visual h1 {
+        font-size: 36px !important;
+    }
+    
+    .auth-visual p {
+        font-size: 16px !important;
+    }
+    
+    .auth-form {
+        flex: none;
+        padding: 30px 20px;
+    }
+    
+    .auth-form-content {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 10px !important;
+    }
+    
+    .auth-visual {
+        height: 250px !important;
+        padding: 20px 15px !important;
+    }
+    
+    .auth-visual h1 {
+        font-size: 28px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .auth-visual p {
+        font-size: 14px !important;
+        margin-bottom: 20px !important;
+    }
+    
+    .auth-visual .feature-highlights {
+        gap: 10px !important;
+        margin-top: 20px !important;
+    }
+    
+    .auth-visual .feature-highlights > div {
+        padding: 10px 15px !important;
+    }
+    
+    .auth-visual .feature-highlights span {
+        font-size: 14px !important;
+    }
+    
+    .auth-form {
+        padding: 20px 15px !important;
+    }
+    
+    .auth-form h2 {
+        font-size: 24px !important;
+    }
+    
+    .auth-form p {
+        font-size: 14px !important;
+    }
+    
+    .field-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+    
+    .field-row .field {
+        margin-bottom: 24px !important;
+    }
+    
+    .field-row .field:last-child {
+        margin-bottom: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-visual {
+        height: 200px;
+        padding: 15px 10px;
+    }
+    
+    .auth-visual h1 {
+        font-size: 24px !important;
+    }
+    
+    .auth-visual p {
+        font-size: 13px !important;
+    }
+    
+    .auth-visual .feature-highlights {
+        display: none;
+    }
+    
+    .auth-form {
+        padding: 15px 10px;
+    }
+    
+    .auth-form h2 {
+        font-size: 20px !important;
+    }
+    
+    .field input,
+    .field select,
+    .field textarea {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .field label {
+        font-size: 13px;
+    }
 }
 
 

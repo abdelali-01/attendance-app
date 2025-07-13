@@ -10,6 +10,7 @@ export const checkUserRole = (authorizedRole) => {
     if (req.user?.role === authorizedRole) {
       next();
     } else {
+      console.log(req?.user);
       res.status(403).send("Access denied. Unauthorized role.");
     }
   };

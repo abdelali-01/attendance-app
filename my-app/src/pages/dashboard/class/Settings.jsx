@@ -8,6 +8,7 @@ import {
 } from "../../../store/class/classHandler";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../../../components/Loader";
+import { useToast } from "../../../components/Toast/ToastContainer";
 
 function Settings() {
   const { user } = useSelector((state) => state.user);
@@ -16,6 +17,8 @@ function Settings() {
   const { loading } = useSelector((state) => state.loading);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { showError, showSuccess } = useToast();
 
   const [classe, setClasse] = useState({
     class: "",
@@ -85,7 +88,7 @@ function Settings() {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    dispatch(
+    const res = await dispatch(
       updateClass(
         classe,
         {
@@ -96,6 +99,12 @@ function Settings() {
         classId
       )
     );
+
+    if(res.success){
+      showSuccess(res.message)
+    }else{
+      showError(res.message)
+    }
   };
 
   return (
@@ -217,7 +226,10 @@ function Settings() {
                   <div
                     className="reset-code"
                     role="button"
-                    onClick={() => dispatch(updateClassCode(classId))}
+                    onClick={async () =>{ 
+                     const res = await dispatch(updateClassCode(classId))
+                     res.success ? showSuccess(res.message) : showError(res.message);
+                    }}
                   >
                     <span className="fw-semibold text-primary">Reset</span>
                   </div>

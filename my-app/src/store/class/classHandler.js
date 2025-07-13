@@ -75,7 +75,7 @@ export const addClass = (classe, navigate) => async (dispatch) => {
 export const updateClassCode = (classId) => async (dispatch) => {
   dispatch(setLoading());
   try {
-    const res = await axios.patch(`${serverUrl}/class/${classId}`);
+    const res = await axios.patch(`${serverUrl}/class/${classId}` , {} ,{withCredentials: true});
     const shareCode = res.data.shareCode;
     dispatch(getClasses());
     return { success: true, message: "Class code updated successfully!", shareCode };
@@ -91,9 +91,15 @@ export const updateClass = (details, controls, classId) => async (dispatch) => {
   dispatch(setLoading());
 
   try {
-      await axios.put(`${serverUrl}/class`, {
-      details, controls, classId
-    }, { withCredentials: true });
+    await axios.put(
+      `${serverUrl}/class`,
+      {
+        details,
+        controls,
+        classId,
+      },
+      { withCredentials: true }
+    );
     return { success: true, message: "Class updated successfully!" };
   } catch (error) {
     console.log('error during updating the class ', error);

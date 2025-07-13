@@ -150,132 +150,144 @@ export default function Home() {
   const attendancesTrend = determineAverageTrend(formattedAttendances);
 
   return (
-    <div className="home-page px-md-5 px-3 my-5 flex-grow-1">
-      <div className="home-title mt-4">
-        <h2 className="fw-bold">Dashboard</h2>
-        <p className="text-black-50">Welcome back , teacher</p>
+    <div className="home-page">
+      {/* Header Section */}
+      <div className="dashboard-header">
+        <div className="header-content">
+          <div className="welcome-section">
+            <h1 className="dashboard-title">Dashboard</h1>
+            <p className="welcome-text">Welcome back, teacher! 👋</p>
+          </div>
+          <div className="header-actions ">
+            {classes && classes.length > 0 && (
+              <div className="class-selector">
+                <label htmlFor="class-select" className="selector-label">
+                  Select Class
+                </label>
+                <select
+                  id="class-select"
+                  className="class-select"
+                  value={selectedClass}
+                  onChange={(e) => setSelecedClass(e.target.value)}
+                >
+                  {safeMap(classes, (c) => {
+                    return (
+                      <option
+                        style={{ textTransform: "capitalize" }}
+                        key={c._id}
+                        value={c._id}
+                      >
+                        {c.class}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
+
       {loading ? (
-        <Loader />
+        <div className="loader-container">
+          <Loader />
+        </div>
       ) : classes && classes.length > 0 ? (
-        <>
-          <div className="charts-part w-100 d-flex flex-column align-items-end">
-            <div className="row mb-4">
-              <form>
-                <div className="field col-2">
-                  <label htmlFor="class">Select Class</label>
-                  <select
-                    value={selectedClass}
-                    onChange={(e) => setSelecedClass(e.target.value)}
-                  >
-                    {safeMap(classes, (c) => {
-                      return (
-                        <option
-                          style={{ textTransform: "capitalize" }}
-                          key={c._id}
-                          value={c._id}
-                        >
-                          {c.class}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-              </form>
-            </div>
-            <div className="statistics d-flex justify-content-center flex-wrap gap-4 py-3 w-100">
-              <div
-                className="charts-statistics flex-grow-1"
-                style={{ width: "60%" }}
-              >
-                <div className="row m-auto">
-                  <div className="col">
-                    <Charts
-                      data={formattedAbsences}
-                      absence
-                      percentage={averageAbsence}
-                      trend={absencesTrend}
-                    />
-                  </div>
-                  <div className="col">
-                    <Charts
-                      data={formattedAttendances}
-                      percentage={averageAttendance}
-                      trend={attendancesTrend}
-                    />
-                  </div>
-                </div>
-                <div className="row m-auto">
-                  <div className="col">
-                    <div className="card rounded-5">
-                      <div className="card-info d-flex justify-content-between">
-                        <div className="left-part">
-                          <span className="text-black-50 fw-semibold">
-                            Participation
-                          </span>
-                          <div className="fw-bold fs-3">
-                            {averageAttendance}%
-                          </div>
-                        </div>
-                        <span>
-                          {attendancesTrend === "up" && (
-                            <img src={trend_up} alt="" />
-                          )}
-                          {attendancesTrend === "down" && (
-                            <img src={trend_down} alt="" />
-                          )}
-                          {attendancesTrend === "neutral" && "--"}
-                        </span>
-                      </div>
-                      <ResponsiveContainer width="100%" height={"60%"}>
-                        <LineChart data={formattedAttendances}>
-                          <XAxis hide />
-                          <YAxis hide />
-                          <Tooltip cursor={false} />
-                          <Line
-                            type="monotone"
-                            dataKey="value"
-                            strokeWidth={6}
-                            stroke="url(#gradient)"
-                            dot={false}
-                            isAnimationActive
-                            animationDuration={500}
-                          />
-                          <defs>
-                            <linearGradient
-                              id="gradient"
-                              x1="0"
-                              y1="0"
-                              x2="1"
-                              y2="0"
-                            >
-                              <stop offset="0%" stopColor="red" />
-                              <stop offset="50%" stopColor="orange" />
-                              <stop offset="100%" stopColor="green" />
-                            </linearGradient>
-                          </defs>
-                        </LineChart>
-                      </ResponsiveContainer>
+        <div className="dashboard-content py-5">
+          {/* Statistics Cards */}
+          <div className="stats-grid">
+            <div className="stats-main">
+              <div className="stats-row">
+                  <Charts
+                    data={formattedAbsences}
+                    absence
+                    percentage={averageAbsence}
+                    trend={absencesTrend}
+                  />
+                  <Charts
+                    data={formattedAttendances}
+                    percentage={averageAttendance}
+                    trend={attendancesTrend}
+                  />
+              </div>
+              
+              {/* Participation Trend Card */}
+              <div className="participation-card-wrapper">
+                <div className="participation-card">
+                  <div className="card-header">
+                    <div className="card-title-section">
+                      <span className="card-label">Participation Trend</span>
+                      <div className="card-value">{averageAttendance}%</div>
                     </div>
+                    <div className="trend-indicator">
+                      {attendancesTrend === "up" && (
+                        <div className="trend-up">
+                          <img src={trend_up} alt="Trending up" />
+                        </div>
+                      )}
+                      {attendancesTrend === "down" && (
+                        <div className="trend-down">
+                          <img src={trend_down} alt="Trending down" />
+                        </div>
+                      )}
+                      {attendancesTrend === "neutral" && (
+                        <div className="trend-neutral">--</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="chart-container">
+                    <ResponsiveContainer width="100%" height={160}>
+                      <LineChart data={formattedAttendances}>
+                        <XAxis hide />
+                        <YAxis hide />
+                        <Tooltip 
+                          cursor={false}
+                          contentStyle={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                            border: 'none',
+                            borderRadius: '8px',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="value"
+                          strokeWidth={3}
+                          stroke="url(#participationGradient)"
+                          dot={false}
+                          isAnimationActive
+                          animationDuration={800}
+                        />
+                        <defs>
+                          <linearGradient
+                            id="participationGradient"
+                            x1="0"
+                            y1="0"
+                            x2="1"
+                            y2="0"
+                          >
+                            <stop offset="0%" stopColor="#667eea" />
+                            <stop offset="50%" stopColor="#764ba2" />
+                            <stop offset="100%" stopColor="#f093fb" />
+                          </linearGradient>
+                        </defs>
+                      </LineChart>
+                    </ResponsiveContainer>
                   </div>
                 </div>
               </div>
-              <div
-                className="students-attendance  card rounded-5 flex-grow-1"
-                style={{
-                  width: "30%",
-                  minWidth: "250px",
-                  maxWidth: "360px",
-                  overflowY: "auto",
-                  maxHeight: "100%",
-                  marginBottom: "30px",
-                  padding: "20px",
-                }}
-              >
-                <p className="fw-semibold text-black-50">
-                  Students' Attendance
-                </p>
-                <div className="">
+            </div>
+
+            {/* Students Attendance Sidebar */}
+            <div className="students-sidebar">
+              <div className="students-card">
+                <div className="students-header">
+                  <h3 className="students-title">Students' Attendance</h3>
+                  <div className="students-count">
+                    {students ? students.length : 0} students
+                  </div>
+                </div>
+                <div className="students-list">
                   {students && students.length > 0 ? (
                     safeMap(students, (student) => {
                       return (
@@ -287,19 +299,26 @@ export default function Home() {
                       );
                     })
                   ) : (
-                    <p className="text-center my-4">No available students. </p>
+                    <div className="no-students">
+                      <div className="no-students-icon">👥</div>
+                      <p className="no-students-text">No students available</p>
+                    </div>
                   )}
                 </div>
               </div>
             </div>
           </div>
-        </>
+        </div>
       ) : (
-        <div className=" my-5 d-flex align-items-center justify-content-center">
-          <div className="text-center my-5">
-            <h3 className="text-black-50">No Classes Available</h3>
+        <div className="empty-state">
+          <div className="empty-state-content">
+            <div className="empty-state-icon">📚</div>
+            <h3 className="empty-state-title">No Classes Available</h3>
+            <p className="empty-state-description">
+              Get started by creating your first class to track attendance
+            </p>
             <Link to={"/dashboard/add-class"}>
-              <button className="btn open-style mt-3">Create Class</button>
+              <button className="create-class-btn">Create Your First Class</button>
             </Link>
           </div>
         </div>

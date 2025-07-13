@@ -31,7 +31,7 @@ const CustomBar = (props) => {
 export default function Charts({ data, absence, percentage, trend }) {
   return (
     <div>
-      <div className="card rounded-5">
+      <div className="card">
         <div className="chartInfo mb-2 ms-3 d-flex justify-content-between">
           <div className="left-part mb-0">
             <span className="text-black-50 fw-semibold">
@@ -39,37 +39,47 @@ export default function Charts({ data, absence, percentage, trend }) {
             </span>
             <div className="fw-bold fs-3 ">{percentage}%</div>
           </div>
-          <span>
-            {trend === "up" && <img src={trend_up} alt="" />}
-            {trend === "down" && <img src={trend_down} alt="" />}
-            {trend === "neutral" && '--'}
-          </span>
+          <div className="trend-indicator">
+            {trend === "up" && (
+              <div className="trend-up">
+                <img src={trend_up} alt="Trending up" />
+              </div>
+            )}
+            {trend === "down" && (
+              <div className="trend-down">
+                <img src={trend_down} alt="Trending down" />
+              </div>
+            )}
+            {trend === "neutral" && <div className="trend-neutral">--</div>}
+          </div>
         </div>
-        <ResponsiveContainer width="100%" height="60%">
-          <BarChart data={data}>
-            <defs>
-              <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#FF5659" />
-                <stop offset="95%" stopColor="#FFC5C6" />
-              </linearGradient>
-            </defs>
-            <defs>
-              <linearGradient id="secColorValue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#57FFA8" />
-                <stop offset="95%" stopColor="#CCFEE4" />
-              </linearGradient>
-            </defs>
-            <XAxis dataKey="day" hide />
-            <YAxis hide />
-            <Tooltip />
-            <Bar
-              dataKey="value"
-              barSize={12}
-              shape={CustomBar}
-              fill={`url(${absence ? `#colorValue` : `#secColorValue`})`}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        <div className="chart-container">
+          <ResponsiveContainer width="100%" height={130}>
+            <BarChart data={data}>
+              <defs>
+                <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#FF5659" />
+                  <stop offset="95%" stopColor="#FFC5C6" />
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="secColorValue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#57FFA8" />
+                  <stop offset="95%" stopColor="#CCFEE4" />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="day" hide />
+              <YAxis hide />
+              <Tooltip />
+              <Bar
+                dataKey="value"
+                barSize={12}
+                shape={CustomBar}
+                fill={`url(${absence ? `#colorValue` : `#secColorValue`})`}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
