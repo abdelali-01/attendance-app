@@ -28,7 +28,7 @@ function App() {
     <ToastContainer>
       <div className="App">
           <Navbar/>
-          <Routes>
+            <Routes>
             <Route path="/" element={<Home/>} />
             <Route path="/Pricing" element={<Pricing/>} />
             <Route path="/signup" element={<Signup />} />
@@ -42,6 +42,7 @@ function App() {
             />
             <Route path="/toast-test" element={<ToastTest />} />
           </Routes>
+          
       </div>
     </ToastContainer>
   );

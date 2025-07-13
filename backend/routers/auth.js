@@ -100,18 +100,21 @@ authRouter.post("/signup", async (req, res) => {
 });
 
 // Email verification route
-authRouter.get("/verify/:token", async (req, res) => {
+authRouter.get("/verify/:token", passport.authenticate('session', { session: false }), async (req, res) => {
   const { token } = req.params;
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded)
     
     const emailField = decoded.email ? "email" : "username";
+    console.log(emailField)
+
     const user =
       (await Student.findOne({ email: decoded[emailField] })) ||
       (await Teacher.findOne({ email: decoded[emailField] }));
 
-    if (!user) return res.status(400).json({ error: "Invalid token" });
+    if (!user) return res.status(404).json({ error: "Invalid token" });
 
     user.isVerified = true;
     user.verificationToken = null;

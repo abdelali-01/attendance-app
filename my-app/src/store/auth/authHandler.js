@@ -6,19 +6,15 @@ const serverUrl = import.meta.env.VITE_BASE_URI;
 export const signup = (user, navigate) => async (dispatch) => {
   dispatch(request());
   try {
-    const response = await axios.post(serverUrl + "/auth/signup", user, {
+    await axios.post(serverUrl + "/auth/signup", user, {
       withCredentials: true,
     });
-    if (response.status === 201) {
-      navigate("/verification");
-      return {
-        success: true,
-        message:
-          "Account created successfully! Please check your email for verification.",
-      };
-    } else {
-      return { success: false, message: response?.data?.message };
-    }
+    navigate("/verification");
+    return {
+      success: true,
+      message:
+        "Account created successfully! Please check your email for verification.",
+    };
   } catch (error) {
     console.log("error during requesting the signup ", error);
     return {
@@ -86,5 +82,21 @@ export const logout = (navigate) => async (dispatch) => {
   } catch (error) {
     console.log("Error during Logout", error);
     return { success: false, message: "Logout failed. Please try again." };
+  }
+};
+
+// Email verification handler
+export const verifyEmail = async (token) => {
+  try {
+    await axios.get(`${serverUrl}/auth/verify/${token}`);
+    return { success: true };
+  } catch (error) {
+    console.error("error during email verification", error);
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "Invalid or expired token. Please request a new verification email.",
+    };
   }
 };
