@@ -5,7 +5,7 @@ import Features from './landing/Features';
 import HowItWorks from './landing/HowItWorks';
 import Benefits from './landing/Benefits';
 import PricingPreview from './landing/PricingPreview';
-import About from './landing/About';
+import FAQ from './landing/FAQ';
 import Footer from './landing/Footer';
 import './landing/landing.css';
 
@@ -17,7 +17,7 @@ export default function Home() {
       <HowItWorks />
       <Benefits />
       <PricingPreview />
-      <About />
+      <FAQ />
       <Footer />
     </>
   );

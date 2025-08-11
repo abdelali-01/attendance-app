@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { safeMap, safeFilter } from "../../../utils/safeArray";
 import "./home.css";
 import Loader from "../../../components/Loader";
-import { Link } from "react-router-dom";
+import NoClassAvailable from "../../../components/NoClassAvailable";
 
 import trend_up from "../../../components/icons/trend-up.svg";
 import trend_down from "../../../components/icons/trend-down.svg";
@@ -153,12 +153,12 @@ export default function Home() {
     <div className="home-page">
       {/* Header Section */}
       <div className="dashboard-header">
-        <div className="header-content">
+        <div className="d-flex justify-content-between align-items-center gap-4 flex-wrap">
           <div className="welcome-section">
             <h1 className="dashboard-title">Dashboard</h1>
             <p className="welcome-text">Welcome back, teacher! 👋</p>
           </div>
-          <div className="header-actions ">
+          <div className="flex-grow-1 flex-md-grow-0" style={{minWidth : "300px"}}>
             {classes && classes.length > 0 && (
               <div className="class-selector">
                 <label htmlFor="class-select" className="selector-label">
@@ -310,18 +310,7 @@ export default function Home() {
           </div>
         </div>
       ) : (
-        <div className="empty-state">
-          <div className="empty-state-content">
-            <div className="empty-state-icon">📚</div>
-            <h3 className="empty-state-title">No Classes Available</h3>
-            <p className="empty-state-description">
-              Get started by creating your first class to track attendance
-            </p>
-            <Link to={"/dashboard/add-class"}>
-              <button className="create-class-btn">Create Your First Class</button>
-            </Link>
-          </div>
-        </div>
+        <NoClassAvailable/>
       )}
     </div>
   );

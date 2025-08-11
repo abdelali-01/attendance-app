@@ -14,13 +14,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkUser } from "./store/auth/authHandler";
 import Loader from "./components/Loader";
 import UpgradePopup from "./components/UpgradePopup";
+import CheckoutRedirecter from "./components/modals/ChekoutRedirecter";
 import { getClasses } from "./store/class/classHandler";
 import ClassSettings from "./pages/dashboard/class/Settings";
 import ToastContainer from "./components/Toast/ToastContainer";
+import { SidebarProvider } from "./contexts/SidebarContext";
+import Navbar from "./components/dashboard/Navbar";
 
 function Dashboard() {
   const { user, role } = useSelector((state) => state.user);
-  const { loading } = useSelector((state) => state.loading);
 
   const dispatch = useDispatch();
 
@@ -36,42 +38,45 @@ function Dashboard() {
   return (
     <ToastContainer>
       {user && role && (
-        <>
-          {/* <Loader /> */}
-          <div className="App d-flex gap-4">
+        <SidebarProvider>
+          <div className="App d-flex gap-0" style={{ minHeight: "100vh" }}>
             {role === "teacher" && <UpgradePopup />}
+            <CheckoutRedirecter />
             <Sidebar />
-            <div className="position-relative flex-grow-1">
-              <Routes location={location}>
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/reports" element={<Reports />} />
-                <Route path="/messages" element={<NoDisponibleFeature />} />
-                {role === "teacher" ? (
-                  <>
-                    {/* set the teacher pages */}
-                    <Route path="/" element={<Home />} />
-                    <Route path="/classes/:classId" element={<Class />} />
-                    <Route
-                      path="/classes/:classId/settings"
-                      element={<ClassSettings />}
-                    />
-                    <Route path="/add-class" element={<AddClass />} />
-                  </>
-                ) : (
-                  // the students pages
-                  <>
-                    <Route path="/" element={<NoDisponibleFeature />} />
-                    <Route path="/classes" element={<Classes />} />
-                    <Route
-                      path="/classes/:classId"
-                      element={<StudentClassPage />}
-                    />
-                  </>
-                )}
-              </Routes>
+            <div className="position-relative flex-grow-1 d-flex flex-column" style={{ minHeight: "100vh" }}>
+              <Navbar />
+              <div style={{ flex: 1, minHeight: 0 }}>
+                <Routes location={location}>
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/reports" element={<Reports />} />
+                  <Route path="/messages" element={<NoDisponibleFeature />} />
+                  <Route path="/classes" element={<Classes />} />
+                  {role === "teacher" ? (
+                    <>
+                      {/* set the teacher pages */}
+                      <Route path="/" element={<Home />} />
+                      <Route path="/classes/:classId" element={<Class />} />
+                      <Route
+                        path="/classes/:classId/settings"
+                        element={<ClassSettings />}
+                      />
+                      <Route path="/add-class" element={<AddClass />} />
+                    </>
+                  ) : (
+                    // the students pages
+                    <>
+                      <Route path="/" element={<NoDisponibleFeature />} />
+                      <Route
+                        path="/classes/:classId"
+                        element={<StudentClassPage />}
+                      />
+                    </>
+                  )}
+                </Routes>
+              </div>
             </div>
           </div>
-        </>
+        </SidebarProvider>
       )}
     </ToastContainer>
   );

@@ -29,6 +29,23 @@ mongoose.connect(process.env.DATABASE_URL).then(() => {
   });
 });
 
+
+
+// Middleware
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+
+// just test logging 
+app.use((req, res, next) => {
+  console.log("Origin:", req.headers.origin);
+  next();
+});
+
 // WebSocket setup
 wss.on("connection", (ws) => {
   console.log("A client connected");
@@ -50,14 +67,6 @@ wss.on("connection", (ws) => {
   });
 });
 
-// Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:5173" , credentials: true }));
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL || "http://localhost:5173");
-  res.header("Access-Control-Allow-Credentials", "true");
-  next();
-});
-
 app.use(express.json());
 app.use(helmet());
 app.use(mongoSanitize());
@@ -65,16 +74,19 @@ app.use(xss());
 app.use(cookieParser());
 
 app.set("trust proxy", 1); // Trust first proxy for rate limiting
-
 app.use(session({
   secret: "MyHardAndLongSecretInThisWorld",
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 10 * 24 * 60 * 60 * 1000, secure: process.env.NODE_ENV === "production", httpOnly: true , 
+  cookie: { 
+    maxAge: 10 * 24 * 60 * 60 * 1000,
+    secure: process.env.NODE_ENV === "production", 
+    httpOnly: true , 
     sameSite : "none"
   },
   store: MongoStore.create({ client: mongoose.connection.getClient() }),
 }));
+
 
 app.use(passport.initialize());
 app.use(passport.session());

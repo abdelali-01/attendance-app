@@ -41,8 +41,8 @@ export const deleteClass = (classId, navigate) => async (dispatch) => {
   if (confirmDelete) {
     dispatch(setLoading());
     try {
-      await axios.delete(`${serverUrl}/class/${classId}`);
-      navigate("/dashboard");
+      await axios.delete(`${serverUrl}/class/${classId}` , {withCredentials : true});
+      navigate("/dashboard/classes");
       dispatch(getClasses());
       return { success: true, message: "Class deleted successfully!" };
     } catch (error) {

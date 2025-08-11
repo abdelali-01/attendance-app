@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../store/auth/authHandler";
 import { useToast } from "../../components/Toast/ToastContainer";
+import { hasPendingSubscription, getPendingSubscriptionInfo } from "../../utils/subscriptionUtils";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -15,7 +16,16 @@ export default function Login() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [pendingSubscription, setPendingSubscription] = useState(null);
   const dispatch = useDispatch();
+
+  // Check for pending subscription on component mount
+  useEffect(() => {
+    if (hasPendingSubscription()) {
+      const pendingInfo = getPendingSubscriptionInfo();
+      setPendingSubscription(pendingInfo);
+    }
+  }, []);
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -48,6 +58,34 @@ export default function Login() {
       fontFamily: "Poppins, sans-serif",
       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
     }}>
+      {/* Pending Subscription Notification */}
+      {pendingSubscription && (
+        <div style={{
+          position: "fixed",
+          top: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 1000,
+          background: "rgba(255, 255, 255, 0.95)",
+          padding: "15px 25px",
+          borderRadius: "12px",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.1)",
+          backdropFilter: "blur(10px)",
+          border: "1px solid rgba(255,255,255,0.2)",
+          maxWidth: "500px",
+          textAlign: "center"
+        }}>
+          <div style={{ fontSize: "14px", color: "#6366f1", fontWeight: "600", marginBottom: "5px" }}>
+            📦 Pending Subscription
+          </div>
+          <div style={{ fontSize: "12px", color: "#666" }}>
+            {pendingSubscription.plan} plan • {pendingSubscription.duration} months • {pendingSubscription.amount} DA
+          </div>
+          <div style={{ fontSize: "11px", color: "#888", marginTop: "5px" }}>
+            Complete your login to proceed with payment
+          </div>
+        </div>
+      )}
       {/* Left Side - Visual */}
       <div className="auth-visual" style={{
         flex: "1",

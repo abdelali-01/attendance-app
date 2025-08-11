@@ -153,7 +153,8 @@ authRouter.post("/login", (req, res, next) => {
 });
 
 authRouter.get("/user", async (req, res) => {
-  const userId = req.session?.passport?.user;
+  const userId = req.session?.passport?.user || null;
+  console.log(userId);
 
   try {
     if (!userId) return res.status(401).send("You have To Logged in !");

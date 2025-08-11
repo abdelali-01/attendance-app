@@ -3,7 +3,6 @@ import "./sidebar.css";
 import logo from "../icons/logo.svg";
 import home_icon from "../icons/Overview.svg";
 import students_icon from "../icons/Customers.svg";
-import arrow_icon from "../icons/Downarrow.svg";
 import report_icon from "../icons/Reports.svg";
 import message_icon from "../icons/Message.svg";
 import settings_icon from "../icons/Settings.svg";
@@ -11,93 +10,89 @@ import logout_icon from "../icons/Logout.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/auth/authHandler";
-import { safeMap, safeSome } from "../../utils/safeArray";
+import { useSidebar } from "../../contexts/SidebarContext";
 
 export default function Sidebar() {
   const { role, user } = useSelector((state) => state.user);
-  const { classes } = useSelector((state) => state.classes);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { sidebarOpen, setSidebarOpen } = useSidebar();
 
-  // create state -useState- to manage the arrow_icon
-  const [arrow, setArrow] = useState(false);
   // create state to manage the active link
   const [activeLink, setActiveLink] = useState(window.location.pathname);
-  // Using useLocation hook to update active link based on URL
   const location = useLocation();
   useEffect(() => {
     setActiveLink(location.pathname);
   }, [location]);
 
-  //create hooks for the responsive
-  const [sidebarStatus, setSidebarStatus] = useState(window.innerWidth > 1200);
   const sidebarRef = useRef(null);
 
-  useEffect(() => {
-    window.addEventListener("resize", () => {
-      setSidebarStatus(window.innerWidth > 1200);
-    });
-  });
+  // Responsive: detect if mobile
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 1200;
 
   // Close sidebar on interaction (click or scroll)
   useEffect(() => {
     const handleInteraction = (e) => {
+      // If click is on the menu button, do not close sidebar
+      let el = e.target;
+      while (el) {
+        if (el.getAttribute && el.getAttribute("data-menu-button") === "true") {
+          return;
+        }
+        el = el.parentElement;
+      }
       if (
-        window.innerWidth < 1200 &&
         sidebarRef.current &&
-        !sidebarRef.current.contains(e.target)
+        !sidebarRef.current.contains(e.target) &&
+        isMobile
       ) {
-        setSidebarStatus(false);
+        setSidebarOpen(false);
       }
     };
-
     const handleScroll = () => {
-      if (window.innerWidth < 1200) {
-        setSidebarStatus(false);
-      }
+      if(isMobile) setSidebarOpen(false);
     };
-
     window.addEventListener("mousedown", handleInteraction);
     window.addEventListener("scroll", handleScroll);
-  }, []);
+    return () => {
+      window.removeEventListener("mousedown", handleInteraction);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [setSidebarOpen , isMobile]);
 
   // close sidebar when we click any link in
   const hendleLink = () => {
-    if (window.innerWidth < 1200) {
-      setSidebarStatus(false);
-    }
+    if(isMobile) setSidebarOpen(false);
   };
 
-  // Check if the current path matches any class
-  const isActiveDropdown =
-    classes && safeSome(classes, (c) => location.pathname.includes(c._id));
+  // Sidebar style for all screens
+  const sidebarStyle = {
+    position: isMobile ? "fixed" : sidebarOpen ? "sticky" :"fixed" ,
+    left: sidebarOpen ? 0 : '-300px',
+    top: isMobile ? 64 : 0,
+    height: isMobile ? "calc(100vh - 64px)" : "100vh",
+    width: isMobile ? "80vw" : 280,
+    maxWidth: 300,
+    minWidth: 220,
+    zIndex: 1200,
+    background: "#6366f1",
+    overflowY: "auto",
+    transition: "0.3s cubic-bezier(.4,0,.2,1)",
+    boxShadow: sidebarOpen ? "0 8px 32px #6366f188" : "none",
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderTopRightRadius: isMobile ? 12 : 0,
+    borderBottomRightRadius: isMobile ? 12 : 0,
+  };
 
-    
   return (
     <>
-      <i
-        className="fa-solid fa-bars text-white position-absolute fs-3"
-        onClick={() => setSidebarStatus(true)}
-      ></i>
       <div
         ref={sidebarRef}
-        className={`sidebar py-4 text-white d-flex flex-column sticky-top  ${
-          sidebarStatus ? "" : "closed-side"
-        }`}
+        className={`sidebar py-4 text-white d-flex flex-column ${isMobile ? "" : "sticky-top top-0"} ${sidebarOpen ? "" : "closed-side"}`}
+        style={sidebarStyle}
       >
-        {sidebarStatus && window.innerWidth < 1200 ? (
-          <i
-            role="button"
-            className="fa-regular fa-circle-xmark position-absolute fs-4"
-            onClick={() => setSidebarStatus(false)}
-            style={{
-              top: "5px",
-              right: "5px",
-            }}
-          ></i>
-        ) : (
-          <></>
-        )}
+        {/* Removed the X (close) icon. Sidebar is only toggled from Navbar. */}
         <div className="sidebar-logo-app d-flex align-items-center gap-3 justify-content-center">
           <img src={logo} alt="" />
           <span className="fw-bold fs-5">Circle</span>
@@ -115,48 +110,6 @@ export default function Sidebar() {
               <span>{role === "student" ? "Home" : "Dashboard"}</span>
             </Link>
 
-            {role === "teacher" ? (
-              <div className="dropdown w-100 d-flex flex-column align-items-center">
-                <div
-                  className={`sidebar-link ${
-                    isActiveDropdown ? "active" : ""
-                  } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
-                  onClick={() => setArrow(!arrow)}
-                  id="dropdownMenuButton"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#studentsDropdown"
-                  aria-expanded="false"
-                  aria-controls="studentsDropdown"
-                  role="button"
-                >
-                  <img src={students_icon} alt="" />
-                  <span>Students</span>
-                  <img
-                    className={`arrow-icon ${arrow ? "rotate" : ""}`}
-                    src={arrow_icon}
-                    alt=""
-                  />
-                </div>
-                <div className="collapse ms-3" id="studentsDropdown">
-                  <ul className="list-unstyled">
-                    {safeMap(classes, (c) => (
-                        <Link
-                          onClick={hendleLink}
-                          to={`/dashboard/classes/${c._id}`}
-                          key={c._id}
-                        >
-                          <li style={{ textTransform: "capitalize" }}>
-                            {c.class}
-                          </li>
-                        </Link>
-                      ))}
-                    <Link to={"/dashboard/add-class"} onClick={hendleLink}>
-                      <li>Add new class</li>
-                    </Link>
-                  </ul>
-                </div>
-              </div>
-            ) : (
               <Link
                 onClick={hendleLink}
                 to="/dashboard/classes"
@@ -165,9 +118,8 @@ export default function Sidebar() {
                 } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
               >
                 <img src={students_icon} alt="" />
-                <span>Classes</span>
+                <span>{role === "teacher" ? "Students" : "Classes"}</span>
               </Link>
-            )}
 
             <Link
               onClick={user.plan !== "free" && hendleLink}
