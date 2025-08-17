@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./class.css";
-import StudentItem from "../../../components/StudentItem";
+import StudentItem from "../../../components/cards/StudentItem";
 import axios from "axios";
 import search_icon from "../../../components/icons/search.svg";
 import moment from "moment";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import ClassName from "../../../components/ClassName";
+import ClassName from "../../../components/ui/ClassName";
 import { useDispatch, useSelector } from "react-redux";
 import {
   findClass,
   getClasses,
 } from "../../../store/class/classHandler";
-import Loader from "../../../components/Loader";
+import Loader from "../../../components/ui/Loader";
 import {
   getStudents,
   resetStudentsAbsence,

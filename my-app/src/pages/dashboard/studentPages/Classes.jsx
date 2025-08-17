@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import ClassItem from "../../../components/ClassItem";
-import Popup from "../../../components/Popup";
+import ClassItem from "../../../components/cards/ClassItem";
+import Popup from "../../../components/modals/Popup";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { safeMap } from "../../../utils/safeArray";

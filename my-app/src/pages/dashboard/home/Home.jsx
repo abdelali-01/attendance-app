@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { safeMap, safeFilter } from "../../../utils/safeArray";
 import "./home.css";
-import Loader from "../../../components/Loader";
+import Loader from "../../../components/ui/Loader";
 import NoClassAvailable from "../../../components/NoClassAvailable";
 
 import trend_up from "../../../components/icons/trend-up.svg";
@@ -16,10 +16,10 @@ import {
   Tooltip,
   XAxis,
 } from "recharts";
-import StudentAttendance from "../../../components/StudentAttendance";
+import StudentAttendance from "../../../components/cards/StudentAttendance";
 import { findClass } from "../../../store/class/classHandler";
 import { getStudents } from "../../../store/students/studentsHandler";
-import Charts from "../../../components/Charts";
+import Charts from "../../../components/charts/Charts";
 
 export default function Home() {
   const { classes, foundedClass } = useSelector((state) => state.classes);

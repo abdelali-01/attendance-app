@@ -1,5 +1,5 @@
 import React from "react";
-import not from "../components/icons/not.svg";
+import not from "../icons/not.svg";
 
 export default function NoDisponibleFeature() {
   return (

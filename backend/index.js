@@ -73,7 +73,7 @@ app.use(mongoSanitize());
 app.use(xss());
 app.use(cookieParser());
 
-app.set("trust proxy", 1); // Trust first proxy for rate limiting
+// app.set("trust proxy", 1); // Trust first proxy for rate limiting
 app.use(session({
   secret: "MyHardAndLongSecretInThisWorld",
   resave: false,
@@ -82,7 +82,7 @@ app.use(session({
     maxAge: 10 * 24 * 60 * 60 * 1000,
     secure: process.env.NODE_ENV === "production", 
     httpOnly: true , 
-    sameSite : "none"
+    // sameSite : "none"
   },
   store: MongoStore.create({ client: mongoose.connection.getClient() }),
 }));

@@ -385,16 +385,7 @@ export default function Pricing() {
                           {plan.price}
                         </span>
                         <span className="text-secondary ms-1">/{plan.period}</span>
-                        {plan.originalPrice && (
-                          <div className="mt-1">
-                            <span className="text-decoration-line-through text-muted me-2">
-                              {plan.originalPrice}
-                            </span>
-                            <span className="text-success fw-semibold">
-                              Save {plan.savings}
-                            </span>
-                          </div>
-                        )}
+                        
                       </div>
                       <p className="text-secondary mb-0">{plan.description}</p>
                     </div>

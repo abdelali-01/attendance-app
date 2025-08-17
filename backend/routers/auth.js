@@ -11,6 +11,7 @@ import {
 } from "../utils/EmailTemplates.js";
 import passport from "passport";
 import "../stratigies/local.js";
+import { Payment } from "../models/Payments.js";
 dotenv.config();
 
 const authRouter = express.Router();
@@ -154,7 +155,6 @@ authRouter.post("/login", (req, res, next) => {
 
 authRouter.get("/user", async (req, res) => {
   const userId = req.session?.passport?.user || null;
-  console.log(userId);
 
   try {
     if (!userId) return res.status(401).send("You have To Logged in !");
@@ -162,6 +162,12 @@ authRouter.get("/user", async (req, res) => {
     const findUser =
       (await Teacher.findById(userId)) || (await Student.findById(userId));
     if (!findUser) return res.status(404).send("User Not Found !");
+
+    // find related payment data if the user not followed the free plan
+    let paymentData = null;
+    if(findUser.role === "teacher" && findUser.plan !== "free"){
+      paymentData = await Payment.findOne({ teacherId: userId });
+    }
 
     const {
       password,
@@ -171,7 +177,7 @@ authRouter.get("/user", async (req, res) => {
       ...otherData
     } = findUser._doc;
 
-    res.status(200).send(otherData);
+    res.status(200).json({...otherData, paymentData});
   } catch (error) {
     console.log("Error getting The user !", error);
     res.sendStatus(400);

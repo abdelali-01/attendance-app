@@ -1,6 +1,9 @@
 // Utility functions for handling pending subscription data
-
+import axios from 'axios';
 const PENDING_SUBSCRIPTION_KEY = 'pending_subscription';
+
+
+const serverUrl = import.meta.env.VITE_BASE_URI;
 
 /**
  * Get pending subscription data from localStorage
@@ -92,7 +95,7 @@ export const processPendingSubscription = async (onSuccess, onError) => {
     console.log('Processing subscription:', pendingData);
     
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    redirectToPayment(pendingData.amount, pendingData.duration, pendingData.plan);
     
     // Clear pending subscription after successful processing
     clearPendingSubscription();
@@ -131,3 +134,30 @@ export const getSubscriptionSummary = () => {
     formattedSaved: savedAmount > 0 ? `${savedAmount.toLocaleString()} DA` : null
   };
 }; 
+
+
+export const redirectToPayment = async (amount , duration , plan)=>{
+  try {
+    // check if there is pending subscription
+    const pendingSubscription = getPendingSubscription();
+    let subscriptionData = {} ;
+
+    if(pendingSubscription){
+      subscriptionData = pendingSubscription ;
+    }else{
+      subscriptionData = {
+        amount , duration , plan 
+      }
+    }
+
+    const response = await axios.post(`${serverUrl}/payment` , subscriptionData , {withCredentials : true});
+    console.log(response);
+    if(response.status === 200){
+      window.location.href = response.data.checkout_url;
+    }else{
+      throw new Error('Failed to redirect to payment');
+    }
+  } catch (error) {
+    console.error('Error redirecting to payment:', error);
+  }
+}

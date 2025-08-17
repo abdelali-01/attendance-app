@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Loader from "../../../components/Loader";
+import Loader from "../../../components/ui/Loader";
 import moment from "moment";
 import axios from "axios";
-import StudentAttendance from "../../../components/StudentAttendance";
+import StudentAttendance from "../../../components/cards/StudentAttendance";
 import { useDispatch, useSelector } from "react-redux";
 import { removeLoading, setLoading } from "../../../store/Loading";
 import { findClass } from "../../../store/class/classHandler";

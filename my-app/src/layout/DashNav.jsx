@@ -1,7 +1,7 @@
 import React from "react";
-import { useSidebar } from "../../contexts/SidebarContext";
+import { useSidebar } from "../contexts/SidebarContext";
 
-export default function Navbar() {
+export default function DashNav() {
   const { toggleSidebar } = useSidebar();
 
   return (

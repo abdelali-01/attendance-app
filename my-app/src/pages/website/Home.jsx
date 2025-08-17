@@ -1,13 +1,13 @@
 import React from 'react';
-import Navbar from '../../components/website/Navbar';
-import Hero from './landing/Hero';
-import Features from './landing/Features';
-import HowItWorks from './landing/HowItWorks';
-import Benefits from './landing/Benefits';
-import PricingPreview from './landing/PricingPreview';
-import FAQ from './landing/FAQ';
-import Footer from './landing/Footer';
-import './landing/landing.css';
+import Navbar from '../../layout/Navbar';
+import Hero from '../../components/website/Hero';
+import Features from '../../components/website/Features';
+import HowItWorks from '../../components/website/HowItWorks';
+import Benefits from '../../components/website/Benefits';
+import PricingPreview from '../../components/website/PricingPreview';
+import FAQ from '../../components/website/FAQ';
+import Footer from '../../layout/Footer';
+import '../../components/website/landing.css';
 
 export default function Home() {
   return (

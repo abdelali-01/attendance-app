@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { getClasses } from "../store/class/classHandler";
+import { getClasses } from "../../store/class/classHandler";
 import { useNavigate } from "react-router-dom";
 
 export default function ClassItem({ classe, showMenu }) {

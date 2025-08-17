@@ -6,6 +6,7 @@ import {
   clearPendingSubscription,
   processPendingSubscription
 } from '../../utils/subscriptionUtils';
+import RedirectLoader from '../ui/RedirectLoader';
 
 export default function CheckoutRedirecter() {
   const [isOpen, setIsOpen] = useState(false);
@@ -99,7 +100,9 @@ export default function CheckoutRedirecter() {
   };
 
   if (!isOpen || !pendingSubscription) return null;
-
+  if(isProcessing){
+    return <RedirectLoader />;
+  }
   return (
     <>
               {/* Modal Overlay */}

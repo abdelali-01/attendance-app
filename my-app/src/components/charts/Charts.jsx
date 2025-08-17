@@ -8,8 +8,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-import trend_up from "./icons/trend-up.svg";
-import trend_down from "./icons/trend-down.svg";
+import trend_up from "../icons/trend-up.svg";
+import trend_down from "../icons/trend-down.svg";
 
 // Custom Bar component to handle minimum height
 const CustomBar = (props) => {

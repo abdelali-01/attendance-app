@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { safeMap, safeFilter } from "../utils/safeArray";
+import { safeMap, safeFilter } from "../../utils/safeArray";
 
 export default function Publish({ classes }) {
-  const serverUri = process.env.REACT_APP_BASE_URI;
+  // const serverUri = process.env.REACT_APP_BASE_URI;
 
   const { user } = useSelector(state => state.user);
   // manage the report with states
@@ -38,17 +38,17 @@ export default function Publish({ classes }) {
     e.preventDefault();
 
     if (reportClasses.length > 0) {
-      try {
-        await axios.post(`${serverUri}/report/share/${user}`, {
-          report,
-          classes: reportClasses,
-        });
+      // try {
+      //   await axios.post(`${serverUri}/report/share/${user}`, {
+      //     report,
+      //     classes: reportClasses,
+      //   });
 
-        window.location.reload()
-      } catch (error) {
-        console.error("error during share the report", error);
-        alert("Faild to share your report , please try again !");
-      }
+      //   window.location.reload()
+      // } catch (error) {
+      //   console.error("error during share the report", error);
+      //   alert("Faild to share your report , please try again !");
+      // }
     } else {
       alert("You have to select one class minimum !");
     }

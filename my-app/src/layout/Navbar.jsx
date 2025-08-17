@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import logo from "../icons/logo.svg";
+import logo from "../components/icons/logo.svg";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import "./Navbar.css";
+import "./layout.css";
 
 export default function Navbar() {
   const { user } = useSelector((state) => state.user);

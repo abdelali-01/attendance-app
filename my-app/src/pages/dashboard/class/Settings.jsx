@@ -7,7 +7,7 @@ import {
   updateClassCode,
 } from "../../../store/class/classHandler";
 import { useNavigate, useParams } from "react-router-dom";
-import Loader from "../../../components/Loader";
+import Loader from "../../../components/ui/Loader";
 import { useToast } from "../../../components/Toast/ToastContainer";
 
 function Settings() {

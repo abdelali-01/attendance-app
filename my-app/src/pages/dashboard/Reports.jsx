@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Publish from "../../components/Publish";
-import ReportsItem from "../../components/ReportsItem";
+import Publish from "../../components/cards/Publish";
+import ReportsItem from "../../components/cards/ReportsItem";
 import { useSelector } from "react-redux";
 import { safeMap } from "../../utils/safeArray";
 

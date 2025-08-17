@@ -1,20 +1,19 @@
 import { useEffect} from "react";
 import { Routes, Route, useNavigate} from "react-router-dom";
-import Login from "./pages/login/Login";
-import ResetPass from "./pages/ResetPass";
-import Signup from "./pages/signup/Signup";
-import Verification from "./pages/Verification";
+import Login from "./pages/auth/Login";
+import ResetPass from "./pages/auth/ResetPass";
+import Signup from "./pages/auth/Signup";
+import Verification from "./pages/auth/Verification";
 
 import { useDispatch } from "react-redux";
 import { checkUser } from "./store/auth/authHandler";
-import Navbar from "./components/website/Navbar";
+import Navbar from "./layout/Navbar";
 import Home from "./pages/website/Home";
 import Pricing from "./pages/website/Pricing";
 import Subscribe from "./pages/website/Subscribe";
 import ToastContainer from "./components/Toast/ToastContainer";
 import CheckoutRedirecter from "./components/modals/ChekoutRedirecter";
 import ToastTest from "./pages/ToastTest";
-import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const dispatch = useDispatch();
@@ -28,7 +27,6 @@ function App() {
 
   return (
     <ToastContainer>
-      <ScrollToTop />
       <CheckoutRedirecter />
       <div className="App">
           <Navbar/>

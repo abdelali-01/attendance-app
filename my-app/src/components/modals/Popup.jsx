@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { getClasses } from "../store/class/classHandler";
+import { getClasses } from "../../store/class/classHandler";
 
 export default function Popup({
   display,

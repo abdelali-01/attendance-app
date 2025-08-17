@@ -1,16 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./sidebar.css";
-import logo from "../icons/logo.svg";
-import home_icon from "../icons/Overview.svg";
-import students_icon from "../icons/Customers.svg";
-import report_icon from "../icons/Reports.svg";
-import message_icon from "../icons/Message.svg";
-import settings_icon from "../icons/Settings.svg";
-import logout_icon from "../icons/Logout.svg";
+import logo from "../components/icons/logo.svg";
+import home_icon from "../components/icons/Overview.svg";
+import students_icon from "../components/icons/Customers.svg";
+import report_icon from "../components/icons/Reports.svg";
+import message_icon from "../components/icons/Message.svg";
+import settings_icon from "../components/icons/Settings.svg";
+import logout_icon from "../components/icons/Logout.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../store/auth/authHandler";
-import { useSidebar } from "../../contexts/SidebarContext";
+import { logout } from "../store/auth/authHandler";
+import { useSidebar } from "../contexts/SidebarContext";
 
 export default function Sidebar() {
   const { role, user } = useSelector((state) => state.user);
@@ -124,7 +123,7 @@ export default function Sidebar() {
             <Link
               onClick={user.plan !== "free" && hendleLink}
               to={user.plan !== "free" && "/dashboard/reports"}
-              className={`sidebar-link upgrade-trigger ${
+              className={`sidebar-link ${user.plan === "free" && "upgrade-trigger"} ${
                 activeLink === "/dashboard/reports" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
               style={{
@@ -140,7 +139,7 @@ export default function Sidebar() {
             <Link
               onClick={user.plan !== "free" && hendleLink}
               to={user.plan !== "free" && "/dashboard/messages"}
-              className={`sidebar-link upgrade-trigger ${
+              className={`sidebar-link ${user.plan === "free" && "upgrade-trigger"} ${
                 activeLink === "/dashboard/messages" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
               style={{

@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const UpgradePopup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [popupContent, setPopupContent] = useState("standard");
   const popupRef = useRef(null);
+  const navigate = useNavigate();
 
   // Function to handle clicks on any "upgrade-trigger" button
   const handleTriggerClick = (event) => {
@@ -161,6 +163,11 @@ const UpgradePopup = () => {
                   onMouseLeave={(e) => {
                     e.target.style.transform = "translateY(0)";
                     e.target.style.boxShadow = `0 4px 15px ${getPlanColor(popupContent)}40`;
+                  }}
+                  onClick={() => {
+                    navigate(`/subscribe?plan=${popupContent}`);
+                    setIsOpen(false);
+                    document.body.style.overflow = "";
                   }}
                 >
                   Upgrade Now

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { verifyEmail } from "../store/auth/authHandler";
+import { verifyEmail } from "../../store/auth/authHandler";
 
 export default function Verification() {
   const { token } = useParams();
