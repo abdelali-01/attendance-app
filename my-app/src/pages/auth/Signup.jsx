@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../../components/Toast/ToastContainer";
 import { useDispatch } from "react-redux";
 import { signup } from "../../store/auth/authHandler";
+import AppUnderDevelopmentAlert from "../../components/ui/AppUnderDevelopmentAlert";
 
 export default function Signup() {
   const dispatch = useDispatch();
@@ -42,6 +43,18 @@ export default function Signup() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false; // Prevent any form submission
+  };
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  };
+
   return (
     <div className="auth-container" style={{ 
       minHeight: "100vh", 
@@ -49,6 +62,7 @@ export default function Signup() {
       fontFamily: "Poppins, sans-serif",
       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
     }}>
+      <AppUnderDevelopmentAlert />
       {/* Left Side - Visual */}
       <div className="auth-visual" style={{
         flex: "1",
@@ -185,7 +199,7 @@ export default function Signup() {
             </p>
           </div>
 
-          <form onSubmit={fetchData} style={{ width: "100%" }}>
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <div className="field-row">
               <div className="field">
                 <label htmlFor="name">First Name</label>
@@ -197,6 +211,7 @@ export default function Signup() {
             type="text"
                   placeholder="Enter first name"
             required
+            disabled
           />
         </div>
               <div className="field">
@@ -209,6 +224,7 @@ export default function Signup() {
             type="text"
                   placeholder="Enter last name"
             required
+            disabled
           />
         </div>
             </div>
@@ -223,6 +239,7 @@ export default function Signup() {
             type="email"
                 placeholder="Enter your email"
             required
+            disabled
           />
         </div>
 
@@ -236,6 +253,7 @@ export default function Signup() {
             type="password"
                 placeholder="Create a password"
             required
+            disabled
           />
         </div>
 
@@ -247,6 +265,7 @@ export default function Signup() {
             required
             value={user.role}
             onChange={handleChange}
+            disabled
           >
                 <option value="" disabled>Choose your role</option>
                 <option value="teacher">Teacher</option>
@@ -267,12 +286,13 @@ export default function Signup() {
                   minLength="12"
                   maxLength="12"
             required={user.role === "student"}
+            disabled
           />
         </div>
             )}
 
             <button
-              type="submit"
+              type="button"
               disabled={loading}
               style={{
                 width: "100%",

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import AppUnderDevelopmentAlert from "../../components/ui/AppUnderDevelopmentAlert";
 
 export default function ResetPass({ resetPassword }) {
   const serverUri = import.meta.env.VITE_BASE_URI;
@@ -22,6 +23,18 @@ export default function ResetPass({ resetPassword }) {
       setEmail(""); // Clear the email field
     }
   }, [token]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false; // Prevent any form submission
+  };
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -68,6 +81,7 @@ export default function ResetPass({ resetPassword }) {
         height: "100vh",
       }}
     >
+      <AppUnderDevelopmentAlert />
       {isSubmit ? (
         <div
           className="p-4 rounded-3 flex-grow-1"
@@ -105,7 +119,7 @@ export default function ResetPass({ resetPassword }) {
             backgroundColor: "#F9FAFB",
             boxShadow: "1px 1px 20px #9a99f9",
           }}
-          onSubmit={submitHandler}
+          onSubmit={handleSubmit}
         >
           <h6 className="text-center">
             {resetPassword ? "Select your new password" : "Enter your email"}
@@ -124,6 +138,8 @@ export default function ResetPass({ resetPassword }) {
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
+                  disabled={true}
+                  className="form-input disabled"
                 />
               </div>
               <div className="field my-3">
@@ -138,6 +154,8 @@ export default function ResetPass({ resetPassword }) {
                   onChange={(e) => {
                     setConfPassword(e.target.value);
                   }}
+                  disabled={true}
+                  className="form-input disabled"
                 />
                 {passError ? (
                   <div class="form-text text-danger">
@@ -159,10 +177,17 @@ export default function ResetPass({ resetPassword }) {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={true}
+                className="form-input disabled"
               />
             </div>
           )}
-          <button className="btn open-style w-100 my-3" disabled={loading}>
+          <button
+            type="button" // Changed from "submit" to "button"
+            className="btn open-style w-100 my-3"
+            disabled={loading}
+            onClick={handleButtonClick}
+          >
             {loading ? "Loading ..." : "Submit"}
           </button>
         </form>

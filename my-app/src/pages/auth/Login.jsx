@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../store/auth/authHandler";
 import { useToast } from "../../components/Toast/ToastContainer";
 import { hasPendingSubscription, getPendingSubscriptionInfo } from "../../utils/subscriptionUtils";
+import AppUnderDevelopmentAlert from "../../components/ui/AppUnderDevelopmentAlert";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -51,6 +52,18 @@ export default function Login() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false; // Prevent any form submission
+  };
+
+  const handleButtonClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  };
+
   return (
     <div className="auth-container" style={{ 
       minHeight: "100vh", 
@@ -58,6 +71,7 @@ export default function Login() {
       fontFamily: "Poppins, sans-serif",
       background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
     }}>
+      <AppUnderDevelopmentAlert />
       {/* Pending Subscription Notification */}
       {pendingSubscription && (
         <div style={{
@@ -222,7 +236,7 @@ export default function Login() {
             </p>
           </div>
 
-          <form onSubmit={fetchData} style={{ width: "100%" }}>
+          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <div className="field">
               <label htmlFor="email">Email Address</label>
           <input
@@ -233,6 +247,7 @@ export default function Login() {
             type="email"
                 placeholder="Enter your email"
             required
+            disabled={true}
           />
         </div>
 
@@ -246,6 +261,7 @@ export default function Login() {
             type="password"
             placeholder="Enter your password"
             required
+            disabled={true}
           />
         </div>
 
@@ -269,51 +285,26 @@ export default function Login() {
             </div>
 
             <button
-              type="submit"
-              disabled={loading}
+              type="button" // Changed from "submit" to "button"
+              className="auth-button"
               style={{
-                width: "100%",
-                padding: "14px 24px",
-                background: "linear-gradient(135deg, var(--primary), #4f46e5)",
+                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                 color: "white",
+                padding: "12px 24px",
                 border: "none",
                 borderRadius: "8px",
+                cursor: "not-allowed",
+                opacity: 0.6,
                 fontSize: "16px",
                 fontWeight: "600",
-                cursor: loading ? "not-allowed" : "pointer",
-                transition: "all 0.3s ease",
-                opacity: loading ? 0.7 : 1,
-                boxShadow: "0 4px 12px rgba(90, 87, 255, 0.3)"
+                width: "100%",
+                marginTop: "20px"
               }}
-              onMouseEnter={(e) => {
-                if (!loading) {
-                  e.target.style.transform = "translateY(-2px)";
-                  e.target.style.boxShadow = "0 6px 20px rgba(90, 87, 255, 0.4)";
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!loading) {
-                  e.target.style.transform = "translateY(0)";
-                  e.target.style.boxShadow = "0 4px 12px rgba(90, 87, 255, 0.3)";
-                }
-              }}
+              disabled={true}
+              onClick={handleButtonClick}
             >
-              {loading ? (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-                  <div style={{
-                    width: "16px",
-                    height: "16px",
-                    border: "2px solid transparent",
-                    borderTop: "2px solid white",
-                    borderRadius: "50%",
-                    animation: "spin 1s linear infinite"
-                  }} />
-                  Signing in...
-                </div>
-              ) : (
-                "Sign In"
-              )}
-        </button>
+              Sign In
+            </button>
 
             <div style={{
               textAlign: "center",
