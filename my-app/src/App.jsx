@@ -14,6 +14,7 @@ import Subscribe from "./pages/website/Subscribe";
 import ToastContainer from "./components/Toast/ToastContainer";
 import CheckoutRedirecter from "./components/modals/ChekoutRedirecter";
 import ToastTest from "./pages/ToastTest";
+import About from "./pages/website/About";
 
 function App() {
   const dispatch = useDispatch();
@@ -32,7 +33,8 @@ function App() {
           <Navbar/>
             <Routes>
             <Route path="/" element={<Home/>} />
-            <Route path="/Pricing" element={<Pricing/>} />
+            <Route path="/pricing" element={<Pricing/>} />
+            <Route path="/about" element={<About/>} />
             <Route path="/subscribe" element={<Subscribe/>} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />

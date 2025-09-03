@@ -23,7 +23,7 @@ export default function Navbar() {
           <Link to="/pricing" onClick={() => setOpen(false)}>
             Pricing
           </Link>
-          <Link to="#about" onClick={() => setOpen(false)}>
+          <Link to="/about" onClick={() => setOpen(false)}>
             About Us
           </Link>
           {/* CTA buttons for mobile, only visible when menu is open */}
