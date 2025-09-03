@@ -1,11 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './settings.css'
 import UpdateProfile from './UpdateProfile'
 import EmailNotification from './EmailNotification'
 import Reminder from './Reminder'
 import PlanSection from './PlanSection'
+import { useSearchParams } from 'react-router-dom'
+import { useToast } from '../../../components/Toast/ToastContainer'
 
 export default function Settings() {
+  const { showSuccess } = useToast();
+  const [searchParams] = useSearchParams();
+  const payment = searchParams.get('payment');
+
+  useEffect(() => {
+    if (payment === 'success') {
+      showSuccess('Payment successful');
+    }
+  }, [payment, showSuccess]);
+
   return (
     <div className='settings-page'>
       <div className="container py-5">

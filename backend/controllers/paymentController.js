@@ -32,7 +32,7 @@ const subscribe = async (req, res) => {
     const checkout = await client.createCheckout({
       amount,
       currency: "dzd",
-      success_url: "http://localhost:5173/dashboard",
+      success_url: "http://localhost:5173/dashboard/settings?payment=success",
       failure_url: "http://localhost:5173/subscription?status=failed",
       metadata: {
         teacherId: findTeacher._id,
