@@ -14,6 +14,7 @@ import {
   redirectToPayment,
 } from "../../utils/subscriptionUtils";
 import RedirectLoader from "../../components/ui/RedirectLoader";
+import AppUnderDevelopmentAlert from "../../components/ui/AppUnderDevelopmentAlert";
 
 export default function Subscribe() {
   const [searchParams] = useSearchParams();
@@ -51,44 +52,12 @@ export default function Subscribe() {
   const savedAmount = originalTotalPrice - totalPrice;
 
   // Handle subscription process
-  const handleSubscribe = async () => {
-    setIsSubscribing(true);
-    setIsRedirecting(true);
-    try {
-      if (!user) {
-        // User is not logged in - save to localStorage
-        const subscriptionData = {
-          amount: totalPrice,
-          plan: planName.toLowerCase(),
-          duration: selectedDuration,
-          monthlyPrice: monthlyPrice,
-          savedAmount: savedAmount,
-          timestamp: new Date().toISOString(),
-        };
-
-        // Save to localStorage
-        savePendingSubscription(subscriptionData);
-
-        // Redirect to login page
-        navigate("/login");
-        return;
-      }
-
-      // User is logged in - proceed with payment API call
-      redirectToPayment(totalPrice, selectedDuration, planName.toLowerCase());
-
-      // Clear any pending subscription data
-      clearPendingSubscription();
-      setPendingSubscription(null);
-
-      // TODO: Implement payment API call here
-      console.log("User is logged in, proceed with payment");
-    } catch (error) {
-      console.error("Error during subscription:", error);
-    } finally {
-      setIsSubscribing(false);
-      setIsRedirecting(false);
+  const handleSubscribe = async (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+    return false; // Prevent any subscription
   };
 
   if (isRedirecting) {
@@ -131,6 +100,7 @@ export default function Subscribe() {
         padding: "4rem 0",
       }}
     >
+      <AppUnderDevelopmentAlert />
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-lg-10">
@@ -267,35 +237,22 @@ export default function Subscribe() {
 
                   {/* Subscribe Button */}
                   <button
-                    className="btn w-100 mt-4 fw-bold py-3"
+                    className="btn btn-primary btn-lg"
                     style={{
-                      background:
-                        "linear-gradient(135deg, #6366f1 0%, #7c3aed 100%)",
-                      color: "white",
+                      background: "linear-gradient(135deg, #5A57FF, #7C3AED)",
                       border: "none",
-                      borderRadius: "12px",
-                      fontSize: "1.1rem",
-                      boxShadow: "0 4px 16px rgba(99, 102, 241, 0.3)",
-                      transition: "all 0.2s ease",
-                      opacity: isSubscribing ? 0.7 : 1,
-                      cursor: isSubscribing ? "not-allowed" : "pointer",
+                      borderRadius: "10px",
+                      padding: "15px 30px",
+                      fontSize: "18px",
+                      fontWeight: "600",
+                      cursor: "not-allowed",
+                      opacity: 0.6,
+                      width: "100%"
                     }}
-                    disabled={isSubscribing}
+                    disabled={true}
                     onClick={handleSubscribe}
-                    onMouseOver={(e) => {
-                      if (!isSubscribing) {
-                        e.currentTarget.style.transform = "translateY(-2px)";
-                        e.currentTarget.style.boxShadow =
-                          "0 8px 24px rgba(99, 102, 241, 0.4)";
-                      }
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.transform = "none";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 16px rgba(99, 102, 241, 0.3)";
-                    }}
                   >
-                    {isSubscribing ? "Processing..." : "Subscribe Now"}
+                    Subscribe Now
                   </button>
 
                   <div className="text-center mt-3">

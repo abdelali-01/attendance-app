@@ -9,7 +9,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className={`amazing-navbar${open ? " open" : ""}`}>  
+    <nav className={`amazing-navbar${open ? " open" : ""}`}> 
       <div className="navbar-inner container">
         <div className="navbar-brand">
           <Link to="/">
@@ -23,7 +23,7 @@ export default function Navbar() {
           <Link to="/pricing" onClick={() => setOpen(false)}>
             Pricing
           </Link>
-          <Link to="#about" onClick={() => setOpen(false)}>
+          <Link to="/about" onClick={() => setOpen(false)}>
             About Us
           </Link>
           {/* CTA buttons for mobile, only visible when menu is open */}
