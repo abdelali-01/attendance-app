@@ -9,7 +9,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className={`amazing-navbar${open ? " open" : ""}`}>  
+    <nav className={`amazing-navbar${open ? " open" : ""}`}> 
       <div className="navbar-inner container">
         <div className="navbar-brand">
           <Link to="/">
