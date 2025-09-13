@@ -101,7 +101,7 @@ export default function Home() {
             { icon: ShieldCheckIcon, title: "Role‑Based Access", desc: "Separate dashboards for teachers and students.", color: "from-cyan-400 to-teal-500" },
             { icon: DevicePhoneMobileIcon, title: "Mobile Friendly", desc: "Works great on any device.", color: "from-lime-400 to-green-500" },
           ].map((f, i) => (
-            <div key={i} className={`group rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 p-[1px] shadow-[0_6px_24px_rgba(16,24,40,0.06)] ring-1 ring-slate-100 ${i === 0 ? "col-span-2" : ""}`}>
+            <div key={i} className={`group rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 p-[1px] shadow-[0_6px_24px_rgba(16,24,40,0.06)] ring-1 ring-slate-100 ${i === 0 ? "col-span-1 md:col-span-2" : ""}`}>
               <div className="flex h-full items-start gap-4 rounded-2xl bg-white p-6">
                 <span className={`inline-flex h-12 w-12 items-center justify-center rounded-xl text-white shadow-md ring-1 ring-black/5 bg-gradient-to-br ${f.color}`}>
                   {/** icon */}

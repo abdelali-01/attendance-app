@@ -71,7 +71,7 @@ export default function ContactForm() {
             </div>
           </div>
 
-          <div className="mt-6 flex items-start justify-between gap-4">
+          <div className="mt-6 items-start justify-between gap-4">
             <label className="inline-flex items-center gap-3 text-sm text-slate-600">
               <input
                 type="checkbox"
@@ -81,7 +81,7 @@ export default function ContactForm() {
               />
               I agree to be contacted about my inquiry.
             </label>
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="btn-primary w-full mt-4">
               Send Message
             </button>
           </div>

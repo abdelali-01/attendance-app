@@ -1,13 +1,16 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/auth";
 
 export default function Navbar() {
   const pathname = usePathname();
-  const user = false; // TODO: wire with auth state
+  const {user} = useAuth();
   const [open, setOpen] = useState(false);
+  const app_url = process.env.NEXT_PUBLIC_APP_URL;
+
 
   const links = [
     { href: "/", label: "Home" },
@@ -22,7 +25,6 @@ export default function Navbar() {
   const linkPill = "rounded-md px-3 py-2"; // mobile hit target
 
   const isActive = (href) => (pathname === href ? linkActive : linkInactive);
-
   return (
     <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -47,7 +49,7 @@ export default function Navbar() {
           {/* Desktop CTAs */}
           <div className="hidden md:flex md:items-center md:gap-4">
             {user ? (
-              <Link href="/dashboard" className="btn-primary">
+              <Link href={app_url} className="btn-primary">
                 Dashboard
               </Link>
             ) : (
@@ -96,7 +98,7 @@ export default function Navbar() {
 
             <div className="mt-2 flex flex-col gap-3">
               {user ? (
-                <Link href="/dashboard" onClick={() => setOpen(false)} className="btn-primary">
+                <Link href={app_url} onClick={() => setOpen(false)} className="btn-primary">
                   Dashboard
                 </Link>
               ) : (
