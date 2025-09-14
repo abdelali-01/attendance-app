@@ -2,23 +2,25 @@ import express from "express";
 import { Report } from "../models/Report.js";
 import { Teacher } from "../models/Teacher.js";
 import { Student } from "../models/Student.js";
+import { checkUserRole } from "../utils/middlewares.js";
 
 const reportRouter = express.Router();
 
 // post or share the report
-reportRouter.post("/share/:teacherId", async (req, res) => {
+reportRouter.post("/", async (req, res) => {
   const { report, classes } = req.body;
+  const teacherId = req.session?.passport?.user || null;
 
   try {
     // find the teacher by his id
-    const teacher = await Teacher.findById(req.params.teacherId);
+    const teacher = await Teacher.findById(teacherId);
     if (!teacher) {
       return res.status(404).send("teacher not found !");
     }
 
     // create new report if the teacher exist / the teacherId is valid
     const savedReport = new Report({
-      teacherId: req.params.teacherId,
+      teacherId: teacherId,
       report,
       classes,
     });
@@ -31,22 +33,32 @@ reportRouter.post("/share/:teacherId", async (req, res) => {
   }
 });
 
-// getting the teacher reports
-reportRouter.get("/:userId", async (req, res) => {
-  const { userId } = req.params;
+reportRouter.delete("/:id", checkUserRole("teacher") , async (req, res) => {
+  try {
+    const findReport = await Report.findById(req.params.id);
+    if(!findReport) return res.status(404).json({success : false , message : "Report not found !"});
+
+    await Report.findByIdAndDelete(req.params.id);
+    res.status(200).json({success : true , message : "Report has been deleted succesfully"});
+  } catch (error) {
+    console.log("Error during deleting the report " ,error);
+    res.sendStatus(500);
+  }
+});
+
+// getting the user reports
+reportRouter.get("/", async (req, res) => {
+  const userId = req.session?.passport?.user || null;
   try {
     // check the user if exist / the userId is valid
-    let user = await Teacher.findById(userId);
+    const user = await Teacher.findById(userId) || await Student.findById(userId);
     if (!user) {
-      user = await Student.findById(userId);
-      if (!user) {
         return res.status(404).send("user not found !");
-      }
     }
 
     if (user.role === "teacher") {
       // find the teacher reports based on his id
-      const reports = await Report.find({ teacherId: userId });
+      const reports = await Report.find({ teacherId: userId }).sort({createdAt : -1});
       res.status(200).send(reports);
     } else {
       const reports = await Promise.all(
