@@ -1,13 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-// import mkcert from 'vite-plugin-mkcert';
+import mkcert from 'vite-plugin-mkcert';
+import fs from "fs";
 
 
-const target = 'http://localhost:4620';
+const target = 'https://api.localtest.me:4000';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react() , mkcert()],
   server: {
     // https: true,
     proxy: {
@@ -16,5 +17,11 @@ export default defineConfig({
       '/class': { target, changeOrigin: true, secure: true },
       '/socket.io': { target , ws: true, changeOrigin: true, secure: true }, // WebSocket support
     },
+    https: {
+      key: fs.readFileSync("C:/Users/HP/localtest.me+1-key.pem"),
+      cert: fs.readFileSync("C:/Users/HP/localtest.me+1.pem"),
+    },
+    host: "app.localtest.me",
+    port: 5173,               
   },
 });

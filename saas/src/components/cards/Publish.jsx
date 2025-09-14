@@ -3,10 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { safeMap, safeFilter } from "../../utils/safeArray";
 
-export default function Publish({ classes }) {
+export default function Publish() {
   // const serverUri = process.env.REACT_APP_BASE_URI;
 
-  const { user } = useSelector(state => state.user);
+  const { classes } = useSelector((state) => state.classes);
+  const { user } = useSelector((state) => state.user);
   // manage the report with states
   const [report, setReport] = useState("");
   const [reportClasses, setReportClasses] = useState([]);
@@ -43,7 +44,6 @@ export default function Publish({ classes }) {
       //     report,
       //     classes: reportClasses,
       //   });
-
       //   window.location.reload()
       // } catch (error) {
       //   console.error("error during share the report", error);

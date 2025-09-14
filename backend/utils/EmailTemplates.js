@@ -23,7 +23,7 @@ export const emailVerificationTemplate = (verificationToken) => {
           </p>
   
           <!-- Verification Button -->
-          <a href="${process.env.BASE_URL}verification/${verificationToken}" target="_blank" style="
+          <a href="${process.env.BASE_URL}/verification/${verificationToken}" target="_blank" style="
               display: inline-block;
               padding: 12px 24px;
               background-color: #5A57FF;
@@ -40,7 +40,7 @@ export const emailVerificationTemplate = (verificationToken) => {
               If the button above doesn't work, copy and paste the following link into your browser:
           </p>
           <p style="word-wrap: break-word; font-size: 14px; color: #5A57FF;">
-              ${process.env.BASE_URL}verify/${verificationToken}
+              ${process.env.BASE_URL}/verification/${verificationToken}
           </p>
       </div>
   

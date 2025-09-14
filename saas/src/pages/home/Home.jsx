@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { safeMap, safeFilter } from "../../../utils/safeArray";
+import { safeMap, safeFilter } from "../../utils/safeArray";
 import "./home.css";
-import Loader from "../../../components/ui/Loader";
-import NoClassAvailable from "../../../components/NoClassAvailable";
+import Loader from "../../components/ui/Loader";
+import NoClassAvailable from "../../components/NoClassAvailable";
 
-import trend_up from "../../../components/icons/trend-up.svg";
-import trend_down from "../../../components/icons/trend-down.svg";
+import trend_up from "../../components/icons/trend-up.svg";
+import trend_down from "../../components/icons/trend-down.svg";
 
 import {
   LineChart,
@@ -16,10 +16,10 @@ import {
   Tooltip,
   XAxis,
 } from "recharts";
-import StudentAttendance from "../../../components/cards/StudentAttendance";
-import { findClass } from "../../../store/class/classHandler";
-import { getStudents } from "../../../store/students/studentsHandler";
-import Charts from "../../../components/charts/Charts";
+import StudentAttendance from "../../components/cards/StudentAttendance";
+import { findClass } from "../../store/class/classHandler";
+import { getStudents } from "../../store/students/studentsHandler";
+import Charts from "../../components/charts/Charts";
 
 export default function Home() {
   const { classes, foundedClass } = useSelector((state) => state.classes);

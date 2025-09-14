@@ -2,10 +2,9 @@ import React, { useEffect } from 'react'
 import './settings.css'
 import UpdateProfile from './UpdateProfile'
 import EmailNotification from './EmailNotification'
-import Reminder from './Reminder'
 import PlanSection from './PlanSection'
 import { useSearchParams } from 'react-router-dom'
-import { useToast } from '../../../components/Toast/ToastContainer'
+import { useToast } from '../../components/Toast/ToastContainer'
 
 export default function Settings() {
   const { showSuccess } = useToast();

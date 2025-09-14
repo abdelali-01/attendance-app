@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 import "./class.css";
-import StudentItem from "../../../components/cards/StudentItem";
+import StudentItem from "../../components/cards/StudentItem";
 import axios from "axios";
-import search_icon from "../../../components/icons/search.svg";
+import search_icon from "../../components/icons/search.svg";
 import moment from "moment";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import ClassName from "../../../components/ui/ClassName";
+import ClassName from "../../components/ui/ClassName";
 import { useDispatch, useSelector } from "react-redux";
 import {
   findClass,
   getClasses,
-} from "../../../store/class/classHandler";
-import Loader from "../../../components/ui/Loader";
+} from "../../store/class/classHandler";
+import Loader from "../../components/ui/Loader";
 import {
   getStudents,
   resetStudentsAbsence,
-} from "../../../store/students/studentsHandler";
-import { removeLoading, setLoading } from "../../../store/Loading";
-import { safeMap, safeFilter } from "../../../utils/safeArray";
+} from "../../store/students/studentsHandler";
+import { removeLoading, setLoading } from "../../store/Loading";
+import { safeMap, safeFilter } from "../../utils/safeArray";
 
 export default function Class() {
   const serverUri = import.meta.env.VITE_BASE_URI;
@@ -147,7 +147,7 @@ export default function Class() {
           <div className="list-of-class d-flex flex-column align-items-end px-md-5 w-100">
             <div className="nav-class d-flex align-items-center justify-content-between w-100">
               <div className="icons">
-                <Link to={`/dashboard/classes/${classId}/settings`}>
+                <Link to={`/classes/${classId}/settings`}>
                   <i className="fa-solid fa-gear fs-4"></i>
                 </Link>
               </div>

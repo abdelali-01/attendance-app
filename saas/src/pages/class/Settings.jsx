@@ -5,10 +5,10 @@ import {
   findClass,
   updateClass,
   updateClassCode,
-} from "../../../store/class/classHandler";
+} from "../../store/class/classHandler";
 import { useNavigate, useParams } from "react-router-dom";
-import Loader from "../../../components/ui/Loader";
-import { useToast } from "../../../components/Toast/ToastContainer";
+import Loader from "../../components/ui/Loader";
+import { useToast } from "../../components/Toast/ToastContainer";
 
 function Settings() {
   const { user } = useSelector((state) => state.user);

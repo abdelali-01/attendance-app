@@ -1,72 +1,46 @@
-import React, { useState } from "react";
-import logo from "../components/icons/logo.svg";
-import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import "./layout.css";
+import React from "react";
+import { useSidebar } from "../contexts/SidebarContext";
 
-export default function Navbar() {
-  const { user } = useSelector((state) => state.user);
-  const [open, setOpen] = useState(false);
+export default function DashNav() {
+  const { toggleSidebar } = useSidebar();
 
   return (
-    <nav className={`amazing-navbar${open ? " open" : ""}`}> 
-      <div className="navbar-inner container">
-        <div className="navbar-brand">
-          <Link to="/">
-            <img src={logo} alt="Attendance App Logo" />
-          </Link>
-        </div>
-        <div className={`navbar-links${open ? " show" : ""}`}>
-          <Link to="/" onClick={() => setOpen(false)}>
-            Home
-          </Link>
-          <Link to="/pricing" onClick={() => setOpen(false)}>
-            Pricing
-          </Link>
-          <Link to="/about" onClick={() => setOpen(false)}>
-            About Us
-          </Link>
-          {/* CTA buttons for mobile, only visible when menu is open */}
-          <div className="navbar-cta navbar-cta-mobile">
-            {user ? (
-              <Link to={"/dashboard"} onClick={() => setOpen(false)}>
-                <button className="amazing-btn" >Dashboard</button>
-              </Link>
-            ) : (
-              <>
-                <Link to={"/signup"} onClick={() => setOpen(false)}>
-                  <button className="amazing-btn-outline">Start For Free</button>
-                </Link>
-                <Link to={"/login"} onClick={() => setOpen(false)}>
-                  <button className="amazing-btn">Login</button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-        {/* CTA buttons for desktop, hidden on mobile */}
-        <div className="navbar-cta navbar-cta-desktop">
-          {user ? (
-            <Link to={"/dashboard"}>
-              <button className="amazing-btn">Dashboard</button>
-            </Link>
-          ) : (
-            <>
-              <Link to={"/signup"}>
-                <button className="amazing-btn-outline">Start For Free</button>
-              </Link>
-              <Link to={"/login"}>
-                <button className="amazing-btn">Login</button>
-              </Link>
-            </>
-          )}
-        </div>
-        <button className="navbar-burger" onClick={() => setOpen((v) => !v)} aria-label="Menu">
-          <span className="burger-bar"></span>
-          <span className="burger-bar"></span>
-          <span className="burger-bar"></span>
-        </button>
-      </div>
+    <nav
+      style={{
+        width: "100%",
+        height: 64,
+        background: "#fff",
+        boxShadow: "0 2px 12px rgba(99,102,241,0.07)",
+        display: "flex",
+        alignItems: "center",
+        padding: "0 2rem",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
+        transition: "margin-left 0.3s cubic-bezier(.4,0,.2,1)",
+      }}
+    >
+      <button
+        onClick={toggleSidebar}
+        data-menu-button="true"
+        style={{
+          background: "none",
+          border: "none",
+          outline: "none",
+          cursor: "pointer",
+          marginRight: 24,
+          display: "flex",
+          alignItems: "center",
+        }}
+        aria-label="Open sidebar menu"
+      >
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366f1" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="4" y1="7" x2="20" y2="7" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="17" x2="20" y2="17" />
+        </svg>
+      </button>
+      {/* You can add a dashboard title or user info here if desired */}
     </nav>
   );
-}
+} 

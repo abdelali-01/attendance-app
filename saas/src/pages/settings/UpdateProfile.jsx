@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Loader from "../../../components/ui/Loader";
+import Loader from "../../components/ui/Loader";
 import { useSelector } from "react-redux";
 
 export default function UpdateProfile() {
