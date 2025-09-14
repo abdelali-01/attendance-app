@@ -126,8 +126,6 @@ export default function Classes() {
     <div
       className="classes-page flex-grow-1 px-3 px-md-5 m-auto"
       style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #eef2ff 0%, #f9fafb 100%)",
         paddingTop: 32,
         paddingBottom: 32,
       }}

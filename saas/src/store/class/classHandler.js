@@ -60,8 +60,9 @@ export const addClass = (classe, navigate) => async (dispatch) => {
 
   try {
     const res = await axios.post(`${serverUrl}/class`, classe, { withCredentials: true });
+    console.log(res);
     dispatch(getClasses());
-    navigate(`/dashboard/classes/${res.data._id}`);
+    navigate(`/classes/${res.data._id}`);
     return { success: true, message: "Class created successfully!" };
   } catch (error) {
     console.log("error during add new class", error);

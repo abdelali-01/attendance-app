@@ -44,7 +44,10 @@ function Dashboard() {
             {role === "teacher" && <UpgradePopup />}
             <CheckoutRedirecter />
             <Sidebar />
-            <div className="position-relative flex-grow-1 d-flex flex-column" style={{ minHeight: "100vh" }}>
+            <div className="position-relative flex-grow-1 d-flex flex-column" style={{
+              minHeight: "100vh" ,
+              background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+            }}>
               <Navbar />
               <div style={{ flex: 1, minHeight: 0 }}>
                 <Routes location={location}>
