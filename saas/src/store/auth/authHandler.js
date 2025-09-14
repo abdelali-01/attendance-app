@@ -1,7 +1,8 @@
 import axios from "axios";
-import { request, login as userLog, logout as userLogout } from "./authSlice";
+import { checked, request, login as userLog, logout as userLogout } from "./authSlice";
 
 const serverUrl = import.meta.env.VITE_BASE_URI;
+const website_url = import.meta.env.VITE_WEBSITE_URL;
 
 export const signup = (user, navigate) => async (dispatch) => {
   dispatch(request());
@@ -37,6 +38,8 @@ export const checkUser = () => async (dispatch) => {
     if (response.data.isVerified) dispatch(userLog(response.data));
   } catch (error) {
     console.log("error during requesting the Checking ", error);
+  } finally{
+    dispatch(checked());
   }
 };
 
@@ -71,13 +74,13 @@ export const login = (user, navigate) => async (dispatch) => {
   }
 };
 
-export const logout = (navigate) => async (dispatch) => {
+export const logout = () => async (dispatch) => {
   dispatch(request());
 
   try {
     await axios.post(`${serverUrl}/auth/logout`, {}, { withCredentials: true });
     dispatch(userLogout());
-    navigate("/");
+    window.location.href = website_url;
     return { success: true, message: "Logged out successfully!" };
   } catch (error) {
     console.log("Error during Logout", error);

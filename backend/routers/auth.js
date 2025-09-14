@@ -201,7 +201,7 @@ authRouter.post("/reset-pass", async (req, res) => {
     });
 
     // the reset  link
-    const resetLink = `${process.env.BASE_URL}reset-pass/${resetToken}`;
+    const resetLink = `${process.env.BASE_URL}/forgot-pass/${resetToken}`;
     try {
       await emailSender({
         email,
@@ -223,6 +223,7 @@ authRouter.post("/reset-pass/:token", async (req, res) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
+    console.log(req.body , "password =>" , password);
 
     // verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -243,7 +244,8 @@ authRouter.post("/reset-pass/:token", async (req, res) => {
 
     res.status(200).send("Your password has been reset successfully.");
   } catch (error) {
-    res.status(400).send(error);
+    console.error('Error during updating forgoted password', error)
+    res.status(500).send(error);
   }
 });
 

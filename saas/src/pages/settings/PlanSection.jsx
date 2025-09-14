@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import {
   getPlanDetails,
   basePrices,
-} from "../../../data/plans";
+} from "../../data/plans";
 
 export default function PlanSection() {
-  const { user } = useSelector((state) => state.user);
+  const { user , role} = useSelector((state) => state.user);
 
   const currentPlan = user?.plan || "free";
   const planDetails = getPlanDetails(currentPlan);
@@ -57,6 +57,7 @@ export default function PlanSection() {
   };
 
 
+  if(role === 'student') return null ;
   return (
     <div className="plan-section">
       <div className="card border-0 shadow-sm rounded-4 overflow-hidden">

@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
@@ -16,8 +15,7 @@ root.render(
     <Router>
       <ScrollToTop />
       <Routes>
-        <Route path="/*" element={<App />} />
-        <Route path="/dashboard/*" element={<Dashboard />} />
+        <Route path="/*" element={<Dashboard />} />
       </Routes>
     </Router>
   </Provider>

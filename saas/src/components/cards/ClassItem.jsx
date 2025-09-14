@@ -2,14 +2,12 @@ import React from "react";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { getClasses } from "../../store/class/classHandler";
-import { useNavigate } from "react-router-dom";
 
 export default function ClassItem({ classe, showMenu }) {
   const serverUri = import.meta.env.VITE_BASE_URI;
 
   const { user } = useSelector(state => state.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const unenroll = async () => {
     const confirm = window.confirm(
@@ -20,7 +18,6 @@ export default function ClassItem({ classe, showMenu }) {
       try {
         await axios.put(`${serverUri}/user/unenroll/${user._id}`, { classId: classe._id }, { withCredentials: true });
         dispatch(getClasses());
-        navigate('/dashboard/classes');
       } catch (error) {
         console.error("error during unenroll the class", error);
         alert("Faild to unenroll This class , Please Try again !");

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addClass } from "../../../store/class/classHandler";
-import { useToast } from "../../../components/Toast/ToastContainer";
+import { addClass } from "../../store/class/classHandler";
+import { useToast } from "../../components/Toast/ToastContainer";
 
 export default function AddClass() {
   const {user} = useSelector(state => state.user);

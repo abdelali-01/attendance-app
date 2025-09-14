@@ -6,15 +6,16 @@ import report_icon from "../components/icons/Reports.svg";
 import message_icon from "../components/icons/Message.svg";
 import settings_icon from "../components/icons/Settings.svg";
 import logout_icon from "../components/icons/Logout.svg";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../store/auth/authHandler";
 import { useSidebar } from "../contexts/SidebarContext";
+import "./layout.css";
 
 export default function Sidebar() {
   const { role, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { sidebarOpen, setSidebarOpen } = useSidebar();
 
   // create state to manage the active link
@@ -28,6 +29,9 @@ export default function Sidebar() {
 
   // Responsive: detect if mobile
   const isMobile = typeof window !== "undefined" && window.innerWidth < 1200;
+
+  // Use a consistent desktop width to prevent visual shrinking across pages
+  const desktopSidebarWidth = 290;
 
   // Close sidebar on interaction (click or scroll)
   useEffect(() => {
@@ -67,12 +71,14 @@ export default function Sidebar() {
   // Sidebar style for all screens
   const sidebarStyle = {
     position: isMobile ? "fixed" : sidebarOpen ? "sticky" :"fixed" ,
-    left: sidebarOpen ? 0 : '-300px',
+    left: sidebarOpen ? 0 : (isMobile ? "-80vw" : `-${desktopSidebarWidth}px`),
     top: isMobile ? 64 : 0,
     height: isMobile ? "calc(100vh - 64px)" : "100vh",
-    width: isMobile ? "80vw" : 280,
-    maxWidth: 300,
-    minWidth: 220,
+    width: desktopSidebarWidth,
+    maxWidth: desktopSidebarWidth,
+    minWidth: desktopSidebarWidth,
+    flex: isMobile ? undefined : `0 0 ${desktopSidebarWidth}px`,
+    boxSizing: "border-box",
     zIndex: 1200,
     background: "#6366f1",
     overflowY: "auto",
@@ -100,31 +106,31 @@ export default function Sidebar() {
           <div className="sidebar-links d-flex flex-column align-items-start gap-1 my-5 w-100">
             <Link
               onClick={hendleLink}
-              to="/dashboard"
+              to="/"
               className={`sidebar-link ${
-                activeLink === "/dashboard" ? "active" : ""
+                activeLink === "/" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
             >
               <img src={home_icon} alt="" />
               <span>{role === "student" ? "Home" : "Dashboard"}</span>
             </Link>
 
-              <Link
+              {role === 'teacher' && <Link
                 onClick={hendleLink}
-                to="/dashboard/classes"
+                to="/classes"
                 className={`sidebar-link ${
-                  activeLink.startsWith("/dashboard/classes") ? "active" : ""
+                  activeLink.startsWith("/classes") ? "active" : ""
                 } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
               >
                 <img src={students_icon} alt="" />
-                <span>{role === "teacher" ? "Students" : "Classes"}</span>
-              </Link>
+                <span>Students</span>
+              </Link>}
 
             <Link
               onClick={user.plan !== "free" && hendleLink}
-              to={user.plan !== "free" && "/dashboard/reports"}
+              to={user.plan !== "free" && "/reports"}
               className={`sidebar-link ${user.plan === "free" && "upgrade-trigger"} ${
-                activeLink === "/dashboard/reports" ? "active" : ""
+                activeLink === "/reports" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
               style={{
                 opacity: user.plan === "free" && ".6",
@@ -133,14 +139,14 @@ export default function Sidebar() {
             >
               <img src={report_icon} alt="" />
               <span>Reports</span>
-              <i className="fa-solid fa-crown"></i>
+              {role === 'teacher' && <i className="fa-solid fa-crown"></i>}
             </Link>
 
             <Link
               onClick={user.plan !== "free" && hendleLink}
-              to={user.plan !== "free" && "/dashboard/messages"}
+              to={user.plan !== "free" && "/messages"}
               className={`sidebar-link ${user.plan === "free" && "upgrade-trigger"} ${
-                activeLink === "/dashboard/messages" ? "active" : ""
+                activeLink === "/messages" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
               style={{
                 opacity: user.plan === "free" && ".6",
@@ -149,16 +155,16 @@ export default function Sidebar() {
             >
               <img src={message_icon} alt="" />
               <span>Messages</span>
-              <i className="fa-solid fa-crown"></i>
+              {role === 'teacher' && <i className="fa-solid fa-crown"></i>}
             </Link>
           </div>
 
           <div className="sidebar-profile-actions w-100 d-flex flex-column align-items-start gap-4">
             <Link
               onClick={hendleLink}
-              to="/dashboard/settings"
+              to="/settings"
               className={`sidebar-link ${
-                activeLink === "/dashboard/settings" ? "active" : ""
+                activeLink === "/settings" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
             >
               <img src={settings_icon} alt="" />
@@ -167,7 +173,7 @@ export default function Sidebar() {
 
             <div
               onClick={() => {
-                dispatch(logout(navigate));
+                dispatch(logout());
               }}
               className="sidebar-link py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3"
             >

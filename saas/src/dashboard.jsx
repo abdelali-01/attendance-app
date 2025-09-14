@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import Sidebar from "./layout/Sidebar";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import Class from "./pages/dashboard/class/Class";
-import Home from "./pages/dashboard/home/Home";
-import AddClass from "./pages/dashboard/addClass/AddClass";
-import Classes from "./pages/dashboard/studentPages/Classes";
-import { Class as StudentClassPage } from "./pages/dashboard/studentPages/Class";
-import Settings from "./pages/dashboard/settings/Settings";
-import Reports from "./pages/dashboard/Reports";
+import Class from "./pages/class/Class";
+import Home from "./pages/home/Home";
+import AddClass from "./pages/addClass/AddClass";
+import Classes from "./pages/Classes";
+import Settings from "./pages/settings/Settings";
+import Reports from "./pages/Reports";
 import NoDisponibleFeature from "./components/ui/NoDisponibleFeature";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -16,13 +15,15 @@ import Loader from "./components/ui/Loader";
 import UpgradePopup from "./components/modals/UpgradePopup";
 import CheckoutRedirecter from "./components/modals/ChekoutRedirecter";
 import { getClasses } from "./store/class/classHandler";
-import ClassSettings from "./pages/dashboard/class/Settings";
+import ClassSettings from "./pages/class/Settings";
 import ToastContainer from "./components/Toast/ToastContainer";
 import { SidebarProvider } from "./contexts/SidebarContext";
-import Navbar from "./layout/DashNav";
+import Navbar from "./layout/Navbar";
+import ExpiredSession from "./components/ExpiredSession";
+import StudentClass from './pages/StudentClass'
 
 function Dashboard() {
-  const { user, role } = useSelector((state) => state.user);
+  const { user, role , checkLoading} = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
 
@@ -51,11 +52,11 @@ function Dashboard() {
                   <Route path="/reports" element={<Reports />} />
                   <Route path="/messages" element={<NoDisponibleFeature />} />
                   <Route path="/classes" element={<Classes />} />
+                  <Route path="/classes/:classId" element={role === "teacher" ? <Class /> : <StudentClass/>} />
                   {role === "teacher" ? (
                     <>
                       {/* set the teacher pages */}
                       <Route path="/" element={<Home />} />
-                      <Route path="/classes/:classId" element={<Class />} />
                       <Route
                         path="/classes/:classId/settings"
                         element={<ClassSettings />}
@@ -65,11 +66,7 @@ function Dashboard() {
                   ) : (
                     // the students pages
                     <>
-                      <Route path="/" element={<NoDisponibleFeature />} />
-                      <Route
-                        path="/classes/:classId"
-                        element={<StudentClassPage />}
-                      />
+                      <Route path="/" element={<Classes />} />
                     </>
                   )}
                 </Routes>
@@ -78,6 +75,10 @@ function Dashboard() {
           </div>
         </SidebarProvider>
       )}
+
+      {
+        !user && !checkLoading && <ExpiredSession/>
+      }
     </ToastContainer>
   );
 }

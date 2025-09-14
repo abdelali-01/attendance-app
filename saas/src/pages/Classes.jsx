@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import ClassItem from "../../../components/cards/ClassItem";
-import Popup from "../../../components/modals/Popup";
+import ClassItem from "../components/cards/ClassItem";
+import Popup from "../components/modals/Popup";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { safeMap } from "../../../utils/safeArray";
-import NoClassAvailable from "../../../components/NoClassAvailable";
+import { safeMap } from "../utils/safeArray";
+import NoClassAvailable from "../components/NoClassAvailable";
+import NoClassJoined from "../components/NoClassJoined";
 
 export default function Classes() {
   const { classes } = useSelector((state) => state.classes);
@@ -47,7 +48,7 @@ export default function Classes() {
   // Add Class Card for teachers
   const addClassCard = (
     <Link
-      to="/dashboard/add-class"
+      to="/add-class"
       style={{
         textDecoration: "none",
         width: "100%",
@@ -134,9 +135,9 @@ export default function Classes() {
       <div className="container py-4">
         {loading ? (
           <>Loading ... </>
-        ) : classes && classes.length < 1 ? (
-          <NoClassAvailable />
-        ) : (
+        ) : classes && classes.length < 1 ?
+          role === 'teacher' ? <NoClassAvailable /> : <NoClassJoined/>
+         : (
           <>
             {/* Page Title */}
             <h2
@@ -149,7 +150,7 @@ export default function Classes() {
               {safeMap(classes, (classe) => (
                 <div key={classe._id} style={cardStyle}>
                   <Link
-                    to={`/dashboard/classes/${classe._id}`}
+                    to={`/classes/${classe._id}`}
                     style={{
                       textDecoration: "none",
                       width: "100%",

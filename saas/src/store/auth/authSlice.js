@@ -4,8 +4,10 @@ const initialState = {
   user: null,
   role : null ,
   loading: false,
+  checkLoading : true,
   error: null,
 };
+
 
 const userSlice = createSlice({
   name: "user",
@@ -24,9 +26,13 @@ const userSlice = createSlice({
       state.role = null;
       state.loading = false;
     },
+
+    checked: (state)=>{
+      state.checkLoading = false;
+    }
   },
 });
 
 
-export const {request , login , logout} = userSlice.actions ;
+export const {request , login , logout , checked} = userSlice.actions ;
 export default userSlice.reducer ;

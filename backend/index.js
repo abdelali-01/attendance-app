@@ -12,8 +12,10 @@ import passport from "passport";
 import bodyParser from "body-parser";
 import MongoStore from "connect-mongo";
 import http from "http";
+import https from "https";
 import { WebSocketServer } from "ws";
 import "./cron.js";
+import fs from 'fs'
 
 dotenv.config();
 
@@ -22,18 +24,27 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 export const clients = new Map()
 
+const httpsOptions = {
+  key: fs.readFileSync("C:/Users/HP/localtest.me+1-key.pem"),
+  cert: fs.readFileSync("C:/Users/HP/localtest.me+1.pem"),
+};
+
 mongoose.connect(process.env.DATABASE_URL).then(() => {
   console.log("Connected to database");
-  server.listen(process.env.PORT, () => {
-    console.log(`Server running at port: ${process.env.PORT}`);
-  });
+  // server.listen(process.env.PORT, () => {
+  //   console.log(`Server running at port: ${process.env.PORT}`);
+  // });
+});
+
+https.createServer(httpsOptions, app).listen(4000, () => {
+  console.log("🚀 Backend ready at https://api.localtest.me:4000");
 });
 
 
 
 // Middleware
 app.use(cors({
-  origin: [process.env.FRONTEND_URL || "http://localhost:5173"],
+  origin: ["https://localtest.me:3000", "https://app.localtest.me:5173"],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -80,9 +91,11 @@ app.use(session({
   saveUninitialized: false,
   cookie: { 
     maxAge: 10 * 24 * 60 * 60 * 1000,
-    secure: process.env.NODE_ENV === "production", 
+    // secure: process.env.NODE_ENV === "production", 
+    secure: true, 
     httpOnly: true , 
-    sameSite : "none"
+    sameSite : "none",
+    domain: "localtest.me"
   },
   store: MongoStore.create({ client: mongoose.connection.getClient() }),
 }));
@@ -90,13 +103,13 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 // Importing routers
 import authRouter from "./routers/auth.js";
 import classRouter from "./routers/class.js";
 import reportRouter from "./routers/report.js";
 import userRouter from "./routers/user.js";
 import paymentRouter from "./routers/payment.js";
+
 
 app.use("/auth", authRouter);
 app.use("/user", userRouter);

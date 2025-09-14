@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Loader from "../../../components/ui/Loader";
+import Loader from "../components/ui/Loader";
 import moment from "moment";
 import axios from "axios";
-import StudentAttendance from "../../../components/cards/StudentAttendance";
+import StudentAttendance from "../components/cards/StudentAttendance";
 import { useDispatch, useSelector } from "react-redux";
-import { removeLoading, setLoading } from "../../../store/Loading";
-import { findClass } from "../../../store/class/classHandler";
-import { checkStudentPresence } from "../../../store/students/studentsHandler";
+import { removeLoading, setLoading } from "../store/Loading";
+import { findClass } from "../store/class/classHandler";
+import { checkStudentPresence } from "../store/students/studentsHandler";
 
-export function Class() {
+export default function StudentClass() {
+const serverUrl = import.meta.env.VITE_BASE_URI;
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { classId } = useParams();
@@ -26,13 +28,13 @@ export function Class() {
       dispatch(setLoading());
       try {
         if (user && classId) {
-          const res = await axios.get(`/user/${user._id}?classId=${classId}`);
+          const res = await axios.get(`${serverUrl}/user/${user._id}?classId=${classId}`);
           setStudent(res.data.student);
           setCurrentClass(res.data.currentClass)
         }
       } catch (error) {
         console.error("Error fetching student data:", error);
-        navigate("/dashboard/classes");
+        navigate("/");
       } finally {
         dispatch(removeLoading());
       }
