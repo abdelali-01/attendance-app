@@ -9,13 +9,13 @@ import NoClassJoined from "../components/NoClassJoined";
 
 export default function Classes() {
   const { classes } = useSelector((state) => state.classes);
-  const { role } = useSelector((state) => state.user);
+  const { role, user } = useSelector((state) => state.user);
   const loading = false;
 
   // manage the join class popup display with state
   const [isVisible, setIsVisible] = useState(false);
 
-  // Plus icon SVG
+  // Icons
   const PlusIcon = (
     <svg
       width="36"
@@ -35,6 +35,22 @@ export default function Classes() {
     </svg>
   );
 
+  const LockIcon = (
+    <svg
+      width="36"
+      height="36"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ color: "#9ca3af" }}
+    >
+      <rect width="24" height="24" rx="12" fill="#F1F5F9" />
+      <path d="M8 11V9a4 4 0 1 1 8 0v2" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <rect x="7" y="11" width="10" height="8" rx="2" stroke="#9ca3af" strokeWidth="2"/>
+      <circle cx="12" cy="15" r="1.5" fill="#9ca3af" />
+    </svg>
+  );
+
   // Card dimensions (responsive)
   const cardStyle = {
     flex: "1",
@@ -46,7 +62,65 @@ export default function Classes() {
   };
 
   // Add Class Card for teachers
-  const addClassCard = (
+  const teacherClassesCount = role === "teacher" ? (classes ? classes.length : 0) : 0;
+  const isFree = user?.plan === "free";
+  const isStandard = user?.plan === "standard";
+  const disableAdd = role === "teacher" && ((isFree && teacherClassesCount >= 1) || (isStandard && teacherClassesCount >= 3));
+  const disabledReason = disableAdd
+    ? isFree
+      ? "Free plan allows 1 class only. Upgrade to add more."
+      : "Standard plan allows 3 classes only. Upgrade to add more."
+    : "";
+
+  const addClassCard = disableAdd ? (
+    <div
+      style={{
+        textDecoration: "none",
+        width: "100%",
+        height: "100%",
+        display: "block",
+      }}
+    >
+      <div
+        className="d-flex flex-column align-items-center justify-content-center"
+        style={{
+          background: "#f9fafb",
+          borderRadius: 18,
+          boxShadow: "0 4px 24px #6366f111",
+          height: "100%",
+          width: "100%",
+          padding: "12px",
+          cursor: "not-allowed",
+          transition: "box-shadow 0.2s, transform 0.2s",
+          border: "2px dashed #cbd5e1",
+          color: "#9ca3af",
+          alignItems: "center",
+          justifyContent: "center",
+          display: "flex",
+          textAlign: "center"
+        }}
+      >
+        <div className="mb-2">{LockIcon}</div>
+        <div className="fw-bold" style={{ fontSize: 18, color: "#6b7280" }}>
+          Add New Class
+        </div>
+        <span
+          className="d-inline-flex align-items-center px-2 py-1 mt-2"
+          style={{
+            background: "#fef3c7",
+            color: "#92400e",
+            border: "1px solid #fde68a",
+            borderRadius: 999,
+            fontSize: 12,
+            fontWeight: 600
+          }}
+        >
+          <i className="fa-solid fa-lock me-1"></i>
+          {disabledReason}
+        </span>
+      </div>
+    </div>
+  ) : (
     <Link
       to="/add-class"
       style={{
@@ -119,15 +193,15 @@ export default function Classes() {
     gap: 24,
     justifyContent: "flex-start",
     alignItems: "stretch",
-    width: "100%",
   };
 
   return (
     <div
-      className="classes-page flex-grow-1 px-3 px-md-5 m-auto"
+      className="classes-page px-3 px-md-5 "
       style={{
         paddingTop: 32,
         paddingBottom: 32,
+        width : !'100%',
       }}
     >
       <div className="container py-4">
