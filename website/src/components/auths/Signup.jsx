@@ -16,13 +16,13 @@ export default function Signup() {
   });
   const { loading, signup } = useAuth();
   const router = useRouter();
-  const [error , setError] = useState('');
+  const [error , setError] = useState('The App it`s under development');
 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
-    setError('');
+    // setError('');
   };
 
   const handleSubmit = (e) => {
@@ -229,8 +229,9 @@ export default function Signup() {
 
               <button
                 type="submit"
-                className="btn-primary mt-6 w-full"
-                disabled={loading}
+                className="btn-primary mt-6 w-full opacity-30 cursor-not-allowed"
+                // disabled={loading}
+                disabled={true}
               >
                 {loading ? <BtnLoader /> : "Create account"}
               </button>

@@ -10,14 +10,14 @@ export default function Login() {
     email: "",
     password: "",
   });
-  const [error , setError] = useState('');
+  const [error , setError] = useState('The App it`s under development');
   const { login, loading } = useAuth();
   const router = useRouter();
 
   // reset error 
-  useEffect(()=>{
-    setError('');
-  },[credentials]);
+  // useEffect(()=>{
+  //   setError('');
+  // },[credentials]);
 
   return (
     <section className="mx-auto max-w-6xl px-4 pb-20 pt-14 sm:px-6 lg:px-8">
@@ -147,7 +147,8 @@ export default function Login() {
 
               <div className="mt-4 flex items-center justify-end">
                 <a
-                  href="/forgot-pass"
+                  // href="/forgot-pass"
+                  href="#"
                   className="text-sm font-semibold text-[#5A57FF] hover:underline"
                 >
                   Forgot password?
@@ -156,8 +157,9 @@ export default function Login() {
 
               <button
                 type="submit"
-                className="btn-primary mt-6 w-full"
-                disabled={loading}
+                className="btn-primary mt-6 w-full opacity-30 cursor-not-allowed"
+                disabled
+                // disabled={loading}
               >
                 {loading ? <BtnLoader /> : "Sign In"}
               </button>

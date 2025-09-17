@@ -1,11 +1,16 @@
-'use client'
-import React from 'react'
+"use client";
+import React from "react";
 
 export default function ContactForm() {
   return (
-    <section id="contact" className="mx-auto max-w-6xl px-4 pb-20 pt-14 sm:px-6 lg:px-8">
+    <section
+      id="contact"
+      className="mx-auto max-w-6xl px-4 pb-20 pt-14 sm:px-6 lg:px-8"
+    >
       <div className="text-center">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Contact Us</h1>
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+          Contact Us
+        </h1>
         <p className="mx-auto mt-3 max-w-2xl text-slate-500">
           We're here to help you with any questions or concerns you may have.
         </p>
@@ -14,13 +19,18 @@ export default function ContactForm() {
       <div className="mx-auto mt-10 max-w-3xl">
         <form
           onSubmit={(e) => {
-            e.preventDefault()
+            e.preventDefault();
           }}
           className="rounded-[24px] bg-white p-6 shadow-[0_8px_30px_rgba(16,24,40,0.08)] ring-1 ring-slate-100"
         >
           <div className="grid gap-5 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
-              <label htmlFor="name" className="text-sm font-medium text-slate-700">Full Name</label>
+              <label
+                htmlFor="name"
+                className="text-sm font-medium text-slate-700"
+              >
+                Full Name
+              </label>
               <input
                 id="name"
                 name="name"
@@ -31,7 +41,12 @@ export default function ContactForm() {
               />
             </div>
             <div className="flex flex-col gap-2">
-              <label htmlFor="email" className="text-sm font-medium text-slate-700">Email</label>
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-slate-700"
+              >
+                Email
+              </label>
               <input
                 id="email"
                 name="email"
@@ -45,7 +60,12 @@ export default function ContactForm() {
 
           <div className="mt-5">
             <div className="flex flex-col gap-2">
-              <label htmlFor="subject" className="text-sm font-medium text-slate-700">Subject</label>
+              <label
+                htmlFor="subject"
+                className="text-sm font-medium text-slate-700"
+              >
+                Subject
+              </label>
               <input
                 id="subject"
                 name="subject"
@@ -59,7 +79,12 @@ export default function ContactForm() {
 
           <div className="mt-5">
             <div className="flex flex-col gap-2">
-              <label htmlFor="message" className="text-sm font-medium text-slate-700">Message</label>
+              <label
+                htmlFor="message"
+                className="text-sm font-medium text-slate-700"
+              >
+                Message
+              </label>
               <textarea
                 id="message"
                 name="message"
@@ -81,12 +106,19 @@ export default function ContactForm() {
               />
               I agree to be contacted about my inquiry.
             </label>
-            <button type="submit" className="btn-primary w-full mt-4">
+            <div className="mt-4 rounded-[12px] bg-rose-50 p-3 text-sm text-rose-700 ring-1 ring-inset ring-rose-100">
+              The App it`s under development
+            </div>
+            <button
+              type="submit"
+              className="btn-primary w-full mt-4 opacity-30 cursor-not-allowed"
+              disabled={true}
+            >
               Send Message
             </button>
           </div>
         </form>
       </div>
     </section>
-  )
+  );
 }
