@@ -139,23 +139,36 @@ export default function Sidebar() {
             >
               <img src={report_icon} alt="" />
               <span>Reports</span>
-              {role === 'teacher' && <i className="fa-solid fa-crown"></i>}
+              {role === 'teacher' && (
+                <i
+                  className="fa-solid fa-lock"
+                  title="Requires paid plan"
+                  style={{ marginLeft: 6, color: "rgba(255,255,255,.85)", fontSize: "12px", filter: "drop-shadow(0 0 2px rgba(0,0,0,.2))" }}
+                ></i>
+              )}
             </Link>
 
             <Link
-              onClick={user.plan !== "free" && hendleLink}
-              to={user.plan !== "free" && "/messages"}
-              className={`sidebar-link ${user.plan === "free" && "upgrade-trigger"} ${
-                activeLink === "/messages" ? "active" : ""
+              onClick={hendleLink}
+              to={"/messages"}
+              // ${user.plan === "free" && "upgrade-trigger"} 
+              className={`sidebar-link
+                ${activeLink === "/messages" ? "active" : ""
               } py-2 ps-5 w-100 d-flex align-items-center justify-content-start gap-3`}
-              style={{
-                opacity: user.plan === "free" && ".6",
-                cursor: user.plan === "free" && "not-allowed",
-              }}
+              // style={{
+              //   opacity: user.plan === "free" && ".6",
+              //   cursor: user.plan === "free" && "not-allowed",
+              // }}
             >
               <img src={message_icon} alt="" />
               <span>Messages</span>
-              {role === 'teacher' && <i className="fa-solid fa-crown"></i>}
+              {role === 'teacher' && (
+                <i
+                  className="fa-solid fa-lock"
+                  title="Requires paid plan"
+                  style={{ marginLeft: 6, color: "rgba(255,255,255,.85)", fontSize: "12px", filter: "drop-shadow(0 0 2px rgba(0,0,0,.2))" }}
+                ></i>
+              )}
             </Link>
           </div>
 

@@ -12,7 +12,7 @@
 .table-container {
     overflow-x: auto;
     box-shadow: -1px -2px 20px #5a57ff60;
-    max-width: 90vw;
+    max-width: 95vw;
     width: 100%;
 }
 .table-container table {

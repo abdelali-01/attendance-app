@@ -6,7 +6,6 @@ export default function NoClassAvailable() {
     <div className="no-class-available-container d-flex align-items-center justify-content-center" 
          style={{ 
            minHeight: '60vh', 
-           padding: '2rem'
          }}>
       <div className="no-class-card text-center p-5" 
            style={{ 
