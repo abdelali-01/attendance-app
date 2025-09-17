@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-// import delete_icon from "./icons/trash.svg";
-import update_icon from "../icons/pen.svg";
-import absent_icon from "../icons/absent.svg";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
 import Popup from "../modals/Popup";
+import {
+  ArrowRightEndOnRectangleIcon,
+  PencilIcon,
+  UserMinusIcon,
+  UserPlusIcon,
+} from "@heroicons/react/24/outline";
 
-export default function StudentItem({ student, posibilityStatus, i }) {
+export default function StudentItem({ student, posibilityStatus, i , checkedStudents, setCheckedStudents}) {
   const { classId } = useParams();
   const [currentClass, setCurrentClass] = useState(null);
+  const [showActions, setShowActions] = useState(false);
 
   const [attendance, setAttendance] = useState(null); // Track attendance
   const [absences, setAbsences] = useState(null); // Track absences
@@ -53,7 +57,7 @@ export default function StudentItem({ student, posibilityStatus, i }) {
 
     ws.onopen = () => {
       console.log("WebSocket connected");
-      ws.send(JSON.stringify({ type: "joinClass" , classId}));
+      ws.send(JSON.stringify({ type: "joinClass", classId }));
     };
 
     ws.onmessage = (event) => {
@@ -106,7 +110,21 @@ export default function StudentItem({ student, posibilityStatus, i }) {
 
   return (
     <>
-      <tr className="student-items">
+      <tr className="student-items" onMouseEnter={() => setShowActions(true)} onMouseLeave={() => setShowActions(false)}>
+        <td className="text-center">
+          <input
+            type="checkbox"
+            checked={checkedStudents?.includes(student._id) || false}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setCheckedStudents(prev => [...(prev || []), student._id]);
+              } else {
+                setCheckedStudents(prev => (prev || []).filter(id => id !== student._id));
+              }
+            }}
+            style={{ width: "16px", height: "16px", cursor: "pointer" }}
+          />
+        </td>
         <td className="text-black-50">{i}</td>
         <td className="fw-semibold">{student.matricule}</td>
         <td
@@ -143,11 +161,15 @@ export default function StudentItem({ student, posibilityStatus, i }) {
         <td className="text-center">{absences}</td>
         <td className="text-center">{mark === undefined ? "no mark" : mark}</td>
         <td className="text-center">
-          <img
-            role="button"
-            src={absent_icon}
-            alt=""
-            onClick={() => {
+          <div className="d-flex justify-content-center align-items-center gap-2" style={{ opacity: showActions ? 1 : 0, transition: 'opacity .15s ease' }}>
+          <UserPlusIcon
+            style={{ width: "26px", height: "26px", cursor: "pointer" }}
+            title="Mark student present"
+          />
+          <UserMinusIcon
+            style={{ width: "26px", height: "26px", cursor: "pointer" }}
+            title="Mark student absent"
+            onClick={() => {  
               posibilityStatus
                 ? setAbsent()
                 : alert(
@@ -155,13 +177,16 @@ export default function StudentItem({ student, posibilityStatus, i }) {
                   );
             }}
           />
-
-          <img
-            role="button"
-            src={update_icon}
-            alt=""
+          <PencilIcon
+            style={{ width: "26px", height: "26px", cursor: "pointer" }}
+            title="Edit student details"
             onClick={() => setIsVisible(true)}
           />
+          <ArrowRightEndOnRectangleIcon
+            style={{ width: "26px", height: "26px", cursor: "pointer" }}
+            title="Remove student from class"
+          />
+          </div>
         </td>
       </tr>
       <div className="update-popup">

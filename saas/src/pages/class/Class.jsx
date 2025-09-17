@@ -3,8 +3,8 @@ import "./class.css";
 import StudentItem from "../../components/cards/StudentItem";
 import axios from "axios";
 import search_icon from "../../components/icons/search.svg";
-import moment from "moment";
-import { Link, useNavigate, useParams } from "react-router-dom";
+// import moment from "moment";
+import { Link, useParams } from "react-router-dom";
 import ClassName from "../../components/ui/ClassName";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,14 +14,12 @@ import {
 import Loader from "../../components/ui/Loader";
 import {
   getStudents,
-  resetStudentsAbsence,
 } from "../../store/students/studentsHandler";
 import { removeLoading, setLoading } from "../../store/Loading";
 import { safeMap, safeFilter } from "../../utils/safeArray";
 
 export default function Class() {
   const serverUri = import.meta.env.VITE_BASE_URI;
-  const navigate = useNavigate();
   const { classId } = useParams();
 
   const { classes, foundedClass } = useSelector((state) => state.classes);
@@ -31,20 +29,10 @@ export default function Class() {
   );
   const dispatch = useDispatch();
 
+  const [checkedStudents, setCheckedStudents] = useState([]);
+
   // updated data
   const [posibilityStatus, setPosibilityStatus] = useState(null);
-  const [currentTime, setCurrentTime] = useState("");
-
-  // for dynamic time setting
-  useEffect(() => {
-    const updateTime = () => {
-      const formattedTime = moment().format("ddd , DD,YYYY , hh:mm A"); // Format the date
-      setCurrentTime(formattedTime);
-    };
-
-    updateTime();
-    setInterval(updateTime, 1000); // Update every second
-  }, []);
 
   useEffect(() => {
     dispatch(getStudents(classId));
@@ -67,6 +55,8 @@ export default function Class() {
         student.name.toLowerCase().includes(search.toLowerCase()) ||
         student.matricule.includes(search)
     );
+  const filteredIds = filteredStudents ? filteredStudents.map(s => s._id) : [];
+  const allChecked = filteredIds.length > 0 && filteredIds.every(id => checkedStudents.includes(id));
 
   // the function of change the posibility of check the presence
   async function changePosibility() {
@@ -135,7 +125,7 @@ export default function Class() {
 
   return (
     <div
-      className="class-page flex-grow-1 px-4 mb-5"
+      className="class-page flex-grow-1 px-2 mb-5"
       style={{
         maxWidth: "100%",
       }}
@@ -145,29 +135,45 @@ export default function Class() {
       ) : (
         <>
           <div className="list-of-class d-flex flex-column align-items-end px-md-5 w-100">
-            <div className="nav-class d-flex align-items-center justify-content-between w-100">
-              <div className="icons">
-                <Link to={`/classes/${classId}/settings`}>
-                  <i className="fa-solid fa-gear fs-4"></i>
-                </Link>
-              </div>
-              <div className="search my-3 text-center w-50">
-                <input
-                  type="text"
-                  placeholder="Search student"
-                  value={search}
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                  }}
-                />
-                <img src={search_icon} alt="" />
+            {/* Header */}
+            <div className="d-flex align-items-center justify-content-between w-100 mb-2">
+              <div className="d-md-flex d-none align-items-center gap-3 "></div>
+              <div className="my-3 text-center" style={{ maxWidth: 400, width: "100%" }}>
+                <div className="position-relative">
+                  <input
+                    type="text"
+                    placeholder="Search student"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="form-control"
+                    style={{
+                      borderRadius: 12,
+                      border: "2px solid #e2e8f0",
+                      padding: "0.7rem 2.2rem 0.7rem 0.9rem",
+                      background: "#fff"
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "#667eea";
+                      e.target.style.boxShadow = "0 0 0 3px rgba(102,126,234,.12)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "#e2e8f0";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  />
+                  <img src={search_icon} alt="" className="position-absolute" style={{ right: 10, top: 10, width: 20, opacity: .6 }}/>
+                </div>
               </div>
             </div>
-            <ClassName classData={foundedClass} />
+
+              <ClassName classData={foundedClass} classId={classId}/>
+              
+
+            {/* dont change anything below this */}
             {filteredStudents.length > 0 ? (
               <>
                 <div className="table-top d-flex flex-wrap gap-3 align-items-center justify-content-between w-100 my-3">
-                  <span className="text-black-50">{currentTime}</span>
+                  <div></div>
                   <button
                     disabled={loading}
                     onClick={changePosibility}
@@ -186,6 +192,21 @@ export default function Class() {
                   <table className="mt-2">
                     <thead>
                       <tr>
+                        <td className="text-center">
+                          <input
+                            type="checkbox"
+                            title="Select all students"
+                            checked={allChecked}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setCheckedStudents((prev) => Array.from(new Set([...(prev || []), ...filteredIds])));
+                              } else {
+                                setCheckedStudents((prev) => (prev || []).filter((id) => !filteredIds.includes(id)));
+                              }
+                            }}
+                            style={{ width: "16px", height: "16px", cursor: "pointer" }}
+                          />
+                        </td>
                         <td>N°</td>
                         <td>Matricule</td>
                         <td>Student</td>
@@ -204,6 +225,8 @@ export default function Class() {
                             key={student._id}
                             student={student}
                             posibilityStatus={posibilityStatus}
+                            setCheckedStudents={setCheckedStudents}
+                            checkedStudents={checkedStudents}
                           />
                         );
                       })}
