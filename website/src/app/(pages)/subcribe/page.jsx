@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, Suspense } from "react";
+import React, { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   basePrices,
@@ -49,7 +49,6 @@ export default function SubscribePage() {
   };
 
   return (
-    <Suspense fallback={null}>
       <main className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
         <section className="mx-auto max-w-6xl px-4 pb-20 pt-14 sm:px-6 lg:px-8">
           <div className="text-left">
@@ -186,6 +185,5 @@ export default function SubscribePage() {
           </div>
         </section>
       </main>
-    </Suspense>
   );
 }
