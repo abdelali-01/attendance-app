@@ -173,7 +173,9 @@ export default function Class() {
             {filteredStudents.length > 0 ? (
               <>
                 <div className="table-top d-flex flex-wrap gap-3 align-items-center justify-content-between w-100 my-3">
-                  <div></div>
+                  <div>
+                    {/* here should be  */}
+                  </div>
                   <button
                     disabled={loading}
                     onClick={changePosibility}
@@ -236,7 +238,57 @@ export default function Class() {
               </>
             ) : (
               <>
-                <p className="fw-semibold text-center">Class Empty</p>
+                <div className="d-flex align-items-center justify-content-center w-100 mt-5" style={{ minHeight: 220 }}>
+                  <div
+                    className="text-center"
+                  >
+                    <div className="mb-3 d-flex justify-content-center">
+                      <svg
+                        width="96"
+                        height="96"
+                        viewBox="0 0 96 96"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        style={{ opacity: 0.9 }}
+                      >
+                        <defs>
+                          <linearGradient id="grad" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+                            <stop stopColor="#667eea" />
+                            <stop offset="1" stopColor="#764ba2" />
+                          </linearGradient>
+                        </defs>
+
+                        {/* Board */}
+                        <rect x="14" y="18" width="68" height="32" rx="6" stroke="url(#grad)" strokeWidth="2" fill="none"/>
+                        <rect x="20" y="24" width="40" height="6" rx="3" fill="#e5e7eb"/>
+                        <rect x="20" y="34" width="48" height="6" rx="3" fill="#eef2ff"/>
+
+                        {/* Teacher (center) */}
+                        <circle cx="48" cy="62" r="8" stroke="url(#grad)" strokeWidth="2" fill="none"/>
+                        <path d="M34 84c0-7.7 6.3-14 14-14s14 6.3 14 14" stroke="url(#grad)" strokeWidth="2" fill="none" strokeLinecap="round"/>
+
+                        {/* Students (left/right) */}
+                        <circle cx="26" cy="66" r="6" stroke="#cbd5e1" strokeWidth="2" fill="none"/>
+                        <path d="M16 84c0-6 4.9-11 11-11" stroke="#cbd5e1" strokeWidth="2" fill="none" strokeLinecap="round"/>
+
+                        <circle cx="70" cy="66" r="6" stroke="#cbd5e1" strokeWidth="2" fill="none"/>
+                        <path d="M70 73c6.1 0 11 5 11 11" stroke="#cbd5e1" strokeWidth="2" fill="none" strokeLinecap="round"/>
+
+                        {/* Soft background accent */}
+                        <ellipse cx="48" cy="88" rx="26" ry="4" fill="#f1f5f9"/>
+                      </svg>
+                    </div>
+                    <div className="mb-1" style={{ color: "#6b7280", fontSize: 12, letterSpacing: 0.6, textTransform: "uppercase" }}>
+                      No students
+                    </div>
+                    <div className="fw-semibold mb-1" style={{ color: "#111827", fontSize: 16 }}>
+                      This class is empty
+                    </div>
+                    <div className="text-muted" style={{ fontSize: 13 }}>
+                      When students join this class, they will appear here.
+                    </div>
+                  </div>
+                </div>
               </>
             )}
           </div>
