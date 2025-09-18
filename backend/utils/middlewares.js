@@ -107,7 +107,7 @@ export const checkPlanDate = async (req, res, next) => {
     // Find the latest valid payment for the teacher
     const findPayment = await Payment.findOne({
       teacherId,
-      status: "paid", // Only successful payments
+      paymentStatus: "paid",
     }).sort({ createdAt: -1 }); // Get the latest payment
 
     if (!findPayment) return res.status(200).send("You are on the free plan");

@@ -89,9 +89,6 @@ export default function SubscribePage() {
               );
             })}
           </div>
-          <div className="mt-4 rounded-[12px] bg-rose-50 p-3 text-sm text-rose-700 ring-1 ring-inset ring-rose-100">
-            The App it`s under development
-          </div>
           {/* Summary */}
           <div className="mt-10 rounded-[24px] bg-white p-6 shadow-[0_8px_30px_rgba(16,24,40,0.08)] ring-1 ring-slate-100">
             <div className="grid gap-6 lg:grid-cols-2">
