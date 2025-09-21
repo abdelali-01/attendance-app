@@ -13,16 +13,14 @@ export default function AboutPage() {
       name: 'ARIBI Abdelali',
       role: 'Founder & Full-stack Developer',
       bio: 'Product-focused engineer building reliable classroom tools end-to-end.',
-      skills: ['Next.js', 'Node.js', 'MongoDB'],
-      links: { linkedin: '#', email: '#' },
+      links: { linkedin: 'https://www.linkedin.com/in/abdelalideveloper/', email: 'mailto:abdelalideveloper1@gmail.com' },
     },
-    {
-      name: 'Derrar Abdelillah',
-      role: 'Frontend Developer',
-      bio: 'Creates polished, accessible interfaces that teachers love to use.',
-      skills: ['React', 'Tailwind', 'UX'],
-      links: { linkedin: '#', email: '#' },
-    },
+    // {
+    //   name: 'Derrar Abdelillah',
+    //   role: 'Frontend Developer',
+    //   bio: 'Creates polished, accessible interfaces that teachers love to use.',
+    //   links: { linkedin: '#', email: '#' },
+    // },
   ]
 
   return (
